@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Locanda Seggiovia">
+  <rect width="64" height="64" fill="#2d3d31"/>
+  <!-- Profilo di cresta: due montagne, la seconda più alta. -->
+  <path d="M0 46 L14 30 L24 40 L38 22 L50 38 L64 28 L64 64 L0 64 Z" fill="#f2f0eb"/>
+  <!-- Versante in ombra, leggermente più caldo. -->
+  <path d="M38 22 L50 38 L44 38 L38 30 Z" fill="#cfcabe"/>
+</svg>

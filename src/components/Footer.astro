@@ -1,0 +1,131 @@
+---
+/**
+ * Footer — recapiti, dati societari e link legali.
+ */
+import { site, indirizzoBreve, navigazione, mappaLinkUrl } from '../data/site';
+
+const anno = new Date().getFullYear();
+---
+
+<footer class="bg-stone-900 text-stone-300">
+  <div class="shell py-16 md:py-20">
+    <div class="grid gap-12 md:grid-cols-12 md:gap-8">
+      {/* --- Identità --- */}
+      <div class="md:col-span-5 lg:col-span-4">
+        <p class="font-[family-name:var(--font-display)] text-2xl leading-tight text-stone-50">
+          {site.nome}
+        </p>
+        <p class="mt-3 max-w-[30ch] text-[0.95rem] leading-relaxed text-stone-400">
+          {site.tagline}. Gestita da {site.gestione}.
+        </p>
+
+        {
+          site.instagram && (
+            <a
+              href={site.instagram}
+              class="link-arrow mt-6 inline-flex text-stone-300"
+              rel="noopener noreferrer me"
+              target="_blank"
+            >
+              Instagram
+            </a>
+          )
+        }
+      </div>
+
+      {/* --- Contatti --- */}
+      <div class="md:col-span-4 lg:col-span-3">
+        <h2 class="eyebrow text-stone-500">Dove siamo</h2>
+        <address class="mt-4 not-italic">
+          <a
+            href={mappaLinkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[0.95rem] leading-relaxed text-stone-300 transition-colors duration-300 hover:text-stone-50"
+          >
+            {site.indirizzo.via}<br />
+            {site.indirizzo.cap} {site.indirizzo.citta} ({site.indirizzo.provincia})
+          </a>
+        </address>
+
+        <ul class="mt-5 space-y-2 text-[0.95rem]">
+          <li>
+            <a
+              href={site.telefonoLink}
+              class="text-stone-300 transition-colors duration-300 hover:text-stone-50"
+            >
+              {site.telefono}
+            </a>
+          </li>
+          <li>
+            <a
+              href={`mailto:${site.email}`}
+              class="break-all text-stone-300 transition-colors duration-300 hover:text-stone-50"
+            >
+              {site.email}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* --- Navigazione --- */}
+      <nav aria-label="Mappa del sito" class="md:col-span-3 lg:col-span-2">
+        <h2 class="eyebrow text-stone-500">Il sito</h2>
+        <ul class="mt-4 space-y-2.5 text-[0.95rem]">
+          {
+            navigazione.map((voce) => (
+              <li>
+                <a
+                  href={voce.href}
+                  class="text-stone-300 transition-colors duration-300 hover:text-stone-50"
+                >
+                  {voce.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      {/* --- Orari --- */}
+      <div class="md:col-span-12 lg:col-span-3">
+        <h2 class="eyebrow text-stone-500">Orari</h2>
+        <dl class="mt-4 space-y-3 text-[0.95rem]">
+          {
+            site.orari.map((riga) => (
+              <div>
+                <dt class="text-stone-500">{riga.giorno}</dt>
+                <dd class="text-stone-300">{riga.valore}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+
+    <hr class="mt-14 border-stone-700/60" />
+
+    {/* --- Dati societari e legali --- */}
+    <div
+      class="mt-8 flex flex-col gap-6 text-[0.8rem] leading-relaxed text-stone-500 md:flex-row md:items-start md:justify-between"
+    >
+      <div class="space-y-1">
+        <p>
+          {site.fiscale.ragioneSociale} — P.IVA {site.fiscale.partitaIva} — C.F.
+          {site.fiscale.codiceFiscale}
+        </p>
+        <p>{indirizzoBreve}</p>
+      </div>
+
+      <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+        <li><a href="/privacy" class="transition-colors hover:text-stone-300">Privacy Policy</a></li>
+        <li><a href="/cookie" class="transition-colors hover:text-stone-300">Cookie Policy</a></li>
+        <li><a href="/contatti" class="transition-colors hover:text-stone-300">Contatti</a></li>
+      </ul>
+    </div>
+
+    <p class="mt-6 text-[0.8rem] text-stone-600">
+      © {anno} {site.nome}. Tutti i diritti riservati.
+    </p>
+  </div>
+</footer>

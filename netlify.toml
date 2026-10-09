@@ -1,0 +1,56 @@
+# Netlify — configurazione di build e deploy
+# Il piano gratuito è sufficiente: sito statico, nessun backend, nessun database.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22.12.0"
+
+# --- Header di sicurezza -----------------------------------------------------
+# Applicati a tutte le pagine. Il sito non ha backend, quindi niente CSP
+# restrittiva sulle API: solo ciò che serve davvero.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# --- Cache -------------------------------------------------------------------
+# Gli asset generati da Astro hanno un hash nel nome: possono essere immutabili.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Le fotografie mantengono lo stesso nome quando vengono sostituite:
+# cache breve, così la cliente vede subito le nuove immagini.
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# I file HTML devono essere sempre rivalidati.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# --- Redirect ----------------------------------------------------------------
+# La vecchia struttura del sito non ha URL sovrapponibili: si parte puliti.
+# Se in futuro servissero, la sintassi è:
+#   [[redirects]]
+#     from = "/vecchio-percorso"
+#     to = "/nuovo-percorso"
+#     status = 301
+#     force = true
+
+# Fallback per le rotte non trovate (la pagina 404 è già in dist/404.html).
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404

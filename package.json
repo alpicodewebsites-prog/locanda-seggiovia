@@ -1,0 +1,25 @@
+{
+  "name": "locanda-seggiovia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sito web della Locanda Seggiovia — Recoaro Terme (VI)",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/vite": "^4.3.3",
+    "aos": "^2.3.4",
+    "astro": "^7.3.8",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0",
+    "sharp": "^0.34.5"
+  }
+}

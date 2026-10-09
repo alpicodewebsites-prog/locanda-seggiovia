@@ -1,0 +1,79 @@
+---
+/**
+ * Hero — apertura della home.
+ *
+ * Il titolo principale (h1) è il testo reale della pagina, non un'immagine:
+ * resta leggibile, selezionabile, indicizzabile e accessibile.
+ *
+ * L'immagine è l'elemento LCP: viene caricata con priorità alta, in WebP,
+ * con srcset responsive perché i telefoni non scarichino 2560px.
+ */
+import { Image } from 'astro:assets';
+import heroImg from '../assets/hero-piccole-dolomiti.jpg';
+import { site } from '../data/site';
+
+// Le date in cui il titolo cambia forma: evita di inventare un anno.
+const anno = site.annoFondazione;
+---
+
+<section class="relative isolate flex min-h-[86svh] flex-col justify-end overflow-hidden bg-stone-800">
+  <!--
+    ATTENZIONE — questo è un segnaposto generato proceduralmente, non una foto
+    delle Piccole Dolomiti. L'alt lo dice esplicitamente: descrivere come reale
+    una fotografia che non esiste sarebbe fuorviante per chi usa un lettore di
+    schermo. Quando arriva lo scatto vero, sostituire il file in src/assets e
+    aggiornare l'alt con la descrizione del paesaggio reale.
+  -->
+  <Image
+    src={heroImg}
+    alt="Segnaposto grafico di montagne con boschi di conifere, in attesa della fotografia delle Piccole Dolomiti"
+    widths={[640, 960, 1280, 1600, 2000, 2560]}
+    sizes="100vw"
+    format="webp"
+    quality={78}
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    class="absolute inset-0 -z-20 h-full w-full object-cover"
+  />
+
+  <!-- Velo: garantisce il contrasto del testo su qualsiasi fotografia. -->
+  <div
+    class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/88 via-stone-900/45 to-stone-900/25"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="shell w-full pb-20 md:pb-28">
+    <p
+      class="max-w-[34ch] text-[0.95rem] leading-relaxed text-stone-200/90"
+      data-aos="fade-in"
+    >
+      {site.indirizzo.citta}, Valle dell’Agno — Provincia di Vicenza
+    </p>
+
+    <h1
+      class="display-1 mt-5 max-w-[19ch] text-stone-50 text-shadow-hero"
+    >
+      {anno ? `Rifugio alpino dal ${anno}` : 'Rifugio alpino ai piedi delle Piccole Dolomiti'}
+    </h1>
+
+    <p
+      class="mt-6 max-w-[46ch] text-[1.0625rem] leading-relaxed text-stone-200/95 md:text-[1.15rem]"
+      data-aos="fade-up"
+      data-aos-delay="100"
+    >
+      Camere, cucina tradizionale alto-vicentina e i sentieri che partono dal centro di
+      Recoaro Terme. La montagna comincia fuori dalla porta.
+    </p>
+
+    <div
+      class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
+      data-aos="fade-up"
+      data-aos-delay="180"
+    >
+      <a href="/camere" class="btn btn--onDark">Scopri le camere</a>
+      <a href="/sentieri" class="btn btn--onDark">Esplora i sentieri</a>
+    </div>
+  </div>
+</section>

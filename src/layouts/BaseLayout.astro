@@ -1,0 +1,206 @@
+---
+/**
+ * BaseLayout — guscio comune a tutte le pagine.
+ *
+ * Contiene: <head> completo e ottimizzato per la SEO, skip-link, header,
+ * footer, e l'inizializzazione di AOS.
+ */
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+export interface Props {
+  title: string;
+  description: string;
+  /** Immagine Open Graph, percorso relativo alla root (es. /og-default.jpg). */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  /** JSON-LD specifici della pagina, serializzati in fondo al <head>. */
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  /** Se true non emette il canonical: usato dalla pagina 404. */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  ogImage = '/og-default.jpg',
+  ogType = 'website',
+  schema,
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const ogImageAbs = new URL(ogImage, Astro.site ?? site.url).href;
+
+// Titolo completo: la home non ha bisogno del suffisso ripetuto.
+const fullTitle = title.includes(site.nome) ? title : `${title} — ${site.nome}`;
+
+const schemas = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+
+// --- Dati strutturati di base, presenti su ogni pagina --------------------
+const businessSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['Restaurant', 'LodgingBusiness'],
+  '@id': `${site.url}/#locanda`,
+  name: site.nome,
+  alternateName: 'Locanda Seggiovia Recoaro Terme',
+  description:
+    'Locanda con camere e ristorante nel centro di Recoaro Terme, ai piedi delle Piccole Dolomiti e del Gruppo del Pasubio. Cucina tradizionale alto-vicentina e Gnocchi con la Fioreta De.Co.',
+  url: site.url,
+  email: site.email,
+  telephone: site.telefono,
+  image: [ogImageAbs],
+  priceRange: '€€',
+  currenciesAccepted: 'EUR',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.indirizzo.via,
+    postalCode: site.indirizzo.cap,
+    addressLocality: site.indirizzo.citta,
+    addressRegion: site.indirizzo.provincia,
+    addressCountry: site.indirizzo.paese,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: site.geo.lat,
+    longitude: site.geo.lng,
+  },
+  // Aree servite: il bacino escursionistico di riferimento.
+  areaServed: [
+    { '@type': 'Place', name: 'Recoaro Terme' },
+    { '@type': 'Place', name: 'Piccole Dolomiti' },
+    { '@type': 'Place', name: 'Gruppo del Pasubio' },
+    { '@type': 'Place', name: 'Valle dell’Agno' },
+  ],
+  // TODO: completare con i servizi effettivamente offerti.
+  amenityFeature: [
+    { '@type': 'LocationFeatureSpecification', name: 'Wi-Fi', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Ristorante', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Parcheggio', value: true },
+  ],
+  ...(site.instagram ? { sameAs: [site.instagram] } : {}),
+};
+
+const fullSchema = [businessSchema, ...schemas];
+---
+
+<!doctype html>
+<html lang="it" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonical} />
+
+    <!-- Il sito è pensato per il mercato italiano: una sola lingua. -->
+    <meta http-equiv="content-language" content="it-IT" />
+
+    <!-- --- Open Graph / social --- -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={site.nome} />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageAbs} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.nome} — ${site.tagline}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbs} />
+
+    <!-- --- Icone --- -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#2d3d31" />
+
+    <!-- --- Prestazioni: il serif dei titoli, e basta --- -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&display=swap"
+    />
+
+    <!-- --- Sitemap --- -->
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+    {/* Dati strutturati: organizzazione + schema specifico della pagina. */}
+    {
+      fullSchema.map((s) => (
+        <script type="application/ld+json" set:html={JSON.stringify(s)} />
+      ))
+    }
+
+    <!-- Google Search Console: sostituire con il codice di verifica reale. -->
+    <!-- <meta name="google-site-verification" content="..." /> -->
+  </head>
+
+  <body class="min-h-dvh bg-stone-100 text-stone-800 antialiased">
+    <a href="#contenuto" class="skip-link sr-only-focusable">Vai al contenuto</a>
+
+    <Header />
+
+    <main id="contenuto" tabindex="-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      import AOS from 'aos';
+
+      // AOS è costruito per essere incluso: senza di esso gli elementi
+      // marcati [data-aos] verrebbero nascosti dal CSS della libreria.
+      // global.css tiene comunque tutto visibile finché non aggiungiamo
+      // la classe `aos-ready`, così un errore JS non fa sparire la pagina.
+      const riduciMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Su mobile le animazioni al scroll costano più di quanto rendano,
+      // e l'escursionista in montagna ha spesso una rete debole.
+      const schermoPiccolo = window.matchMedia('(max-width: 767px)').matches;
+
+      if (!riduciMovimento && !schermoPiccolo) {
+        AOS.init({
+          duration: 700,
+          easing: 'ease-out-cubic',
+          once: true,
+          offset: 80,
+          disable: 'phone',
+        });
+        document.documentElement.classList.add('aos-ready');
+        AOS.refresh();
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  /* Skip-link: visibile solo quando riceve il focus da tastiera. */
+  .skip-link {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    background-color: var(--color-stone-900);
+    color: var(--color-stone-50);
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  /* Il <main> riceve il focus dal skip-link senza mostrare un contorno
+     attorno a tutta la pagina. */
+  main:focus {
+    outline: none;
+  }
+</style>

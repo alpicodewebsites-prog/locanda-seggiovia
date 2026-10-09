@@ -1,0 +1,82 @@
+/**
+ * Dati della struttura — unica fonte di verità.
+ *
+ * ⚠️  CAMPI DA CONFERMARE CON LA CLIENTE (contrassegnati con `TODO`):
+ *     telefono, anno di fondazione, P.IVA/C.F., orari, link Instagram.
+ *     Sono valori segnaposto: il sito NON va pubblicato prima di averli verificati.
+ */
+
+export const site = {
+  nome: 'Locanda Seggiovia',
+  nomeLegale: 'Locanda Seggiovia',
+  tagline: 'Rifugio alpino a Recoaro Terme',
+
+  // TODO: sostituire con il dominio definitivo (usato da canonical, OG, sitemap).
+  url: 'https://www.locandaseggiovia.com',
+
+  // TODO: confermare l'anno di fondazione. Nel frattempo l'anno è omesso
+  // dalla frase di apertura invece di inventarlo.
+  annoFondazione: null as number | null,
+
+  gestione: 'Famiglia Asnicar Bertoldi',
+  gestori: 'Loris Asnicar e famiglia',
+
+  indirizzo: {
+    via: 'Piazza A. Savoia Duca Aosta 7',
+    cap: '36076',
+    citta: 'Recoaro Terme',
+    provincia: 'VI',
+    regione: 'Veneto',
+    paese: 'IT',
+  },
+
+  // TODO: inserire i recapiti reali. Il numero è un segnaposto.
+  telefono: '+39 000 000 0000',
+  telefonoLink: 'tel:+390000000000',
+
+  email: 'locandaseggiovia@gmail.com',
+
+  // TODO: confermare che l'account esista e inserire l'URL definitivo.
+  instagram: null as string | null,
+
+  geo: {
+    // Coordinate del centro di Recoaro Terme: da raffinare sul civico esatto.
+    lat: 45.6899,
+    lng: 11.2356,
+  },
+
+  // TODO: confermare gli orari reali di ristorante e reception.
+  orari: [
+    { giorno: 'Ristorante', valore: 'A pranzo e a cena — orari da confermare' },
+    { giorno: 'Reception', valore: 'Tutti i giorni, 8:00 – 21:00 (da confermare)' },
+  ],
+
+  // TODO: dati fiscali obbligatori per la pubblicazione.
+  fiscale: {
+    ragioneSociale: 'Locanda Seggiovia di Asnicar Loris',
+    partitaIva: '00000000000',
+    codiceFiscale: '0000000000000000',
+    rea: null as string | null,
+  },
+} as const;
+
+/** Indirizzo su una riga, per il footer e i dati strutturati. */
+export const indirizzoBreve = `${site.indirizzo.via}, ${site.indirizzo.cap} ${site.indirizzo.citta} (${site.indirizzo.provincia})`;
+
+/** Indirizzo per l'embed di Google Maps (nessuna API key, nessun cookie di terze parti prima del consenso). */
+export const mappaEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(
+  `${site.nome}, ${indirizzoBreve}`
+)}&output=embed`;
+
+export const mappaLinkUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  `${site.nome}, ${indirizzoBreve}`
+)}`;
+
+export const navigazione = [
+  { label: 'La Locanda', href: '/la-locanda' },
+  { label: 'Camere', href: '/camere' },
+  { label: 'Ristorante', href: '/ristorante' },
+  { label: 'Gnocchi con la Fioreta', href: '/gnocchi-con-la-fioreta' },
+  { label: 'Sentieri', href: '/sentieri' },
+  { label: 'Contatti', href: '/contatti' },
+] as const;

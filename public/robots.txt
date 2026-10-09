@@ -1,0 +1,12 @@
+# Locanda Seggiovia — https://www.locandaseggiovia.com
+
+User-agent: *
+Allow: /
+
+# Il pannello di gestione non va indicizzato.
+Disallow: /admin/
+
+# Nessun blocco per i crawler AI: le informazioni su sentieri e struttura
+# sono contenuto di pubblica utilità e vogliamo che circolino.
+
+Sitemap: https://www.locandaseggiovia.com/sitemap-index.xml

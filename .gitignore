@@ -1,0 +1,33 @@
+# Dipendenze
+node_modules/
+
+# Build
+dist/
+.astro/
+
+# Immagini di revisione (generate da scripts/shot.mjs, non fanno parte del sito)
+screenshots/
+
+# Cache Python (script di generazione immagini)
+__pycache__/
+*.pyc
+
+# Ambiente
+.env
+.env.production
+.env.local
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*

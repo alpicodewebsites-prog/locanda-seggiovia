@@ -1,0 +1,336 @@
+---
+import { Image } from 'astro:assets';
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import { site } from '../data/site';
+
+import imgLocanda from '../assets/locanda-facciata.jpg';
+import imgSentieri from '../assets/sentieri-piccole-dolomiti.jpg';
+
+/**
+ * Home — pagina di apertura.
+ *
+ * Struttura: quattro fasce a piena larghezza con logiche di impaginazione
+ * diverse (non quattro schede identiche). L'unico elemento che si ripete è
+ * la riga sottile di separazione, che dà il ritmo.
+ */
+
+const description =
+  'Camere e ristorante nel centro di Recoaro Terme, ai piedi delle Piccole Dolomiti e del Pasubio. Cucina alto-vicentina e Gnocchi con la Fioreta De.Co.';
+
+const webPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.nome,
+  url: site.url,
+  inLanguage: 'it-IT',
+  publisher: { '@id': `${site.url}/#locanda` },
+};
+
+/**
+ * I sei itinerari della scheda "Territorio".
+ * I dati tecnici sono quelli forniti dalla cliente; le pagine di dettaglio
+ * arrivano nella settimana 3 (per ora il link è alla panoramica).
+ */
+const sentieri = [
+  {
+    nome: 'Sentiero dei Grandi Alberi',
+    riassunto:
+      'Dalle falde di Recoaro Mille al Rifugio Cesare Battisti alla Gazza, tra faggi, betulle e frassini secolari.',
+    dati: ['12 km', '400–550 m', 'E'],
+  },
+  {
+    nome: 'Anello Storico di Campogrosso',
+    riassunto:
+      'Circolare della Grande Guerra: Strada del Re e Strada delle 7 Fontane, con bunker e trincee intatti.',
+    dati: ['~10 km', '300 m', 'E'],
+  },
+  {
+    nome: 'Ponte Tibetano AVIS',
+    riassunto:
+      '105 metri di passerella in cavi d’acciaio a 30 metri dal suolo, nel cuore dell’Anello del Sengio Alto.',
+    dati: ['105 m', '30 m di altezza', 'E'],
+  },
+  {
+    nome: 'Strada delle 52 Gallerie',
+    riassunto:
+      'Mulattiera scavata nella roccia calcarea per raggiungere il Rifugio Papa: 2,2 km dei 6,6 totali corrono in galleria.',
+    dati: ['6,6 km', '1002 m', 'EE'],
+  },
+  {
+    nome: 'Sentiero delle Mole',
+    riassunto:
+      'Collegamento verso l’Alpe di Campogrosso dal Rifugio La Guardia, sfiorando un’antica cava di macine in pietra.',
+    dati: ['~3,5 km', '400 m', 'T/E'],
+  },
+  {
+    nome: 'Sentiero Gino Soldà',
+    riassunto:
+      'Dal centro di Recoaro Terme al Monte Spitz attraverso le contrade antiche, con vista sulla Valle dell’Agno.',
+    dati: ['4,25 km', '630 m', 'E'],
+  },
+];
+---
+
+<BaseLayout title={`${site.nome} — ${site.tagline}`} description={description} schema={webPageSchema}>
+  <Hero />
+
+  <!-- ==================================================================
+       Riga di credenziali
+       ================================================================== -->
+  <section class="border-b border-stone-200 bg-stone-50">
+    <div class="shell">
+      <dl class="grid grid-cols-1 sm:grid-cols-3">
+        <div class="py-7 sm:py-8 sm:pr-8">
+          <dt class="eyebrow">Dove</dt>
+          <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
+            Centro di Recoaro Terme
+          </dd>
+        </div>
+        <div class="border-t border-stone-200 py-7 sm:border-t-0 sm:border-l sm:py-8 sm:px-8">
+          <dt class="eyebrow">Cucina</dt>
+          <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
+            Gnocchi con la Fioreta De.Co.
+          </dd>
+        </div>
+        <div class="border-t border-stone-200 py-7 sm:border-t-0 sm:border-l sm:py-8 sm:pl-8">
+          <dt class="eyebrow">Sentieri</dt>
+          <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
+            Piccole Dolomiti e Pasubio
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       1. La Locanda — impaginazione editoriale asimmetrica
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-locanda">
+    <div class="shell grid items-center gap-12 md:grid-cols-12 md:gap-10 lg:gap-16">
+      <div class="md:col-span-5 md:order-2" data-aos="fade-in">
+        <div class="media aspect-4/5">
+          <Image
+            src={imgLocanda}
+            alt="Segnaposto grafico in attesa della fotografia della facciata della Locanda Seggiovia"
+            widths={[420, 640, 900, 1200]}
+            sizes="(min-width: 768px) 40vw, 92vw"
+            format="webp"
+            quality={76}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+
+      <div class="md:col-span-7 md:order-1" data-aos="fade-up">
+        <h2 id="titolo-locanda" class="display-2 max-w-[22ch] text-stone-900">
+          Un rifugio, non un albergo
+        </h2>
+
+        <div class="prose-body mt-7 max-w-[62ch] space-y-0 text-[1.0625rem] text-stone-600">
+          <p>
+            La Locanda Seggiovia sta in piazza, a Recoaro Terme, dove le Piccole Dolomiti
+            finiscono di essere montagna e ricominciano a essere paese. È una casa di pietra e
+            legno tenuta dalla famiglia {site.gestione.replace('Famiglia ', '')}: si entra
+            dalla porta, si lascia lo zaino, e da quel momento la montagna è a un passo.
+          </p>
+          <p>
+            Chi sale per camminare ci trova un appoggio serio: camere semplici e curate,
+            colazione presto, consigli sui sentieri dati da chi li percorre. Chi sale per
+            mangiare trova una cucina che non insegue mode, ma ripete quello che in queste
+            valli si cucina da sempre.
+          </p>
+        </div>
+
+        <p class="mt-8">
+          <a href="/la-locanda" class="link-arrow">
+            La locanda e la famiglia
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+              <path
+                d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       2. Territorio — il tabellone dei sentieri
+       Logica da cartello di sentiero: nome a sinistra, dati in colonna,
+       righe sottili. Non sono schede: è una tabella.
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-territorio">
+    <div class="shell">
+      <div class="grid gap-8 md:grid-cols-12 md:items-end">
+        <div class="md:col-span-7">
+          <h2 id="titolo-territorio" class="display-2 max-w-[24ch] text-stone-900">
+            I sentieri cominciano dal centro del paese
+          </h2>
+        </div>
+        <div class="md:col-span-5">
+          <p class="lede text-[1rem]" data-aos="fade-in">
+            Sei itinerari fra Piccole Dolomiti, Gruppo del Carega e Pasubio. Difficoltà dal
+            turistico all’escursionistico esposto, tutti documentati con dati tecnici reali.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-12 md:mt-14">
+        {
+          sentieri.map((s, i) => (
+            <article
+              class="group grid gap-x-8 gap-y-3 border-t border-stone-300 py-7 md:grid-cols-12 md:items-baseline"
+              data-aos="fade-in"
+              data-aos-delay={i * 60}
+            >
+              <h3 class="md:col-span-4">
+                <a
+                  href="/sentieri"
+                  class="font-[family-name:var(--font-display)] text-xl leading-snug text-stone-900 transition-colors duration-300 group-hover:text-forest-700 md:text-[1.375rem]"
+                >
+                  {s.nome}
+                </a>
+              </h3>
+
+              <p class="text-[0.95rem] leading-relaxed text-stone-600 md:col-span-6">
+                {s.riassunto}
+              </p>
+
+              <dl class="flex flex-wrap gap-x-6 gap-y-1 text-[0.8rem] tabular-nums text-stone-500 md:col-span-2 md:flex-col md:items-end md:gap-y-0.5 md:text-right">
+                {s.dati.map((d) => (
+                  <dd>{d}</dd>
+                ))}
+              </dl>
+            </article>
+          ))
+        }
+        <div class="border-t border-stone-300"></div>
+      </div>
+
+      <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+        <a href="/sentieri" class="btn btn--primary">Tutti i sentieri</a>
+        <p class="text-[0.85rem] text-stone-500">
+          Difficoltà CAI: T turistico · E escursionistico · EE escursionisti esperti
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       3. Gastronomia — fascia scura a piena larghezza
+       ================================================================== -->
+  <section class="section-y bg-forest-900 text-stone-200" aria-labelledby="titolo-cucina">
+    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
+      <div class="md:col-span-4">
+        <h2 id="titolo-cucina" class="display-2 text-stone-50">
+          Quello che si cucina in vallata
+        </h2>
+        <p class="mt-6 text-[0.95rem] leading-relaxed text-forest-300">
+          Il menù segue le stagioni e le malghe, non le mode. Il bacalà arriva da una
+          tradizione lunga, la sopressa si fa in casa.
+        </p>
+        <p class="mt-8">
+          <a href="/ristorante" class="link-arrow text-stone-100">Il ristorante</a>
+        </p>
+      </div>
+
+      <div class="md:col-span-8">
+        <ul class="grid gap-px overflow-hidden bg-stone-50/15 sm:grid-cols-2">
+          <li class="bg-forest-900 p-7 md:p-8" data-aos="fade-in">
+            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
+              Bacalà alla vicentina
+            </h3>
+            <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+              Ammollato, cotto lentamente con latte e cipolla, servito con la polenta.
+              Il piatto che a Vicenza non si discute.
+            </p>
+          </li>
+          <li class="bg-forest-900 p-7 md:p-8" data-aos="fade-in" data-aos-delay="80">
+            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
+              Sopressa fatta in casa
+            </h3>
+            <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+              Insaccata e stagionata da noi, servita con i sottaceti di casa.
+            </p>
+          </li>
+          <li class="bg-forest-900 p-7 md:p-8" data-aos="fade-in" data-aos-delay="160">
+            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
+              Trota affumicata
+            </h3>
+            <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+              Affumicatura leggera, servita fredda: si comincia così.
+            </p>
+          </li>
+          <li
+            class="bg-forest-900 p-7 outline outline-1 -outline-offset-1 outline-stone-50/30 md:p-8"
+            data-aos="fade-in"
+            data-aos-delay="240"
+          >
+            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
+              Gnocchi con la Fioreta
+            </h3>
+            <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+              Il piatto della casa, riconosciuto De.Co. Ha una pagina tutta sua.
+            </p>
+            <p class="mt-5">
+              <a href="/gnocchi-con-la-fioreta" class="link-arrow text-stone-100">
+                La storia e la ricetta
+              </a>
+            </p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       4. La finestra — chiusura, una sola immagine a piena larghezza
+       ================================================================== -->
+  <section class="relative isolate overflow-hidden bg-stone-800">
+    <Image
+      src={imgSentieri}
+      alt="Segnaposto grafico di creste montuose con foschia nelle valli"
+      widths={[640, 960, 1280, 1600, 1920]}
+      sizes="100vw"
+      format="webp"
+      quality={74}
+      loading="lazy"
+      decoding="async"
+      class="absolute inset-0 -z-20 h-full w-full object-cover"
+    />
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/85 to-stone-900/40"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="shell py-24 text-center md:py-32">
+      <h2 class="display-2 mx-auto max-w-[24ch] text-stone-50 text-shadow-hero" data-aos="fade-up">
+        Ti aspettiamo in piazza
+      </h2>
+      <p
+        class="mx-auto mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-stone-200/95"
+        data-aos="fade-up"
+        data-aos-delay="80"
+      >
+        Per prenotare una camera, un tavolo o per chiedere informazioni su un sentiero,
+        scrivici o chiamaci. Rispondiamo noi.
+      </p>
+      <div
+        class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
+        data-aos="fade-up"
+        data-aos-delay="160"
+      >
+        <a href="/contatti" class="btn btn--onDark">Scrivici</a>
+        <a href={site.telefonoLink} class="btn btn--onDark">{site.telefono}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

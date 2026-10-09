@@ -1,0 +1,370 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   Locanda Seggiovia — sistema di design
+   Fonte di verità dei token. Vedi anche tailwind.config.mjs (riferimento).
+   ========================================================================== */
+
+@theme {
+  /* --- Pietra alpina: grigi caldi, il colore del calcare in ombra -------- */
+  --color-stone-50: #faf9f6;
+  --color-stone-100: #f2f0eb;
+  --color-stone-200: #e5e1d8;
+  --color-stone-300: #cfcabe;
+  --color-stone-400: #948f84;
+  --color-stone-500: #6e6a61;
+  --color-stone-600: #4f4c46;
+  --color-stone-700: #37352f;
+  --color-stone-800: #232220;
+  --color-stone-900: #1c1b19;
+
+  /* --- Legno: larice e noce delle baite -------------------------------- */
+  --color-wood-100: #e8dfd3;
+  --color-wood-300: #c0a583;
+  --color-wood-500: #8a6a45;
+  --color-wood-700: #3f2f21;
+  --color-wood-900: #2e2218;
+
+  /* --- Verde bosco: abete e pascolo -------------------------------- */
+  --color-forest-100: #e1e6df;
+  --color-forest-300: #a8b5a2;
+  --color-forest-500: #5a7a5e;
+  --color-forest-700: #2d3d31;
+  --color-forest-900: #1e2a21;
+
+  /* --- Accento: l'alpenglow sul calcare al tramonto -------------------- */
+  --color-glow-300: #d8b3a3;
+  --color-glow-500: #b5735c;
+
+  /* --- Tipografia --------------------------------------------------- */
+  --font-display: 'Fraunces', ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  /* --- Ritmo verticale ---------------------------------------------- */
+  --spacing-section: clamp(4.5rem, 11vw, 9.5rem);
+  --spacing-gutter: clamp(1.25rem, 5vw, 4rem);
+
+  /* --- Movimento: una sola curva per tutto il sito ------------------ */
+  --ease-alpine: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  :root {
+    color-scheme: light;
+    /* Altezza dell'header, usata per lo scroll-anchor dei link interni. */
+    --header-h: 4.5rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-h);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-stone-100);
+    color: var(--color-stone-800);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    /* Optical size: il serif si stringe e affina man mano che cresce. */
+    font-variation-settings: 'SOFT' 0, 'WONK' 0;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Focus visibile ovunque, mai rimosso (§ accessibilità). */
+  :focus-visible {
+    outline: 2px solid var(--color-forest-700);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-forest-700);
+    color: var(--color-stone-50);
+  }
+
+  /* I link nel testo restano distinguibili senza affidarsi al solo colore. */
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ==========================================================================
+   Componenti
+   ========================================================================== */
+
+@layer components {
+  /* Contenitore di pagina: margini laterali consistenti. */
+  .shell {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  /* --- Bottoni ------------------------------------------------------- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem; /* target tap 44px */
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    line-height: 1;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 0.35s var(--ease-alpine),
+      border-color 0.35s var(--ease-alpine),
+      color 0.35s var(--ease-alpine),
+      transform 0.35s var(--ease-alpine);
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn--primary {
+    background-color: var(--color-forest-700);
+    color: var(--color-stone-50);
+  }
+  .btn--primary:hover {
+    background-color: var(--color-forest-900);
+  }
+
+  .btn--ghost {
+    border-color: color-mix(in oklab, var(--color-stone-800) 30%, transparent);
+    color: var(--color-stone-800);
+  }
+  .btn--ghost:hover {
+    border-color: var(--color-stone-800);
+    background-color: color-mix(in oklab, var(--color-stone-800) 6%, transparent);
+  }
+
+  /* Varianti per fondali scuri / fotografici. */
+  .btn--onDark {
+    border-color: color-mix(in oklab, var(--color-stone-50) 55%, transparent);
+    color: var(--color-stone-50);
+  }
+  .btn--onDark:hover {
+    background-color: var(--color-stone-50);
+    border-color: var(--color-stone-50);
+    color: var(--color-stone-900);
+  }
+
+  /* Link con freccia: la freccia scorre, il testo no. */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-forest-700);
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-forest-700) 35%, transparent);
+    padding-bottom: 0.1rem;
+    transition: border-color 0.35s var(--ease-alpine);
+  }
+  .link-arrow:hover {
+    border-color: var(--color-forest-700);
+  }
+  .link-arrow svg {
+    transition: transform 0.35s var(--ease-alpine);
+  }
+  .link-arrow:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* --- Tipografia editoriale ---------------------------------------- */
+
+  /* Occhiello: maiuscoletto spaziato, solo dove serve etichettare. */
+  .eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-stone-500);
+  }
+
+  .display-1 {
+    font-size: clamp(2.5rem, 7.5vw, 5.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+
+  .display-2 {
+    font-size: clamp(1.875rem, 4vw, 2.875rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
+    line-height: 1.65;
+    color: var(--color-stone-600);
+    max-width: 60ch;
+  }
+
+  /* Corpo lungo. Il capolettera è appena rialzato, NON un capolettera "drop"
+     di più righe: quello accorcia la prima riga e lascia il paragrafo con un
+     rientro irregolare. Qui resta dentro la riga. */
+  .prose-body p + p {
+    margin-top: 1.15em;
+  }
+
+  .prose-body > p:first-of-type::first-letter {
+    font-family: var(--font-display);
+    font-size: 1.45em;
+    font-weight: 500;
+    color: var(--color-forest-700);
+  }
+
+  /* --- Regole e strutture ------------------------------------------- */
+
+  .rule {
+    border: 0;
+    border-top: 1px solid var(--color-stone-300);
+  }
+
+  /* Riga di dati tecnici: usata nelle schede sentiero. */
+  .spec {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 0.7rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-stone-400) 35%, transparent);
+  }
+  .spec__key {
+    color: var(--color-stone-500);
+    font-size: 0.875rem;
+  }
+  .spec__val {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  /* --- Media -------------------------------------------------------- */
+
+  .media {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-stone-200);
+  }
+  .media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-alpine);
+  }
+
+  /* Ingrandimento lento al passaggio: solo dove il blocco è cliccabile. */
+  .media--zoom:hover img {
+    transform: scale(1.035);
+  }
+
+  /* --- Accessibilità ------------------------------------------------- */
+
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+
+@utility text-shadow-hero {
+  /* Leggibilità del titolo sopra la fotografia. */
+  text-shadow:
+    0 1px 2px rgb(28 27 25 / 0.45),
+    0 8px 34px rgb(28 27 25 / 0.35);
+}
+
+@utility hairline-light {
+  border-color: color-mix(in oklab, var(--color-stone-50) 22%, transparent);
+}
+
+/* Ritmo verticale delle sezioni. Il footer aggiunge il proprio margine,
+   quindi l'ultima sezione non deve sommare due spaziature. */
+@utility section-y {
+  padding-block: var(--spacing-section);
+}
+
+@utility section-y-tight {
+  padding-block: calc(var(--spacing-section) * 0.62);
+}
+
+/* ==========================================================================
+   AOS — Animate On Scroll
+   L'attributo [data-aos] è nascosto finché il JS non lo attiva: se lo script
+   non parte, gli elementi restano visibili (§ robustezza, § reduced motion).
+   ========================================================================== */
+
+[data-aos] {
+  opacity: 1;
+}
+
+html.aos-ready [data-aos]:not(.aos-animate) {
+  opacity: 0;
+}
+
+/* Rispetto della preferenza di sistema: nessuna animazione, tutto visibile. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  html.aos-ready [data-aos]:not(.aos-animate) {
+    opacity: 1;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
