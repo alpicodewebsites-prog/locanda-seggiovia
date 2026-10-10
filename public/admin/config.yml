@@ -1,0 +1,227 @@
+# Sveltia CMS — configurazione della Locanda Seggiovia
+#
+# Ogni collezione qui sotto corrisponde a una collezione di Astro definita in
+# src/content.config.ts. I nomi dei campi devono restare allineati: se si
+# rinomina un campo da una parte sola, il sito smette di compilare.
+#
+# NON modificare `repo` a mano se non dopo aver creato il repository GitHub.
+# Il valore va scritto nella forma  utente/nome-repository
+
+backend:
+  name: github
+  # ⚠️ DA AGGIORNARE: sostituire TUO-UTENTE con l'account GitHub che ospita il sito.
+  repo: TUO-UTENTE/locanda-seggiovia
+  branch: main
+
+# --- Cartelle dei file multimediali -----------------------------------------
+# Le immagini caricate dalla proprietaria finiscono in public/images e vengono
+# servite così come sono: le fotografie ufficiali le ottimizza lo sviluppatore
+# in fase di build, perché passino da WebP e srcset.
+media_folder: public/images
+public_folder: /images
+
+# --- Output ------------------------------------------------------------------
+output:
+  # Fondamentale: se un campo opzionale resta vuoto, Sveltia non lo scrive nel
+  # file. Senza questa riga scriverebbe una stringa vuota, che lo schema Zod
+  # di Astro rifiuterebbe, facendo fallire la compilazione.
+  omit_empty_optional_fields: true
+
+# --- Interfaccia -------------------------------------------------------------
+locale: it
+
+collections:
+  # ==========================================================================
+  # CAMERE E TARIFFE
+  # ==========================================================================
+  - name: camere
+    label: Camere e tariffe
+    label_singular: Camera
+    description: >-
+      Tipi di camera e relative tariffe. Le tariffe sono per persona, per giorno.
+    folder: src/content/camere
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: camere
+    sortable_fields: [ordine, titolo]
+    summary: '{{titolo}} — B&B {{tariffe.bnb}} €'
+    fields:
+      - { name: titolo, label: Nome della camera, widget: string }
+      - name: ordine
+        label: Ordine di comparsa
+        widget: number
+        default: 1
+        hint: Numero più basso = compare prima nella pagina.
+        value_type: int
+        min: 0
+      - name: descrizione
+        label: Descrizione
+        widget: text
+        hint: Due o tre righe. Descrive la camera, non la vende.
+      - name: occupanti
+        label: Numero di ospiti
+        widget: string
+        required: false
+        hint: 'Esempio: 2 persone'
+      - name: tariffe
+        label: Tariffe (€ per persona, per giorno)
+        widget: object
+        fields:
+          - { name: bnb, label: 'Solo pernottamento e colazione', widget: number, value_type: float }
+          - { name: mezzaPensione, label: 'Mezza pensione', widget: number, value_type: float }
+          - { name: pensioneCompleta, label: 'Pensione completa', widget: number, value_type: float }
+      - name: servizi
+        label: Servizi in camera
+        label_singular: Servizio
+        widget: list
+        required: false
+        default: [Wi-Fi, TV, Cassaforte, 'Set di cortesia']
+        hint: 'Un servizio per riga.'
+
+  # ==========================================================================
+  # MENÙ DEL RISTORANTE
+  # ==========================================================================
+  - name: menu
+    label: Menù del ristorante
+    label_singular: Piatto
+    description: >-
+      I piatti del ristorante. Il prezzo si può lasciare vuoto: in quel caso il
+      piatto compare senza cifra.
+    folder: src/content/menu
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: ristorante
+    sortable_fields: [categoria, ordine, nome]
+    summary: '{{nome}} — {{categoria}}'
+    fields:
+      - { name: nome, label: Nome del piatto, widget: string }
+      - name: categoria
+        label: Categoria
+        widget: select
+        options:
+          - { value: antipasti, label: Antipasti }
+          - { value: primi, label: Primi }
+          - { value: secondi, label: Secondi }
+          - { value: dolci, label: Dolci }
+      - name: ordine
+        label: Ordine dentro la categoria
+        widget: number
+        default: 1
+        value_type: int
+        min: 0
+      - name: descrizione
+        label: Descrizione
+        widget: text
+      - name: prezzo
+        label: Prezzo (€)
+        widget: number
+        required: false
+        value_type: float
+        hint: Lasciare vuoto se il prezzo non è ancora definito.
+      - name: specialita
+        label: È una specialità della casa
+        widget: boolean
+        default: false
+        hint: Le specialità vengono messe in evidenza nella pagina.
+
+  # ==========================================================================
+  # GNOCCHI CON LA FIORETA (contenuto singolo)
+  # ==========================================================================
+  - name: gnocchi
+    label: Gnocchi con la Fioreta
+    label_singular: Gnocchi con la Fioreta
+    description: >-
+      La pagina del piatto bandiera. È un contenuto unico: non se ne creano altri.
+    folder: src/content/gnocchi
+    extension: md
+    format: frontmatter
+    create: false
+    slug: '{{slug}}'
+    preview_path: gnocchi-con-la-fioreta
+    fields:
+      - { name: titolo, label: Titolo, widget: string }
+      - name: sottotitolo
+        label: Sottotitolo
+        widget: string
+        required: false
+      - name: storia
+        label: Storia del piatto
+        widget: text
+        hint: Da dove viene la fioreta e perché è legata a Recoaro.
+      - name: ricetta
+        label: Ricetta De.Co.
+        label_singular: Ingrediente
+        widget: list
+        fields:
+          - { name: ingrediente, label: Ingrediente, widget: string }
+          - { name: quantita, label: Quantità, widget: string }
+      - name: lavorazione
+        label: Lavorazione
+        label_singular: Fase
+        widget: list
+        fields:
+          - { name: titolo, label: Titolo della fase, widget: string }
+          - { name: testo, label: Descrizione, widget: text }
+      - name: condimento
+        label: Condimento
+        widget: text
+      - name: riconoscimenti
+        label: Riconoscimenti
+        label_singular: Riconoscimento
+        widget: list
+        required: false
+        default: ['Denominazione Comunale di Origine — Comune di Recoaro Terme']
+
+  # ==========================================================================
+  # SENTIERI  (i contenuti arrivano nella settimana 3)
+  # ==========================================================================
+  - name: sentieri
+    label: Sentieri
+    label_singular: Sentiero
+    description: >-
+      Gli itinerari escursionistici. Compilare solo i dati tecnici che si
+      conoscono: i campi vuoti non compaiono nel sito.
+    folder: src/content/sentieri
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: sentieri
+    sortable_fields: [ordine, nome]
+    summary: '{{nome}} — {{difficolta}}'
+    fields:
+      - { name: nome, label: Nome del sentiero, widget: string }
+      - name: ordine
+        label: Ordine di comparsa
+        widget: number
+        default: 1
+        value_type: int
+        min: 0
+      - name: sommario
+        label: Sommario
+        widget: text
+        hint: Una o due righe, per gli elenchi.
+      - name: descrizione
+        label: Descrizione del percorso
+        widget: text
+      - name: difficolta
+        label: Difficoltà CAI
+        widget: select
+        options:
+          - { value: T, label: 'T — Turistico' }
+          - { value: E, label: 'E — Escursionistico' }
+          - { value: EE, label: 'EE — Escursionisti esperti' }
+      - { name: distanza, label: Distanza, widget: string, required: false, hint: 'Esempio: 12 km (solo andata)' }
+      - { name: dislivello, label: Dislivello, widget: string, required: false, hint: 'Esempio: 400-550 m' }
+      - { name: durata, label: Durata, widget: string, required: false, hint: 'Esempio: 4 ore' }
+      - { name: partenza, label: Punto di partenza, widget: string, required: false }
+      - { name: segnavia, label: Segnaletica CAI, widget: string, required: false, hint: 'Esempio: CAI 151/144' }
+      - name: immagine
+        label: Fotografia di copertina
+        widget: image
+        required: false
+        hint: 'Facoltativa. Se manca, la scheda usa un segnaposto neutro.'

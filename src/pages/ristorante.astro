@@ -1,0 +1,223 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+import imgRistorante from '../assets/ristorante-sala.jpg';
+
+const piatti = await getCollection('menu');
+
+/** Categorie nell'ordine in cui si mangiano, non in ordine alfabetico. */
+const categorie = [
+  { chiave: 'antipasti', label: 'Antipasti' },
+  { chiave: 'primi', label: 'Primi' },
+  { chiave: 'secondi', label: 'Secondi' },
+  { chiave: 'dolci', label: 'Dolci' },
+] as const;
+
+const menuPerCategoria = categorie
+  .map((categoria) => ({
+    ...categoria,
+    piatti: piatti
+      .filter((p) => p.data.categoria === categoria.chiave)
+      .sort((a, b) => a.data.ordine - b.data.ordine),
+  }))
+  .filter((categoria) => categoria.piatti.length > 0);
+
+const specialita = piatti
+  .filter((p) => p.data.specialita)
+  .sort((a, b) => a.data.ordine - b.data.ordine);
+
+/** Se almeno un piatto ha un prezzo, la colonna dei prezzi ha senso. */
+const mostraPrezzi = piatti.some((p) => typeof p.data.prezzo === 'number');
+
+const description =
+  'Cucina tradizionale alto-vicentina a Recoaro Terme: bacalà alla vicentina, sopressa fatta in casa, trota affumicata e gnocchi con la fioreta De.Co.';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Menu',
+  name: `Menù — ${site.nome}`,
+  url: `${site.url}/ristorante`,
+  inLanguage: 'it-IT',
+  hasMenuSection: menuPerCategoria.map((categoria) => ({
+    '@type': 'MenuSection',
+    name: categoria.label,
+    hasMenuItem: categoria.piatti.map((p) => ({
+      '@type': 'MenuItem',
+      name: p.data.nome,
+      description: p.data.descrizione,
+      ...(typeof p.data.prezzo === 'number'
+        ? { offers: { '@type': 'Offer', price: p.data.prezzo, priceCurrency: 'EUR' } }
+        : {}),
+    })),
+  })),
+};
+---
+
+<BaseLayout title="Ristorante" description={description} schema={schema} ogImage="/og-default.jpg">
+  <!-- ==================================================================
+       Intestazione
+       ================================================================== -->
+  <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
+    <div class="shell grid gap-10 md:grid-cols-12 md:items-end">
+      <div class="md:col-span-7">
+        <p class="eyebrow">Ristorante</p>
+        <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">
+          La cucina di queste valli
+        </h1>
+        <p class="lede mt-6 max-w-[58ch]">
+          Il menù segue le stagioni e le malghe, non le mode. Il bacalà arriva da una
+          tradizione lunga, la sopressa si fa in casa, la trota si affumica qui.
+        </p>
+      </div>
+
+      <div class="md:col-span-5 md:order-last">
+        <div class="media aspect-4/3">
+          <Image
+            src={imgRistorante}
+            alt="Segnaposto grafico in attesa della fotografia della sala del ristorante"
+            widths={[420, 640, 900, 1200]}
+            sizes="(min-width: 768px) 40vw, 92vw"
+            format="webp"
+            quality={76}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Le specialità
+       ================================================================== -->
+  {
+    specialita.length > 0 && (
+      <section class="section-y bg-forest-900 text-stone-200" aria-labelledby="titolo-specialita">
+        <div class="shell">
+          <h2 id="titolo-specialita" class="display-2 max-w-[22ch] text-stone-50">
+            Quello che ci identifica
+          </h2>
+
+          <ul class="mt-12 grid gap-px overflow-hidden bg-stone-50/15 md:grid-cols-3">
+            {specialita.map((piatto, i) => (
+              <li class="bg-forest-900 p-7 md:p-8" data-aos="fade-in" data-aos-delay={i * 70}>
+                <h3 class="font-[family-name:var(--font-display)] text-xl leading-snug text-stone-50">
+                  {piatto.data.nome}
+                </h3>
+                <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+                  {piatto.data.descrizione}
+                </p>
+                {piatto.id.includes('gnocchi') && (
+                  <p class="mt-5">
+                    <a href="/gnocchi-con-la-fioreta" class="link-arrow text-stone-100">
+                      La storia e la ricetta
+                    </a>
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ==================================================================
+       Il menù
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-menu">
+    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
+      <div class="md:col-span-4">
+        <h2 id="titolo-menu" class="display-2 text-stone-900">Il menù</h2>
+        <p class="mt-5 max-w-[44ch] text-[0.95rem] leading-relaxed text-stone-600">
+          Il menù cambia con le stagioni e con quello che le malghe hanno da offrire.
+          Questi sono i piatti che trovate tutto l'anno.
+        </p>
+        {
+          !mostraPrezzi && (
+            <p class="mt-5 max-w-[44ch] text-[0.875rem] leading-relaxed text-stone-500">
+              I prezzi non sono ancora pubblicati: chiediceli direttamente, oppure
+              consultali in locanda.
+            </p>
+          )
+        }
+      </div>
+
+      <div class="md:col-span-8">
+        {
+          menuPerCategoria.map((categoria) => (
+            <section class="mb-12 last:mb-0" aria-labelledby={`cat-${categoria.chiave}`}>
+              <h3
+                id={`cat-${categoria.chiave}`}
+                class="eyebrow border-b border-stone-300 pb-3 text-stone-500"
+              >
+                {categoria.label}
+              </h3>
+
+              <ul class="mt-2">
+                {categoria.piatti.map((piatto) => (
+                  <li class="border-b border-stone-200 py-5 last:border-b-0" data-aos="fade-in">
+                    <div class="piatto">
+                      <h4 class="font-[family-name:var(--font-display)] text-lg leading-snug text-stone-900">
+                        {piatto.data.nome}
+                      </h4>
+                      <span class="piatto__fila" aria-hidden="true" />
+                      {typeof piatto.data.prezzo === 'number' && (
+                        <span class="piatto__prezzo text-stone-800">{piatto.data.prezzo} €</span>
+                      )}
+                    </div>
+                    <p class="mt-2 max-w-[58ch] text-[0.95rem] leading-relaxed text-stone-600">
+                      {piatto.data.descrizione}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Orari e prenotazioni
+       ================================================================== -->
+  <section class="section-y-tight bg-stone-50" aria-labelledby="titolo-orari">
+    <div class="shell grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <h2 id="titolo-orari" class="display-2 text-stone-900">Orari e prenotazioni</h2>
+        <p class="mt-5 max-w-[46ch] text-[0.95rem] leading-relaxed text-stone-600">
+          Il tavolo si prenota per tempo, soprattutto nei fine settimana e in stagione.
+          Per gruppi e per esigenze particolari, chiamateci.
+        </p>
+      </div>
+
+      <div class="md:col-span-4">
+        <dl class="border-t border-stone-300">
+          {
+            site.orari.map((riga) => (
+              <div class="contents">
+                <dt class="border-b border-stone-200 py-4 text-[0.875rem] text-stone-500">
+                  {riga.giorno}
+                </dt>
+                <dd class="border-b border-stone-200 py-4 font-medium text-stone-800">
+                  {riga.valore}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <div class="flex flex-col gap-3 md:col-span-3 md:items-end">
+        <a href="/contatti" class="btn btn--primary w-full sm:w-auto">Prenota un tavolo</a>
+        <a href={site.telefonoLink} class="btn btn--ghost w-full sm:w-auto">
+          {site.telefono}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

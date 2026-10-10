@@ -1,0 +1,258 @@
+---
+/**
+ * Contatti — versione minima della settimana 2.
+ *
+ * Contiene solo ciò che serve a far funzionare e collaudare il form:
+ * dati essenziali di contatto e modulo Web3Forms.
+ * La versione completa (mappa, orari, dati strutturati) arriva nella settimana 3.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, mappaLinkUrl, SITE_URL } from '../data/site';
+
+/**
+ * Chiave di accesso Web3Forms.
+ * Se la variabile d'ambiente non è configurata si usa la chiave dimostrativa
+ * pubblica di Web3Forms: l'invio viene accettato dal modulo ma NON recapita
+ * nulla. Serve a verificare che l'integrazione funzioni, non a mandare email.
+ */
+const DEMO_KEY = 'YOUR_ACCESS_KEY_HERE';
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY || DEMO_KEY;
+const chiaveConfigurata = accessKey !== DEMO_KEY;
+
+/**
+ * reCAPTCHA v3 — solo se configurato.
+ *
+ * Su Web3Forms la verifica reCAPTCHA è una funzione dei piani a pagamento. Se il
+ * modulo invia un campo `recaptcha_response` senza un token valido, l'invio viene
+ * RIFIUTATO: per questo il campo e lo script compaiono solo quando la site key è
+ * impostata. Con il piano gratuito il modulo funziona comunque, protetto dal
+ * campo esca e dal filtro antispam di Web3Forms.
+ */
+const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
+const recaptchaAttivo = Boolean(recaptchaSiteKey);
+
+/** Pagina di ringraziamento, con URL assoluto come richiede Web3Forms. */
+const redirectUrl = new URL('/grazie', SITE_URL).href;
+---
+
+<BaseLayout
+  title="Contatti"
+  description="Scrivi o chiama la Locanda Seggiovia a Recoaro Terme per prenotare una camera, un tavolo al ristorante o chiedere informazioni sui sentieri delle Piccole Dolomiti."
+>
+  <section class="pt-16 pb-12 md:pt-24 md:pb-16">
+    <div class="shell">
+      <p class="eyebrow">Contatti</p>
+      <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">Scrivici</h1>
+      <p class="lede mt-6 max-w-[58ch]">
+        Per prenotare una camera, un tavolo o per chiedere informazioni su un sentiero.
+        Rispondiamo noi, di solito entro la giornata.
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-[var(--spacing-section)]">
+    <div class="shell grid gap-14 md:grid-cols-12 md:gap-12">
+      <!-- ==============================================================
+           Modulo
+           ============================================================== -->
+      <div class="md:col-span-7">
+        {
+          !chiaveConfigurata && (
+            <p
+              class="mb-8 border-l-4 border-glow-500 bg-glow-300/20 px-5 py-4 text-[0.9rem] leading-relaxed text-stone-700"
+              role="status"
+            >
+              <strong class="font-medium">Modulo in modalità dimostrativa.</strong> La chiave
+              di Web3Forms non è ancora configurata, quindi l'invio non recapita email.
+              Impostare la variabile <code class="text-[0.85em]">PUBLIC_WEB3FORMS_KEY</code> per
+              attivarlo.
+            </p>
+          )
+        }
+
+        <form
+          id="modulo-contatti"
+          action="https://api.web3forms.com/submit"
+          method="POST"
+          class="space-y-6"
+          data-redirect={redirectUrl}
+        >
+          <!-- Chiave di accesso: è pubblica per progetto, non è un segreto. -->
+          <input type="hidden" name="access_key" value={accessKey} />
+
+          <input type="hidden" name="subject" value={`Nuovo messaggio dal sito — ${site.nome}`} />
+          <input type="hidden" name="from_name" value={`Sito ${site.nome}`} />
+          <input type="hidden" name="redirect" value={redirectUrl} />
+
+          {/* Campo esca: se un robot lo compila, l'invio viene scartato. */}
+          <input
+            type="checkbox"
+            name="botcheck"
+            class="hidden"
+            style="display:none"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
+
+          {recaptchaAttivo && <input type="hidden" name="recaptcha_response" id="recaptchaResponse" />}
+
+          <div class="grid gap-6 sm:grid-cols-2">
+            <label class="campo">
+              <span class="campo__etichetta">
+                Nome e cognome <span class="campo__obbligatorio" aria-hidden="true">*</span>
+              </span>
+              <input
+                type="text"
+                name="nome"
+                class="input"
+                required
+                autocomplete="name"
+                placeholder="Maria Rossi"
+              />
+            </label>
+
+            <label class="campo">
+              <span class="campo__etichetta">
+                Email <span class="campo__obbligatorio" aria-hidden="true">*</span>
+              </span>
+              <input
+                type="email"
+                name="email"
+                class="input"
+                required
+                autocomplete="email"
+                placeholder="maria.rossi@esempio.it"
+              />
+            </label>
+          </div>
+
+          <label class="campo">
+            <span class="campo__etichetta">Telefono</span>
+            <input
+              type="tel"
+              name="telefono"
+              class="input"
+              autocomplete="tel"
+              placeholder="+39 333 000 0000"
+            />
+            <span class="campo__aiuto">Facoltativo, ma utile se preferisci essere richiamato.</span>
+          </label>
+
+          <label class="campo">
+            <span class="campo__etichetta">
+              Messaggio <span class="campo__obbligatorio" aria-hidden="true">*</span>
+            </span>
+            <textarea
+              name="messaggio"
+              class="textarea"
+              required
+              placeholder="Vorrei prenotare una camera doppia per il fine settimana del..."
+            ></textarea>
+          </label>
+
+          <div class="consenso">
+            <input type="checkbox" id="privacy" name="privacy" required />
+            <label for="privacy" class="text-[0.85rem] leading-relaxed text-stone-600">
+              Ho letto l'informativa e acconsento al trattamento dei dati per rispondere alla
+              mia richiesta. I dati non vengono usati per altro.
+              <span class="campo__obbligatorio" aria-hidden="true">*</span>
+            </label>
+          </div>
+
+          <div class="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
+            <button type="submit" class="btn btn--primary">Invia il messaggio</button>
+            <p class="text-[0.8rem] leading-relaxed text-stone-500">
+              I campi con <span class="campo__obbligatorio">*</span> sono obbligatori.
+            </p>
+          </div>
+
+          {/* Esito dell'invio via JavaScript. */}
+          <p
+            id="esito-modulo"
+            class="hidden text-[0.9rem] leading-relaxed"
+            role="status"
+            aria-live="polite"
+          >
+          </p>
+        </form>
+
+        {
+          recaptchaAttivo && (
+            <p class="mt-6 max-w-[60ch] text-[0.78rem] leading-relaxed text-stone-500">
+              Questo modulo è protetto da reCAPTCHA v3 di Google. L'uso di reCAPTCHA è
+              soggetto all'informativa sulla privacy e ai termini di servizio di Google.
+            </p>
+          )
+        }
+      </div>
+
+      <!-- ==============================================================
+           Recapiti
+           ============================================================== -->
+      <aside class="md:col-span-5" aria-labelledby="titolo-recapiti">
+        <h2 id="titolo-recapiti" class="eyebrow border-b border-stone-300 pb-3 text-stone-500">
+          Dove siamo
+        </h2>
+
+        <address class="mt-6 not-italic">
+          <p class="font-[family-name:var(--font-display)] text-xl leading-snug text-stone-900">
+            {site.nome}
+          </p>
+          <a
+            href={mappaLinkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-3 block text-[0.95rem] leading-relaxed text-stone-600 transition-colors duration-300 hover:text-forest-700"
+          >
+            {site.indirizzo.via}<br />
+            {site.indirizzo.cap} {site.indirizzo.citta} ({site.indirizzo.provincia})
+          </a>
+        </address>
+
+        <dl class="mt-8 space-y-5 border-t border-stone-200 pt-8">
+          <div>
+            <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Telefono</dt>
+            <dd class="mt-1.5">
+              <a
+                href={site.telefonoLink}
+                class="text-[1.05rem] text-stone-800 transition-colors duration-300 hover:text-forest-700"
+              >
+                {site.telefono}
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Email</dt>
+            <dd class="mt-1.5">
+              <a
+                href={`mailto:${site.email}`}
+                class="break-all text-[1.05rem] text-stone-800 transition-colors duration-300 hover:text-forest-700"
+              >
+                {site.email}
+              </a>
+            </dd>
+          </div>
+        </dl>
+
+        <p class="mt-8 max-w-[40ch] text-[0.85rem] leading-relaxed text-stone-500">
+          Orari e mappa dettagliata arrivano nella prossima versione di questa pagina.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  {
+    recaptchaAttivo && (
+      <script is:inline src={`https://www.google.com/recaptcha/api.js?render=${recaptchaSiteKey}`}></script>
+    )
+  }
+
+  <script>
+    // Invio senza ricaricare la pagina: mostra l'esito e resta accessibile.
+    // Se JavaScript non è attivo il modulo invia comunque e reindirizza a /grazie.
+    import { renderFormEsito } from '../scripts/form-contatti';
+
+    renderFormEsito();
+  </script>
+</BaseLayout>

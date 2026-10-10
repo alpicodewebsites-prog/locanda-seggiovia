@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="Messaggio inviato"
+  description="Conferma di invio del modulo di contatto della Locanda Seggiovia a Recoaro Terme: il messaggio è arrivato, ti risponderemo al più presto."
+  noindex={true}
+>
+  <section class="shell flex min-h-[60svh] flex-col justify-center py-24">
+    <p class="eyebrow">Messaggio inviato</p>
+    <h1 class="display-2 mt-4 max-w-[22ch] text-stone-900">Grazie, ci siamo</h1>
+    <p class="lede mt-6">
+      Il messaggio è arrivato. Ti risponderemo il prima possibile, di solito entro la
+      giornata. Se hai fretta, chiamaci.
+    </p>
+
+    <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
+      <a href={site.telefonoLink} class="link-arrow">{site.telefono}</a>
+      <a href="/" class="link-arrow">Torna alla home</a>
+    </div>
+  </section>
+</BaseLayout>

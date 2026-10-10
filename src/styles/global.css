@@ -277,6 +277,163 @@
     text-align: right;
   }
 
+  /* --- Tabella tariffe ------------------------------------------------- */
+  /* Non è una <table>: le tariffe sono tre misure dello stesso oggetto, e in
+     verticale restano leggibili anche su telefono senza scorrimento laterale. */
+  .tariffe {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .tariffe th,
+  .tariffe td {
+    text-align: left;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-stone-400) 32%, transparent);
+  }
+  .tariffe thead th {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-stone-500);
+    border-bottom-color: var(--color-stone-400);
+    vertical-align: bottom;
+  }
+  .tariffe tbody th {
+    font-weight: 500;
+    color: var(--color-stone-800);
+  }
+  .tariffe td {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .tariffe tbody tr:hover {
+    background-color: color-mix(in oklab, var(--color-stone-800) 3.5%, transparent);
+  }
+  .tariffe__prezzo {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+  }
+
+  /* Su fondi scuri la stessa tabella deve restare leggibile. */
+  .tariffe--scura th,
+  .tariffe--scura td {
+    border-bottom-color: color-mix(in oklab, var(--color-stone-50) 18%, transparent);
+  }
+  .tariffe--scura thead th {
+    color: var(--color-stone-300);
+    border-bottom-color: color-mix(in oklab, var(--color-stone-50) 30%, transparent);
+  }
+  .tariffe--scura tbody th {
+    color: var(--color-stone-50);
+  }
+  .tariffe--scura tbody tr:hover {
+    background-color: color-mix(in oklab, var(--color-stone-50) 6%, transparent);
+  }
+
+  /* --- Voce di menù ---------------------------------------------------- */
+  .piatto {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  /* La linea puntinata è il segno tipografico del menù: unisce nome e prezzo
+     senza bisogno di una tabella. */
+  .piatto__fila {
+    flex: 1;
+    border-bottom: 1px dotted color-mix(in oklab, var(--color-stone-400) 70%, transparent);
+    transform: translateY(-0.22em);
+  }
+  .piatto__prezzo {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* --- Elenco politiche ------------------------------------------------ */
+  .politica {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.4rem 1rem;
+    align-items: baseline;
+  }
+  .politica dt {
+    font-weight: 500;
+    color: var(--color-stone-800);
+  }
+  .politica dd {
+    color: var(--color-stone-600);
+  }
+
+  /* --- Form ------------------------------------------------------------ */
+  .campo {
+    display: block;
+  }
+  .campo__etichetta {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-stone-700);
+    margin-bottom: 0.4rem;
+  }
+  .campo__obbligatorio {
+    color: var(--color-glow-500);
+  }
+  .input,
+  .textarea,
+  .select {
+    width: 100%;
+    min-height: 2.75rem; /* target tap 44px */
+    padding: 0.65rem 0.85rem;
+    font: inherit;
+    color: var(--color-stone-800);
+    background-color: var(--color-stone-50);
+    border: 1px solid var(--color-stone-300);
+    border-radius: 2px;
+    transition:
+      border-color 0.25s var(--ease-alpine),
+      box-shadow 0.25s var(--ease-alpine);
+  }
+  .textarea {
+    min-height: 8rem;
+    resize: vertical;
+    line-height: 1.6;
+  }
+  .input:hover,
+  .textarea:hover,
+  .select:hover {
+    border-color: var(--color-stone-400);
+  }
+  .input:focus,
+  .textarea:focus,
+  .select:focus {
+    border-color: var(--color-forest-700);
+    outline: 2px solid var(--color-forest-700);
+    outline-offset: 1px;
+  }
+  .campo__aiuto {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--color-stone-500);
+  }
+
+  /* Consenso privacy: casella grande abbastanza da essere cliccata. */
+  .consenso {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.7rem;
+    align-items: start;
+  }
+  .consenso input[type='checkbox'] {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.2rem;
+    accent-color: var(--color-forest-700);
+  }
+
   /* --- Media -------------------------------------------------------- */
 
   .media {

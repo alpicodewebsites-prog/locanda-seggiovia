@@ -6,13 +6,28 @@
  *     Sono valori segnaposto: il sito NON va pubblicato prima di averli verificati.
  */
 
+/**
+ * Dominio pubblico del sito — unica fonte di verità.
+ *
+ * Serve a canonical, Open Graph, sitemap e al redirect del modulo contatti.
+ * Si può sovrascrivere senza toccare il codice con la variabile SITE_URL.
+ *
+ * Nota: questo valore NON va importato da astro.config.mjs dentro una pagina.
+ * Farlo crea una dipendenza circolare con il chunk di configurazione di Astro e
+ * rompe la compilazione. astro.config.mjs importa da qui, non viceversa.
+ */
+export const SITE_URL = (process.env.SITE_URL ?? 'https://www.locandaseggiovia.com').replace(
+  /\/+$/,
+  '',
+);
+
 export const site = {
   nome: 'Locanda Seggiovia',
   nomeLegale: 'Locanda Seggiovia',
   tagline: 'Rifugio alpino a Recoaro Terme',
 
   // TODO: sostituire con il dominio definitivo (usato da canonical, OG, sitemap).
-  url: 'https://www.locandaseggiovia.com',
+  url: SITE_URL,
 
   // TODO: confermare l'anno di fondazione. Nel frattempo l'anno è omesso
   // dalla frase di apertura invece di inventarlo.
@@ -50,6 +65,19 @@ export const site = {
     { giorno: 'Ristorante', valore: 'A pranzo e a cena — orari da confermare' },
     { giorno: 'Reception', valore: 'Tutti i giorni, 8:00 – 21:00 (da confermare)' },
   ],
+
+  // --- Politiche di soggiorno (fornite dalla cliente) ----------------------
+  // Stanno qui, e non nei file del CMS, perché valgono per tutte le camere:
+  // duplicarle camera per camera vorrebbe dire poterle far divergere.
+  soggiornoMinimo: 3,
+  /** Supplemento doppia uso singola, in euro al giorno. */
+  supplementoDus: 10,
+  animali: {
+    /** Supplemento giornaliero, in euro. */
+    supplementoGiorno: 20,
+    /** Pulizie finali, una tantum, in euro. */
+    pulizieFinali: 50,
+  },
 
   // TODO: dati fiscali obbligatori per la pubblicazione.
   fiscale: {

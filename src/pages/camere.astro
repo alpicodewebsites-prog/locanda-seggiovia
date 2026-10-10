@@ -1,0 +1,243 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+import imgCamere from '../assets/camere-interno.jpg';
+
+const camere = (await getCollection('camere')).sort((a, b) => a.data.ordine - b.data.ordine);
+
+/**
+ * Politiche di soggiorno.
+ *
+ * I valori sono quelli forniti dalla cliente. Il supplemento per gli animali
+ * comprende due voci distinte (giornaliero + pulizie finali): sono tenute
+ * separate perché sono due addebiti diversi.
+ */
+const politiche = [
+  { voce: 'Bambini 0–3 anni', valore: 'Gratuiti' },
+  { voce: 'Bambini 4–10 anni', valore: 'Sconto 30%' },
+  { voce: 'Animali domestici', valore: `${site.animali.supplementoGiorno} € al giorno + ${site.animali.pulizieFinali} € di pulizie finali` },
+  { voce: 'Soggiorno minimo', valore: `${site.soggiornoMinimo} giorni` },
+  { voce: 'Doppia uso singola', valore: `Supplemento ${site.supplementoDus} € al giorno` },
+];
+
+const description =
+  'Camere singole e doppie a Recoaro Terme con Wi-Fi, TV, cassaforte e set di cortesia. Tariffe per persona da 55 €. Soggiorno minimo 3 giorni.';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'OfferCatalog',
+  name: 'Camere e tariffe — Locanda Seggiovia',
+  url: `${site.url}/camere`,
+  itemListElement: camere.map((camera, i) => ({
+    '@type': 'Offer',
+    position: i + 1,
+    name: camera.data.titolo,
+    description: camera.data.descrizione,
+    priceCurrency: 'EUR',
+    price: camera.data.tariffe.bnb,
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      price: camera.data.tariffe.bnb,
+      priceCurrency: 'EUR',
+      unitText: 'per persona, per giorno',
+    },
+    availability: 'https://schema.org/InStock',
+    seller: { '@id': `${site.url}/#locanda` },
+  })),
+};
+---
+
+<BaseLayout title="Camere e tariffe" description={description} schema={schema} ogImage="/og-default.jpg">
+  <!-- ==================================================================
+       Intestazione
+       ================================================================== -->
+  <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
+    <div class="shell">
+      <p class="eyebrow">Camere e tariffe</p>
+      <h1 class="display-2 mt-5 max-w-[20ch] text-stone-900">
+        Camere semplici, montagna seria
+      </h1>
+      <p class="lede mt-6 max-w-[58ch]">
+        Nessun lusso inutile: letti comodi, bagno privato, silenzio. Quello che serve dopo
+        una giornata sui sentieri, e quello che serve per ripartire la mattina.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Le camere
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-camere">
+    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10 lg:gap-16">
+      <div class="md:col-span-5" data-aos="fade-in">
+        <div class="media aspect-4/5">
+          <Image
+            src={imgCamere}
+            alt="Segnaposto grafico in attesa della fotografia di una camera della Locanda Seggiovia"
+            widths={[420, 640, 900, 1200]}
+            sizes="(min-width: 768px) 40vw, 92vw"
+            format="webp"
+            quality={76}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <p class="mt-3 text-[0.8rem] text-stone-500">
+          Fotografia in arrivo: gli interni sono in fase di ristrutturazione.
+        </p>
+      </div>
+
+      <div class="md:col-span-7">
+        <h2 id="titolo-camere" class="display-2 max-w-[24ch] text-stone-900">
+          Due tipi di camera
+        </h2>
+
+        <div class="mt-10 space-y-12">
+          {
+            camere.map((camera, i) => (
+              <article
+                class={i > 0 ? 'border-t border-stone-300 pt-10' : ''}
+                data-aos="fade-up"
+              >
+                <h3 class="font-[family-name:var(--font-display)] text-2xl leading-snug text-stone-900">
+                  {camera.data.titolo}
+                </h3>
+
+                {camera.data.occupanti && (
+                  <p class="eyebrow mt-2">{camera.data.occupanti}</p>
+                )}
+
+                <p class="mt-4 max-w-[56ch] text-[1.0625rem] leading-relaxed text-stone-600">
+                  {camera.data.descrizione}
+                </p>
+
+                {camera.data.servizi.length > 0 && (
+                  <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[0.875rem] text-stone-600">
+                    {camera.data.servizi.map((servizio) => (
+                      <li class="flex items-center gap-2">
+                        <span
+                          class="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-forest-500"
+                          aria-hidden="true"
+                        />
+                        {servizio}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Tabella tariffe
+       ================================================================== -->
+  <section class="section-y bg-stone-50" aria-labelledby="titolo-tariffe">
+    <div class="shell">
+      <h2 id="titolo-tariffe" class="display-2 max-w-[26ch] text-stone-900">
+        Tariffe
+      </h2>
+      <p class="lede mt-5 max-w-[60ch] text-[1rem]">
+        Prezzi per persona, per giorno. Invariati sia in stagione estiva
+        (1 giugno – 15 settembre) sia in stagione invernale (16 settembre – 31 maggio).
+      </p>
+
+      <div class="mt-10 overflow-x-auto">
+        <table class="tariffe min-w-[34rem]">
+          <caption class="sr-only">
+            Tariffe per camera e trattamento, in euro per persona al giorno
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Camera</th>
+              <th scope="col">B&amp;B</th>
+              <th scope="col">Mezza pensione</th>
+              <th scope="col">Pensione completa</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              camere.map((camera) => (
+                <tr>
+                  <th scope="row">{camera.data.titolo}</th>
+                  <td class="tariffe__prezzo">{camera.data.tariffe.bnb} €</td>
+                  <td class="tariffe__prezzo">{camera.data.tariffe.mezzaPensione} €</td>
+                  <td class="tariffe__prezzo">{camera.data.tariffe.pensioneCompleta} €</td>
+                </tr>
+              ))
+            }
+            <tr>
+              <th scope="row">
+                Doppia uso singola
+                <span class="block text-[0.8rem] font-normal text-stone-500">
+                  supplemento
+                </span>
+              </th>
+              <td colspan="3" class="tariffe__prezzo">+ {site.supplementoDus} € / giorno</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-6 max-w-[70ch] text-[0.875rem] leading-relaxed text-stone-500">
+        Le tariffe si intendono per persona e per giorno. Il soggiorno minimo è di
+        {site.soggiornoMinimo} giorni.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Politiche e servizi
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-politiche">
+    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
+      <div class="md:col-span-5">
+        <h2 id="titolo-politiche" class="display-2 max-w-[20ch] text-stone-900">
+          Bambini, animali e regole
+        </h2>
+        <p class="mt-5 max-w-[52ch] text-[0.95rem] leading-relaxed text-stone-600">
+          Poche regole, chiare. Se avete esigenze particolari — un lettino, una cena
+          anticipata, un cane di taglia grande — ditecelo al momento della prenotazione.
+        </p>
+      </div>
+
+      <div class="md:col-span-7">
+        <dl class="politica border-t border-stone-300">
+          {
+            politiche.map((p) => (
+              <div class="contents">
+                <dt class="border-b border-stone-200 py-4">{p.voce}</dt>
+                <dd class="border-b border-stone-200 py-4 text-right">{p.valore}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Chiusura
+       ================================================================== -->
+  <section class="section-y-tight bg-forest-900 text-stone-200">
+    <div class="shell flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h2 class="display-2 max-w-[24ch] text-stone-50">Verifica le date</h2>
+        <p class="mt-4 max-w-[48ch] text-[1rem] leading-relaxed text-forest-300">
+          Scrivici o chiamaci: ti diciamo subito disponibilità e prezzo esatto per il tuo
+          soggiorno.
+        </p>
+      </div>
+      <div class="flex shrink-0 flex-col gap-3 sm:flex-row">
+        <a href="/contatti" class="btn btn--onDark">Scrivici</a>
+        <a href={site.telefonoLink} class="btn btn--onDark">{site.telefono}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

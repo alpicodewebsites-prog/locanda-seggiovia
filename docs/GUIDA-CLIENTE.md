@@ -15,15 +15,52 @@ Ci sono due modi per modificare i contenuti:
 
 | Modo | Quando usarlo | Serve saper programmare? |
 |---|---|---|
-| **Pannello di amministrazione** (`/admin`) | modifiche di tutti i giorni: prezzi, menù, orari, testi | No |
-| Modifica diretta dei file | modifiche strutturali o quando il pannello non basta | Un po' |
+| **Pannello di amministrazione** (`/admin`) | modifiche di tutti i giorni: menù, prezzi, tariffe, descrizioni | No |
+| Modifica diretta dei file | solo per telefono, orari e dati fiscali | Un po' |
 
-> **Il pannello `/admin` sarà attivo dalla settimana 2**, quando il sito sarà
-> collegato a GitHub. Fino a quel momento le modifiche si fanno sui file.
+> **Il pannello `/admin` si attiva dopo il collegamento a GitHub.** Fino a quel
+> momento le modifiche si fanno sui file. La procedura è descritta nella
+> documentazione tecnica.
 
 ---
 
-## 2. Modificare i dati della struttura (telefono, orari, indirizzo)
+## 2. Modificare i contenuti dal pannello
+
+Apri l'indirizzo del sito seguito da `/admin`, per esempio:
+
+```
+https://locandaseggiovia.vercel.app/admin
+```
+
+Accedi con l'account GitHub che ha accesso al progetto. Da lì trovi quattro sezioni:
+
+| Sezione | Cosa contiene |
+|---|---|
+| **Camere e tariffe** | i tipi di camera, le tre tariffe, i servizi in camera |
+| **Menù del ristorante** | i piatti, divisi per antipasti, primi, secondi, dolci |
+| **Gnocchi con la Fioreta** | la pagina del piatto: storia, ricetta, lavorazione, condimento |
+| **Sentieri** | gli itinerari escursionistici |
+
+Apri la voce che ti interessa, modifica quello che serve e premi **Publish**.
+Dopo circa un minuto le modifiche sono online.
+
+### Tre cose da sapere
+
+**Se un'informazione non la conosci, lascia il campo vuoto.** Il sito è
+costruito per non mostrare i campi vuoti. Scrivere un prezzo a caso è peggio che
+non scriverlo: chi prenota si aspetta che sia quello vero.
+
+**I prezzi del menù possono restare vuoti.** In quel caso il piatto compare
+senza cifra, e la pagina avvisa che i prezzi si chiedono in locanda. Quando li
+avrai, compilali e compariranno da soli.
+
+**Il numero di telefono e la partita IVA non sono nel pannello.** Sono dati
+della struttura, non contenuti: si cambiano dal file `src/data/site.ts`
+(vedi §4). Chiedi assistenza la prima volta.
+
+---
+
+## 3. Modificare i dati della struttura (telefono, orari, indirizzo)
 
 Tutto quello che riguarda la struttura è raccolto in un unico file:
 
@@ -104,9 +141,9 @@ ufficiale del CAI (Club Alpino Italiano):
 
 ---
 
-## 5. Pubblicare le modifiche (dopo il collegamento a GitHub)
+## 5. Pubblicare le modifiche
 
-1. Aprire il pannello `/admin` del sito, oppure modificare i file.
+1. Aprire il pannello `/admin`, oppure modificare i file.
 2. Salvare. Se si usa il pannello, premere **Publish**.
 3. Attendere circa un minuto.
 4. Ricaricare il sito per vedere le modifiche.
@@ -135,9 +172,21 @@ operazioni delicate sono rinominare i file e modificare le cartelle.
 No. L'unico costo ricorrente è il dominio (circa 15–20 € all'anno). Hosting,
 pannello di amministrazione e certificato HTTPS sono gratuiti.
 
+**Come si aggiunge un nuovo piatto o una nuova camera?**
+Dal pannello: apri la sezione, premi **New**, compila i campi e pubblica. Per una
+camera nuova servono le tre tariffe; per un piatto basta il nome e la categoria,
+il prezzo si può aggiungere dopo.
+
 **Come si aggiunge un nuovo sentiero?**
-Nella settimana 3 i sentieri diventano contenuti gestibili dal pannello.
-Fino a quel momento vanno aggiunti da chi segue lo sviluppo.
+La sezione **Sentieri** esiste già nel pannello e i sentieri si possono creare da
+subito. Le pagine di dettaglio, con la scheda completa di ogni itinerario,
+arrivano nella prossima consegna.
 
 **Il modulo di contatto dove manda le email?**
-A `locandaseggiovia@gmail.com`. Sarà attivo dalla settimana 2.
+A `locandaseggiovia@gmail.com`. Il modulo è pronto e funzionante nel suo
+meccanismo, ma per ricevere davvero i messaggi va inserita la chiave di
+Web3Forms: è un'operazione da fare una volta sola, chiedi assistenza.
+
+**Cosa succede se il modulo non funziona?**
+Chi scrive vede un messaggio di errore che invita a scrivere direttamente a
+`locandaseggiovia@gmail.com`, quindi nessun messaggio va perso in silenzio.

@@ -32,8 +32,17 @@ const {
   noindex = false,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
-const ogImageAbs = new URL(ogImage, Astro.site ?? site.url).href;
+/**
+ * URL canonico.
+ *
+ * Si usa `site` di astro.config.mjs e NON `Astro.url`, perché in un sito
+ * statico `Astro.url` corrisponde all'indirizzo del server di build: in fase di
+ * compilazione produrrebbe un canonical tipo http://localhost:4321/, che è
+ * esattamente ciò che non deve finire in produzione.
+ */
+const base = Astro.site ?? new URL(site.url);
+const canonical = new URL(Astro.url.pathname, base).href;
+const ogImageAbs = new URL(ogImage, base).href;
 
 // Titolo completo: la home non ha bisogno del suffisso ripetuto.
 const fullTitle = title.includes(site.nome) ? title : `${title} — ${site.nome}`;

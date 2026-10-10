@@ -6,6 +6,10 @@ Allow: /
 # Il pannello di gestione non va indicizzato.
 Disallow: /admin/
 
+# La pagina di ringraziamento è una conferma, non un contenuto:
+# non ha senso che compaia nelle ricerche.
+Disallow: /grazie
+
 # Nessun blocco per i crawler AI: le informazioni su sentieri e struttura
 # sono contenuto di pubblica utilità e vogliamo che circolino.
 

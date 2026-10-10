@@ -107,6 +107,6 @@ for (const s of scenari) {
   await ctx.close();
 }
 
-await browser.close();
+await Promise.race([browser.close(), new Promise((r) => setTimeout(r, 4000))]).catch(() => {});
 console.log(problemi === 0 ? '\nNessun contenuto nascosto.' : `\n${problemi} scenario/i problematico/i.`);
 process.exit(problemi === 0 ? 0 : 1);

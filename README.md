@@ -4,10 +4,10 @@ Sito statico della Locanda Seggiovia, Recoaro Terme (VI).
 Costruito con **Astro 7** e **Tailwind CSS 4**. Nessun database, nessun server
 applicativo, hosting gratuito.
 
-- **Stato attuale: settimana 1 della roadmap** — MVP approvabile: infrastruttura,
-  sistema di design, homepage completa, dati strutturati, immagini segnaposto,
-  configurazione di deploy. Le altre pagine arrivano nelle settimane 2–3.
-- Deploy: Netlify (o Cloudflare Pages), direttamente da GitHub.
+- **Stato attuale: settimana 2 completata** — infrastruttura, design system, homepage,
+  pagine Camere e Ristorante, pagina Contatti con modulo funzionante, pannello di
+  gestione contenuti (Sveltia CMS). Settimana 1: homepage e sistema di design.
+- Deploy: Vercel (anteprima attiva) e Netlify (hosting previsto al go-live).
 
 ---
 
@@ -30,8 +30,9 @@ npm run preview   # anteprima locale della build di produzione
 Dopo `npm run build` si possono eseguire i controlli automatici:
 
 ```bash
-python scripts/verify_build.py        # 35 controlli: SEO, dati strutturati, link, asset
+python scripts/verify_build.py        # 103 controlli: SEO di tutte le pagine, CMS, link, asset
 node scripts/check_visibility.mjs     # il contenuto resta visibile anche senza JS
+node scripts/test_form.mjs            # collaudo del modulo contatti (richiede `npm run preview`)
 node scripts/shot.mjs                 # screenshot desktop + mobile per la revisione
 ```
 
@@ -49,20 +50,35 @@ animazioni al scroll: pagina bianca se lo script non parte.
 locanda-seggiovia/
 ├── src/
 │   ├── pages/
-│   │   ├── index.astro            # Homepage (settimana 1)
+│   │   ├── index.astro            # Homepage
+│   │   ├── camere.astro           # Camere e tariffe (legge la collezione `camere`)
+│   │   ├── ristorante.astro       # Ristorante e menù (legge la collezione `menu`)
+│   │   ├── contatti.astro         # Contatti + modulo Web3Forms
+│   │   ├── grazie.astro           # Conferma invio (noindex)
 │   │   └── 404.astro
+│   ├── content.config.ts          # ★ schema delle collezioni (Astro 7)
+│   ├── content/                   # ★ contenuti gestiti dal CMS
+│   │   ├── camere/                #   Singola, Doppia
+│   │   ├── menu/                  #   Piatti, per categoria
+│   │   ├── gnocchi/               #   Gnocchi con la Fioreta
+│   │   └── sentieri/              #   Vuota: contenuti in settimana 3
 │   ├── components/
 │   │   ├── Header.astro           # navigazione (menu mobile senza JS)
 │   │   ├── Footer.astro           # recapiti, dati societari, link legali
 │   │   └── Hero.astro             # apertura della home
 │   ├── layouts/
 │   │   └── BaseLayout.astro       # <head>, SEO, JSON-LD, AOS
+│   ├── scripts/
+│   │   └── form-contatti.ts       # invio del modulo via JavaScript
 │   ├── data/
-│   │   └── site.ts                # ★ dati della struttura (unica fonte di verità)
+│   │   └── site.ts                # ★ dati della struttura + SITE_URL
 │   ├── styles/
 │   │   └── global.css             # ★ design system: palette, tipografia, componenti
 │   └── assets/                    # ★ TUTTE le fotografie del sito (ottimizzate da Astro)
 ├── public/
+│   ├── admin/                     # ★ pannello Sveltia CMS
+│   │   ├── index.html             #   carica Sveltia dal CDN
+│   │   └── config.yml             #   collezioni e campi
 │   ├── favicon.svg, apple-touch-icon.png, og-default.jpg
 │   └── robots.txt
 ├── scripts/
@@ -222,40 +238,149 @@ output directory `dist`, variabili d'ambiente nella sezione Settings.
 
 ---
 
-## 6. Cosa arriva nelle prossime settimane
+## 6. Pannello di gestione contenuti (Sveltia CMS)
 
-| Settimana | Contenuto |
+Il pannello è pubblicato su **`/admin`** e non ha bisogno di alcun server: legge e
+scrive direttamente i file Markdown del repository GitHub. Ogni salvataggio è un
+commit, quindi ogni modifica è tracciata e sempre annullabile.
+
+| File | Ruolo |
 |---|---|
-| 2 | Pagine Camere e Ristorante · Sveltia CMS (`/admin`) · form Web3Forms |
-| 3 | Pagina Gnocchi con la Fioreta · 6 pagine sentiero · pagina Contatti · Privacy e Cookie Policy |
-| 4 | Audit Lighthouse · test mobile · formazione alla cliente · DNS e go-live |
+| `public/admin/index.html` | carica Sveltia dal CDN |
+| `public/admin/config.yml` | backend GitHub, collezioni e campi |
 
-### Nota su Sveltia CMS
+### ⚠️ Passo obbligatorio prima che il pannello funzioni
 
-Sveltia CMS è *Git-based*: funziona solo se il sito è pubblicato su un repository
-GitHub e l'utente autorizza l'accesso. Il pannello `/admin` va quindi configurato
-**dopo** la creazione del repository, altrimenti non ha nulla a cui collegarsi.
-Per questo è previsto nella settimana 2 e non nella settimana 1.
+In `config.yml` il repository è un **segnaposto**:
+
+```yaml
+backend:
+  name: github
+  repo: TUO-UTENTE/locanda-seggiovia   # ← da sostituire
+  branch: main
+```
+
+1. Creare il repository su GitHub e caricare il progetto (§7).
+2. Sostituire `TUO-UTENTE` con l'account reale.
+3. Autorizzare l'applicazione OAuth: il login di Sveltia passa da un servizio
+   OAuth (per impostazione predefinita `api.netlify.com/auth`). Serve
+   registrare un'app OAuth o usare il servizio indicato nella
+   [documentazione del backend GitHub](https://sveltiacms.app/en/docs/backends/github).
+4. Aggiungere la collaboratrice come collaboratore del repository, con permesso
+   di scrittura.
+
+Fino al punto 2 il pannello si apre ma non trova nessun repository.
+
+### Colonne e collezioni
+
+| Collezione | Cartella | Campi principali |
+|---|---|---|
+| Camere e tariffe | `src/content/camere` | nome, ordine, descrizione, ospiti, tre tariffe, servizi |
+| Menù del ristorante | `src/content/menu` | nome, categoria, ordine, descrizione, prezzo, specialità |
+| Gnocchi con la Fioreta | `src/content/gnocchi` | storia, ricetta, lavorazione, condimento, riconoscimenti |
+| Sentieri | `src/content/sentieri` | nome, sommario, descrizione, difficoltà, dati tecnici |
+
+I nomi dei campi in `config.yml` **devono** restare allineati a quelli dello
+schema in `src/content.config.ts`. Rinominarne uno da una parte sola fa fallire
+la compilazione: è il vincolo da tenere presente quando si modifica il CMS.
+
+Il CMS è configurato con `omit_empty_optional_fields: true`. È indispensabile:
+senza quella riga Sveltia scriverebbe una stringa vuota per i campi opzionali
+lasciati vuoti, e lo schema Zod di Astro rifiuterebbe il contenuto. È anche il
+meccanismo che permette di **non inventare dati**: un campo che non si conosce
+resta vuoto e semplicemente non compare nel sito.
 
 ---
 
-## 7. Inizializzare il repository Git
+## 7. Modulo di contatto (Web3Forms)
+
+Il modulo è su `/contatti` e invia tramite Web3Forms, senza backend.
+
+| Impostazione | Valore |
+|---|---|
+| Endpoint | `https://api.web3forms.com/submit` |
+| Destinatario | `locandaseggiovia@gmail.com` |
+| Chiave | variabile `PUBLIC_WEB3FORMS_KEY` |
+| Antispam | campo esca `botcheck` + filtro Web3Forms |
+| Dopo l'invio | redirect a `/grazie` |
+
+Senza JavaScript il modulo funziona comunque: è una POST classica e Web3Forms
+reindirizza a `/grazie` tramite il campo `redirect`. Con JavaScript attivo
+l'invio avviene senza ricaricare la pagina e l'esito compare sotto il modulo.
+
+### Stato del collaudo — da leggere
+
+`node scripts/test_form.mjs` esegue 24 controlli. **Tutti superati**, e
+verificano che la richiesta parta con l'endpoint, il metodo e i campi corretti
+(`access_key`, `subject`, `from_name`, `redirect`, consenso privacy, campo esca
+non compilato).
+
+**Non è però la prova che l'email arrivi.** Due limiti concreti:
+
+1. La chiave configurata è quella dimostrativa di Web3Forms, quindi l'invio
+   viene rifiutato per progetto e nessuna email parte.
+2. Il browser di collaudo automatico viene bloccato dal filtro anti-bot di
+   Cloudflare (risposta 403 con `cf-ray`). È un comportamento atteso verso un
+   browser headless, non un difetto del modulo.
+
+Per completare il collaudo serve una prova manuale su un browser reale:
+
+1. Ottenere la Access Key su [web3forms.com](https://web3forms.com) usando
+   `locandaseggiovia@gmail.com`.
+2. Impostare `PUBLIC_WEB3FORMS_KEY` in `.env` (in locale) e fra le variabili
+   d'ambiente di Vercel/Netlify.
+3. Ricompilare, aprire `/contatti` e inviare un messaggio vero.
+4. Verificare che arrivi a `locandaseggiovia@gmail.com` e che il browser finisca
+   su `/grazie`.
+
+### reCAPTCHA v3 — perché è disattivato
+
+Il brief chiedeva reCAPTCHA v3. È implementato e si attiva impostando la site key
+in `PUBLIC_RECAPTCHA_SITE_KEY`, ma **di default è spento** per un motivo preciso:
+su Web3Forms la verifica reCAPTCHA è una funzione dei **piani a pagamento**.
+Inviare il campo `recaptcha_response` senza un token valido fa rifiutare l'invio.
+
+Quindi: con il piano gratuito, attivare reCAPTCHA **romperebbe** il modulo. Con
+un piano a pagamento basta impostare la variabile e tutto si attiva da solo,
+compresa l'informativa su Google richiesta dal GDPR.
+
+Con il piano gratuito il modulo resta protetto dal campo esca e dal filtro
+antispam di Web3Forms, che è quanto offre il servizio a quel livello.
+
+---
+
+## 8. Cosa arriva nelle prossime settimane
+
+| Settimana | Contenuto |
+|---|---|
+| 3 | Pagina Gnocchi con la Fioreta · 6 pagine sentiero · completamento di Contatti (mappa, orari, dati strutturati) · Privacy e Cookie Policy |
+| 4 | Audit Lighthouse · test mobile · formazione alla cliente · DNS e go-live |
+
+I contenuti dei sentieri si creano già da `/admin`: la collezione e lo schema
+esistono, le pagine di dettaglio arrivano nella settimana 3.
+
+---
+
+## 9. Inizializzare il repository Git
 
 ```bash
 git init
 git add .
-git commit -m "Settimana 1: setup Astro, design system e homepage"
+git commit -m "Settimana 2: CMS, pagine Camere/Ristorante/Contatti, modulo Web3Forms"
 git branch -M main
 git remote add origin https://github.com/<utente>/locanda-seggiovia.git
 git push -u origin main
 ```
 
-Il file `.gitignore` esclude già `node_modules/`, `dist/`, `.astro/` e i file
-`.env`.
+Il file `.gitignore` esclude già `node_modules/`, `dist/`, `.astro/`, `.vercel/`,
+`screenshots/` e i file `.env`.
+
+Dopo il push, aggiornare `repo:` in `public/admin/config.yml` con
+`<utente>/locanda-seggiovia` (vedi §6).
 
 ---
 
-## 8. Scelte tecniche e compromessi
+## 10. Scelte tecniche e compromessi
 
 | Scelta | Motivo |
 |---|---|
@@ -264,17 +389,26 @@ Il file `.gitignore` esclude già `node_modules/`, `dist/`, `.astro/` e i file
 | Un solo webfont, con *optical size* | meno richieste di rete, gerarchia tipografica reale |
 | Font di sistema per il corpo | nessuna richiesta di rete, leggibilità immediata |
 | Menu mobile in `<details>` | funziona anche senza JavaScript |
+| Modulo contatti senza JavaScript | POST classica con redirect: funziona sempre, JS solo come miglioramento |
 | AOS disattivato su mobile | come da specifica, ma senza penalizzare chi ha rete debole |
 | Nessun analytics di default | nessun cookie di terze parti, nessun banner necessario |
 | JSON-LD `Restaurant` + `LodgingBusiness` | una struttura con cucina e camere è entrambe le cose |
+| `Menu` e `OfferCatalog` sulle pagine nuove | menù e tariffe diventano leggibili anche dai motori di ricerca |
+| Politiche di soggiorno in `site.ts` | valgono per tutte le camere: nel CMS sarebbero duplicabili e divergenti |
+| `/grazie` esclusa da sitemap e robots | è una conferma, non un contenuto: contraddirebbe il suo `noindex` |
 
 ### Limiti noti di questa consegna
 
-- Il sito ha **una sola pagina** oltre alla 404: i link alle altre sezioni
-  puntano a URL previsti ma non ancora realizzati. `verify_build.py` li elenca
-  come "previsti" e non come rotti.
-- Il **form contatti non è ancora attivo**: arriva con la settimana 2, insieme
-  alla chiave Web3Forms.
+- **Mancano ancora le pagine** Gnocchi con la Fioreta, i 6 sentieri, La Locanda,
+  Privacy e Cookie Policy: arrivano nella settimana 3. I link puntano a URL
+  previsti, e `verify_build.py` li elenca come "previsti" e non come rotti.
+- **Il collaudo end-to-end del modulo non è concluso.** I 24 controlli superano,
+  ma con la chiave dimostrativa nessuna email parte e il browser di collaudo viene
+  bloccato da Cloudflare. Serve una prova manuale con la chiave reale (§7).
+- **La pagina Contatti è volutamente minima**: mancano mappa, orari e dati
+  strutturati, che arrivano nella settimana 3 insieme al resto.
+- **I prezzi del menù sono vuoti**: la cliente non li ha forniti, e la pagina lo
+  dichiara apertamente invece di inventarli.
 - **Nessuna verifica con un lettore di schermo reale** è stata eseguita. Sono
   applicati contrasto, focus visibile, ordine dei titoli, skip-link, `alt`
   veritieri e rispetto di `prefers-reduced-motion`, ma un test manuale con
