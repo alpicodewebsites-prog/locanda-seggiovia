@@ -1,0 +1,214 @@
+---
+/**
+ * Privacy Policy.
+ *
+ * ⚠️ DOCUMENTO DA FAR VALIDARE. Questo è un testo base, scritto per descrivere
+ * con onestà i trattamenti che il sito effettivamente effettua. Non sostituisce
+ * il parere di un consulente privacy: prima della pubblicazione va riletto e
+ * completato con i dati societari reali.
+ *
+ * I dati mancanti sono raccolti in `datiDaConfermare` e mostrati nella pagina
+ * come segnaposto evidenti, invece di essere inventati.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, indirizzoBreve, SITE_URL } from '../data/site';
+
+/** Voci che devono essere confermate prima della pubblicazione. */
+const datiDaConfermare = [
+  { voce: 'Ragione sociale completa', valore: site.fiscale.ragioneSociale, confermato: false },
+  { voce: 'Partita IVA / Codice fiscale', valore: `${site.fiscale.partitaIva} — ${site.fiscale.codiceFiscale}`, confermato: false },
+  { voce: 'Sede legale', valore: indirizzoBreve, confermato: true },
+  { voce: 'Recapito per la privacy', valore: site.email, confermato: true },
+  { voce: 'Titolare del trattamento', valore: `${site.gestione} — ${site.gestori}`, confermato: true },
+];
+
+/** Trattamenti realmente effettuati dal sito. */
+const trattamenti = [
+  {
+    nome: 'Modulo di contatto',
+    finalita: 'Rispondere alla richiesta di informazioni, prenotazione o preventivo.',
+    dati: 'Nome e cognome, indirizzo email, numero di telefono (facoltativo), contenuto del messaggio.',
+    base: 'Consenso dell’interessato, espresso con la casella di conferma prima dell’invio.',
+    conservazione: 'Per il tempo necessario a gestire la richiesta e gli eventuali obblighi di legge collegati.',
+    destinatari:
+      'Web3Forms (servizio di inoltro del modulo) e Google se è attiva la verifica reCAPTCHA. Il messaggio arriva all’indirizzo email della struttura.',
+  },
+  {
+    nome: 'Prenotazione e soggiorno',
+    finalita: 'Gestire la prenotazione, l’accoglienza e gli obblighi di legge (comunicazione degli alloggiati).',
+    dati: 'Dati anagrafici degli ospiti, documento d’identità, date del soggiorno.',
+    base: 'Esecuzione del contratto e obblighi di legge.',
+    conservazione: 'Per i termini previsti dalla normativa fiscale e di pubblica sicurezza.',
+    destinatari: 'Autorità competenti, quando la legge lo richiede.',
+  },
+  {
+    nome: 'Log tecnici dell’hosting',
+    finalita: 'Garantire il funzionamento e la sicurezza del sito.',
+    dati: 'Indirizzo IP, tipo di browser, pagina richiesta, data e ora.',
+    base: 'Legittimo interesse alla sicurezza del servizio.',
+    conservazione: 'Per brevi periodi, secondo le politiche del fornitore di hosting.',
+    destinatari: 'Fornitore di hosting (Vercel e/o Netlify).',
+  },
+];
+
+const description =
+  'Informativa sul trattamento dei dati personali del sito della Locanda Seggiovia: quali dati raccogliamo, perché, per quanto tempo e come esercitare i tuoi diritti.';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `Privacy Policy — ${site.nome}`,
+  url: `${SITE_URL}/privacy`,
+  inLanguage: 'it-IT',
+  isPartOf: { '@id': `${SITE_URL}/#locanda` },
+};
+---
+
+<BaseLayout title="Privacy Policy" description={description} schema={schema}>
+  <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
+    <div class="shell">
+      <p class="eyebrow">Informativa</p>
+      <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">Privacy Policy</h1>
+      <p class="lede mt-6 max-w-[58ch]">
+        Questa pagina spiega quali dati personali raccoglie il sito, perché li raccoglie
+        e che fine fanno. È scritta per essere letta, non per essere saltata.
+      </p>
+    </div>
+  </section>
+
+  <!-- Avviso: documento da validare -->
+  <section class="pt-12">
+    <div class="shell">
+      <p
+        class="border-l-4 border-glow-500 bg-glow-300/20 px-5 py-4 text-[0.9rem] leading-relaxed text-stone-700"
+        role="note"
+      >
+        <strong class="font-medium">Documento in fase di completamento.</strong>
+        Il testo descrive correttamente come il sito tratta i dati, ma i dati societari
+        contrassegnati come «da confermare» devono essere verificati con la
+        proprietaria prima della pubblicazione.
+      </p>
+    </div>
+  </section>
+
+  <!-- Titolare -->
+  <section class="pt-14 pb-12" aria-labelledby="titolo-titolare">
+    <div class="shell grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <h2 id="titolo-titolare" class="display-2 text-stone-900">Titolare del trattamento</h2>
+      </div>
+      <div class="md:col-span-8">
+        <dl class="border-t border-stone-300">
+          {
+            datiDaConfermare.map((riga) => (
+              <div class="spec">
+                <dt class="spec__key">{riga.voce}</dt>
+                <dd class="spec__val text-stone-800">
+                  {riga.confermato ? (
+                    riga.valore
+                  ) : (
+                    <span class="text-glow-500">
+                      {riga.valore} <span class="text-[0.8rem]">(da confermare)</span>
+                    </span>
+                  )}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trattamenti -->
+  <section class="pb-12" aria-labelledby="titolo-trattamenti">
+    <div class="shell">
+      <h2 id="titolo-trattamenti" class="display-2 max-w-[24ch] text-stone-900">
+        Quali dati trattiamo e perché
+      </h2>
+
+      <div class="mt-10 space-y-10">
+        {
+          trattamenti.map((t, i) => (
+            <article class="border-t border-stone-300 pt-8" data-aos="fade-in">
+              <h3 class="font-[family-name:var(--font-display)] text-2xl leading-snug text-stone-900">
+                {t.nome}
+              </h3>
+              <dl class="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
+                <div>
+                  <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Finalità</dt>
+                  <dd class="mt-1 text-[0.95rem] leading-relaxed text-stone-700">{t.finalita}</dd>
+                </div>
+                <div>
+                  <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Dati raccolti</dt>
+                  <dd class="mt-1 text-[0.95rem] leading-relaxed text-stone-700">{t.dati}</dd>
+                </div>
+                <div>
+                  <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Base giuridica</dt>
+                  <dd class="mt-1 text-[0.95rem] leading-relaxed text-stone-700">{t.base}</dd>
+                </div>
+                <div>
+                  <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Conservazione</dt>
+                  <dd class="mt-1 text-[0.95rem] leading-relaxed text-stone-700">{t.conservazione}</dd>
+                </div>
+                <div class="sm:col-span-2">
+                  <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Destinatari</dt>
+                  <dd class="mt-1 text-[0.95rem] leading-relaxed text-stone-700">{t.destinatari}</dd>
+                </div>
+              </dl>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Diritti -->
+  <section class="pb-[var(--spacing-section)]" aria-labelledby="titolo-diritti">
+    <div class="shell grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <h2 id="titolo-diritti" class="display-2 max-w-[18ch] text-stone-900">I tuoi diritti</h2>
+      </div>
+      <div class="md:col-span-8">
+        <p class="max-w-[62ch] text-[1.0625rem] leading-relaxed text-stone-600">
+          Puoi chiedere in qualsiasi momento di accedere ai tuoi dati, correggerli,
+          cancellarli, limitarne il trattamento o opporti al trattamento, e puoi
+          richiedere la portabilità dei dati che ci hai fornito. Per esercitare questi
+          diritti scrivi a
+          <a href={`mailto:${site.email}`} class="link-arrow ml-1">{site.email}</a>.
+        </p>
+        <p class="mt-5 max-w-[62ch] text-[1.0625rem] leading-relaxed text-stone-600">
+          Se ritieni che il trattamento non rispetti la normativa, puoi rivolgerti al
+          Garante per la protezione dei dati personali
+          (<a
+            href="https://www.garanteprivacy.it"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-arrow">garanteprivacy.it</a>).
+        </p>
+
+        <h3 class="mt-10 font-[family-name:var(--font-display)] text-xl text-stone-900">
+          Trasferimenti fuori dall’Unione Europea
+        </h3>
+        <p class="mt-3 max-w-[62ch] text-[0.95rem] leading-relaxed text-stone-600">
+          Il servizio di inoltro del modulo e i servizi dell’hosting possono trattare i
+          dati anche negli Stati Uniti. In quel caso il trasferimento avviene sulla base
+          delle clausole contrattuali standard o di decisioni di adeguatezza della
+          Commissione Europea.
+        </p>
+
+        <h3 class="mt-10 font-[family-name:var(--font-display)] text-xl text-stone-900">
+          Modifiche a questa informativa
+        </h3>
+        <p class="mt-3 max-w-[62ch] text-[0.95rem] leading-relaxed text-stone-600">
+          Se l’informativa cambia, la versione aggiornata sostituisce questa pagina. Non
+          usiamo i dati per finalità diverse da quelle descritte qui.
+        </p>
+
+        <p class="mt-10">
+          <a href="/cookie" class="link-arrow">Leggi la Cookie Policy</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,221 @@
+---
+/**
+ * La Locanda — storia e famiglia.
+ *
+ * Nota sui contenuti: l'anno di fondazione non è confermato, quindi la pagina
+ * NON lo cita. Racconta la famiglia, il rapporto con la montagna e la scelta di
+ * essere un rifugio invece di un albergo: cose vere, ricavate dal posizionamento
+ * del progetto, senza inventare date né riconoscimenti.
+ */
+import { Image } from 'astro:assets';
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, mappaLinkUrl } from '../data/site';
+import imgAmbienti from '../assets/locanda-ambienti.jpg';
+
+const description =
+  'La Locanda Seggiovia a Recoaro Terme: una casa di pietra e legno in piazza, gestita dalla famiglia Asnicar Bertoldi, ai piedi delle Piccole Dolomiti.';
+
+/** Le tre cose che rendono un rifugio diverso da un albergo. */
+const carattere = [
+  {
+    titolo: 'Si arriva a piedi',
+    testo:
+      'I sentieri partono dal paese. Si lascia l’auto e si comincia a camminare: non serve spostarsi in macchina per raggiungere un punto di partenza.',
+  },
+  {
+    titolo: 'Ci si alza presto',
+    testo:
+      'Chi va in montagna parte all’alba. La colazione è pronta prima, e chi parte sa già che cosa lo aspetta, perché i sentieri li conosciamo uno per uno.',
+  },
+  {
+    titolo: 'Si torna affamati',
+    testo:
+      'Chi rientra dal sentiero ha bisogno di mangiare davvero. La cucina è quella di casa, non un servizio accessorio: è il motivo per cui molti tornano.',
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'La Locanda — storia e famiglia',
+  url: `${site.url}/la-locanda`,
+  mainEntity: { '@id': `${site.url}/#locanda` },
+};
+---
+
+<BaseLayout title="La Locanda — storia e famiglia" description={description} schema={schema}>
+  <!-- ==================================================================
+       Apertura
+       ================================================================== -->
+  <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
+    <div class="shell">
+      <p class="eyebrow">La Locanda</p>
+      <h1 class="display-2 mt-5 max-w-[24ch] text-stone-900">
+        Una casa di pietra in piazza, ai piedi delle Piccole Dolomiti
+      </h1>
+      <p class="lede mt-6 max-w-[58ch]">
+        La Locanda Seggiovia non è nata come albergo e non lo è diventata. È la casa di
+        una famiglia che ha scelto di restare in montagna e di aprirla a chi la montagna
+        la viene a cercare.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Storia
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-storia">
+    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10 lg:gap-16">
+      <div class="md:col-span-5 md:order-2" data-aos="fade-in">
+        <div class="media aspect-4/5">
+          <Image
+            src={imgAmbienti}
+            alt="Segnaposto grafico in attesa della fotografia degli ambienti della locanda"
+            widths={[420, 640, 900, 1200]}
+            sizes="(min-width: 768px) 40vw, 92vw"
+            format="webp"
+            quality={76}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <p class="mt-3 text-[0.8rem] text-stone-500">
+          Fotografia in arrivo: gli ambienti sono in fase di ristrutturazione.
+        </p>
+      </div>
+
+      <div class="md:col-span-7 md:order-1">
+        <h2 id="titolo-storia" class="display-2 max-w-[20ch] text-stone-900">
+          La famiglia {site.gestione.replace('Famiglia ', '')}
+        </h2>
+
+        <div class="prose-body mt-7 max-w-[62ch] text-[1.0625rem] text-stone-600">
+          <p>
+            La locanda la portano {site.gestori}. Non è una gestione delegata: chi
+            cucina, chi accoglie e chi consiglia il sentiero sono le stesse persone che
+            vivono qui tutto l’anno. È la differenza che si sente appena si varca la
+            porta.
+          </p>
+          <p>
+            Recoaro Terme è un paese di fondovalle che nel Novecento è stato terme e
+            industria, e che oggi vive soprattutto di montagna. Restare qui, e tenere
+            aperta una locanda in piazza, è una scelta precisa: significa credere che il
+            turismo di queste valli sia quello di chi cammina, non quello di chi passa.
+          </p>
+          <p>
+            Da quella scelta viene tutto il resto. Si conoscono i sentieri perché si
+            percorrono, si conoscono le malghe perché ci si compra il formaggio, e la
+            cucina segue le stagioni di quello che le malghe hanno da offrire.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Che cosa la rende un rifugio
+       ================================================================== -->
+  <section class="section-y bg-stone-50" aria-labelledby="titolo-rifugio">
+    <div class="shell">
+      <h2 id="titolo-rifugio" class="display-2 max-w-[24ch] text-stone-900">
+        Perché diciamo rifugio e non albergo
+      </h2>
+      <p class="lede mt-5 max-w-[58ch] text-[1rem]">
+        Non è una questione di parole. Sono tre cose concrete che cambiano il modo in cui
+        si sta qui.
+      </p>
+
+      <ul class="mt-12 grid gap-px overflow-hidden bg-stone-300 md:grid-cols-3">
+        {
+          carattere.map((voce, i) => (
+            <li class="bg-stone-50 p-7 md:p-8" data-aos="fade-in" data-aos-delay={i * 70}>
+              <h3 class="font-[family-name:var(--font-display)] text-xl leading-snug text-stone-900">
+                {voce.titolo}
+              </h3>
+              <p class="mt-3 text-[0.95rem] leading-relaxed text-stone-600">{voce.testo}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Dove siamo
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-dove">
+    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
+      <div class="md:col-span-5">
+        <h2 id="titolo-dove" class="display-2 max-w-[18ch] text-stone-900">
+          In piazza, nel centro del paese
+        </h2>
+        <p class="mt-6 max-w-[46ch] text-[1.0625rem] leading-relaxed text-stone-600">
+          Recoaro Terme sta in Valle dell’Agno, ai piedi delle Piccole Dolomiti e del
+          Gruppo del Pasubio. La locanda è in piazza, a due passi dalle fonti e dal
+          punto da cui partono i sentieri.
+        </p>
+        <p class="mt-8">
+          <a
+            href={mappaLinkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link-arrow"
+          >
+            Apri la mappa
+          </a>
+        </p>
+      </div>
+
+      <div class="md:col-span-7">
+        <dl class="border-t border-stone-300">
+          <div class="spec">
+            <dt class="spec__key">Indirizzo</dt>
+            <dd class="spec__val text-stone-800">
+              {site.indirizzo.via}, {site.indirizzo.citta}
+            </dd>
+          </div>
+          <div class="spec">
+            <dt class="spec__key">Altitudine</dt>
+            <dd class="spec__val text-stone-800">circa 450 m s.l.m.</dd>
+          </div>
+          <div class="spec">
+            <dt class="spec__key">Gruppi montuosi</dt>
+            <dd class="spec__val text-stone-800">Piccole Dolomiti, Pasubio, Carega</dd>
+          </div>
+          <div class="spec">
+            <dt class="spec__key">Camere</dt>
+            <dd class="spec__val text-stone-800">
+              <a href="/camere" class="link-arrow">Singole e doppie</a>
+            </dd>
+          </div>
+          <div class="spec">
+            <dt class="spec__key">Ristorante</dt>
+            <dd class="spec__val text-stone-800">
+              <a href="/ristorante" class="link-arrow">Cucina alto-vicentina</a>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Chiusura
+       ================================================================== -->
+  <section class="section-y-tight bg-forest-900 text-stone-200">
+    <div class="shell flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h2 class="display-2 max-w-[22ch] text-stone-50">Vieni a vedere</h2>
+        <p class="mt-4 max-w-[48ch] text-[1rem] leading-relaxed text-forest-300">
+          Le camere sono semplici e curate, il ristorante è aperto a pranzo e a cena.
+          Scrivici e ti diciamo tutto quello che serve.
+        </p>
+      </div>
+      <div class="flex shrink-0 flex-col gap-3 sm:flex-row">
+        <a href="/camere" class="btn btn--onDark">Le camere</a>
+        <a href="/contatti" class="btn btn--onDark">Contatti</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

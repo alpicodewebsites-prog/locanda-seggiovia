@@ -1,0 +1,196 @@
+---
+/**
+ * Scheda di un singolo sentiero.
+ *
+ * Una pagina per itinerario, generata dalla collezione `sentieri`: i contenuti
+ * si gestiscono dal pannello /admin, non da questo file.
+ */
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_URL } from '../../data/site';
+
+export async function getStaticPaths() {
+  const sentieri = await getCollection('sentieri');
+  return sentieri.map((sentiero) => ({
+    params: { id: sentiero.id },
+    props: { sentiero },
+  }));
+}
+
+const { sentiero } = Astro.props;
+const d = sentiero.data;
+
+/**
+ * Copertine: risolte da un glob, così il CMS può assegnare per nome
+ * (es. `sentieri-mole`) senza che serva toccare il codice.
+ */
+const copertine = import.meta.glob<ImageMetadata>('../../assets/sentieri-*.jpg', {
+  eager: true,
+  import: 'default',
+});
+const copertina = d.immagine ? (copertine[`../../assets/${d.immagine}.jpg`] ?? null) : null;
+
+/** Dati tecnici: si mostrano solo quelli effettivamente compilati. */
+const datiTecnici = [
+  { voce: 'Difficoltà', valore: d.difficolta, sempre: true },
+  { voce: 'Distanza', valore: d.distanza },
+  { voce: 'Dislivello', valore: d.dislivello },
+  { voce: 'Durata', valore: d.durata },
+  { voce: 'Partenza', valore: d.partenza },
+  { voce: 'Segnavia', valore: d.segnavia },
+].filter((riga) => riga.sempre || Boolean(riga.valore));
+
+const descrizioneBreve =
+  d.sommario.length > 155 ? `${d.sommario.slice(0, 152).trimEnd()}…` : d.sommario;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'TouristAttraction',
+  name: d.nome,
+  description: d.sommario,
+  url: `${SITE_URL}/sentieri/${sentiero.id}`,
+  touristType: 'Escursionismo',
+  isAccessibleForFree: true,
+  // Il sentiero non è "presso" la locanda: si dichiara il legame reale,
+  // cioè che è un'attrattiva del territorio in cui si trova la struttura.
+  containedInPlace: {
+    '@type': 'Place',
+    name: 'Piccole Dolomiti e Gruppo del Pasubio',
+  },
+  provider: { '@id': `${SITE_URL}/#locanda` },
+  image: `${SITE_URL}/og-default.jpg`,
+  // La difficoltà CAI non è un campo standard: si dichiara come proprietà
+  // aggiuntiva, leggibile, invece di forzarla in un campo che non le appartiene.
+  additionalProperty: [
+    { '@type': 'PropertyValue', name: 'Difficoltà CAI', value: d.difficolta },
+    ...(d.distanza
+      ? [{ '@type': 'PropertyValue', name: 'Distanza', value: d.distanza }]
+      : []),
+    ...(d.dislivello
+      ? [{ '@type': 'PropertyValue', name: 'Dislivello', value: d.dislivello }]
+      : []),
+    ...(d.segnavia
+      ? [{ '@type': 'PropertyValue', name: 'Segnavia CAI', value: d.segnavia }]
+      : []),
+  ],
+};
+---
+
+<BaseLayout title={`${d.nome} — Sentieri`} description={descrizioneBreve} schema={schema}>
+  <!-- ==================================================================
+       Intestazione con immagine di copertina
+       ================================================================== -->
+  <section class="relative isolate overflow-hidden bg-stone-800">
+    {
+      copertina ? (
+        <Image
+          src={copertina}
+          alt={`Segnaposto grafico in attesa della fotografia del ${d.nome}`}
+          widths={[640, 960, 1280, 1600, 1920]}
+          sizes="100vw"
+          format="webp"
+          quality={76}
+          loading="eager"
+          decoding="async"
+          class="absolute inset-0 -z-20 h-full w-full object-cover"
+        />
+      ) : (
+        <div class="absolute inset-0 -z-20 bg-forest-900" aria-hidden="true" />
+      )
+    }
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/90 via-stone-900/60 to-stone-900/40"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="shell flex min-h-[52svh] flex-col justify-end pt-28 pb-12 md:min-h-[58svh] md:pb-16">
+      <nav aria-label="Percorso di navigazione" class="mb-6">
+        <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8rem] text-stone-300">
+          <li><a href="/sentieri" class="transition-colors hover:text-stone-50">Sentieri</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="text-stone-100">{d.nome}</li>
+        </ol>
+      </nav>
+
+      <h1 class="display-2 max-w-[24ch] text-stone-50 text-shadow-hero">{d.nome}</h1>
+      <p class="mt-5 max-w-[56ch] text-[1.0625rem] leading-relaxed text-stone-200/95">
+        {d.sommario}
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Descrizione e dati tecnici
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-percorso">
+    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
+      <div class="md:col-span-7">
+        <h2 id="titolo-percorso" class="display-2 max-w-[20ch] text-stone-900">
+          Il percorso
+        </h2>
+        <p class="mt-6 max-w-[62ch] text-[1.0625rem] leading-relaxed text-stone-600">
+          {d.descrizione}
+        </p>
+
+        <p class="mt-8">
+          <a href="/sentieri" class="link-arrow">
+            Tutti i sentieri
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+              <path
+                d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </a>
+        </p>
+      </div>
+
+      <aside class="md:col-span-5" aria-labelledby="titolo-dati">
+        <h2 id="titolo-dati" class="eyebrow border-b border-stone-300 pb-3 text-stone-500">
+          Dati tecnici
+        </h2>
+
+        <dl class="mt-2">
+          {
+            datiTecnici.map((riga) => (
+              <div class="spec">
+                <dt class="spec__key">{riga.voce}</dt>
+                <dd class="spec__val text-stone-800">{riga.valore}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <p class="mt-6 text-[0.8rem] leading-relaxed text-stone-500">
+          Difficoltà secondo la scala del CAI. I dati sono indicativi: prima di partire
+          verifica le condizioni del sentiero.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Chiusura
+       ================================================================== -->
+  <section class="section-y-tight bg-forest-900 text-stone-200">
+    <div class="shell flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h2 class="display-2 max-w-[22ch] text-stone-50">Hai bisogno di informazioni?</h2>
+        <p class="mt-4 max-w-[48ch] text-[1rem] leading-relaxed text-forest-300">
+          Se ci scrivi ti diciamo com'è il sentiero in questo periodo e dove conviene
+          lasciare l'auto.
+        </p>
+      </div>
+      <div class="flex shrink-0 flex-col gap-3 sm:flex-row">
+        <a href="/contatti" class="btn btn--onDark">Scrivici</a>
+        <a href="/camere" class="btn btn--onDark">Le camere</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

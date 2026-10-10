@@ -4,9 +4,10 @@ Sito statico della Locanda Seggiovia, Recoaro Terme (VI).
 Costruito con **Astro 7** e **Tailwind CSS 4**. Nessun database, nessun server
 applicativo, hosting gratuito.
 
-- **Stato attuale: settimana 2 completata** — infrastruttura, design system, homepage,
-  pagine Camere e Ristorante, pagina Contatti con modulo funzionante, pannello di
-  gestione contenuti (Sveltia CMS). Settimana 1: homepage e sistema di design.
+- **Stato attuale: settimana 3 completata** — tutte le pagine della roadmap sono
+  realizzate: home, La Locanda, Camere, Ristorante, Gnocchi con la Fioreta,
+  panoramica Sentieri con 6 schede di dettaglio, Contatti (form, orari, mappa),
+  Privacy e Cookie Policy. Pannello di gestione contenuti attivo.
 - Deploy: Vercel (anteprima attiva) e Netlify (hosting previsto al go-live).
 
 ---
@@ -30,7 +31,7 @@ npm run preview   # anteprima locale della build di produzione
 Dopo `npm run build` si possono eseguire i controlli automatici:
 
 ```bash
-python scripts/verify_build.py        # 103 controlli: SEO di tutte le pagine, CMS, link, asset
+python scripts/verify_build.py        # 300 controlli: SEO di tutte le pagine, contenuti, CMS, link
 node scripts/check_visibility.mjs     # il contenuto resta visibile anche senza JS
 node scripts/test_form.mjs            # collaudo del modulo contatti (richiede `npm run preview`)
 node scripts/shot.mjs                 # screenshot desktop + mobile per la revisione
@@ -50,18 +51,25 @@ animazioni al scroll: pagina bianca se lo script non parte.
 locanda-seggiovia/
 ├── src/
 │   ├── pages/
-│   │   ├── index.astro            # Homepage
-│   │   ├── camere.astro           # Camere e tariffe (legge la collezione `camere`)
-│   │   ├── ristorante.astro       # Ristorante e menù (legge la collezione `menu`)
-│   │   ├── contatti.astro         # Contatti + modulo Web3Forms
-│   │   ├── grazie.astro           # Conferma invio (noindex)
+│   │   ├── index.astro                    # Homepage
+│   │   ├── la-locanda.astro               # Storia e famiglia
+│   │   ├── camere.astro                   # Camere e tariffe
+│   │   ├── ristorante.astro               # Ristorante e menù
+│   │   ├── gnocchi-con-la-fioreta.astro   # Pagina dedicata al piatto De.Co.
+│   │   ├── sentieri/
+│   │   │   ├── index.astro                # Panoramica + scala CAI
+│   │   │   └── [id].astro                 # Scheda di ogni sentiero
+│   │   ├── contatti.astro                 # Form + orari + mappa differita
+│   │   ├── privacy.astro                  # Privacy Policy
+│   │   ├── cookie.astro                   # Cookie Policy
+│   │   ├── grazie.astro                   # Conferma invio (noindex)
 │   │   └── 404.astro
 │   ├── content.config.ts          # ★ schema delle collezioni (Astro 7)
 │   ├── content/                   # ★ contenuti gestiti dal CMS
 │   │   ├── camere/                #   Singola, Doppia
-│   │   ├── menu/                  #   Piatti, per categoria
+│   │   ├── menu/                  #   7 piatti, per categoria
 │   │   ├── gnocchi/               #   Gnocchi con la Fioreta
-│   │   └── sentieri/              #   Vuota: contenuti in settimana 3
+│   │   └── sentieri/              #   6 itinerari
 │   ├── components/
 │   │   ├── Header.astro           # navigazione (menu mobile senza JS)
 │   │   ├── Footer.astro           # recapiti, dati societari, link legali
@@ -69,7 +77,8 @@ locanda-seggiovia/
 │   ├── layouts/
 │   │   └── BaseLayout.astro       # <head>, SEO, JSON-LD, AOS
 │   ├── scripts/
-│   │   └── form-contatti.ts       # invio del modulo via JavaScript
+│   │   ├── form-contatti.ts       # invio del modulo via JavaScript
+│   │   └── mappa.ts               # caricamento differito della mappa Google
 │   ├── data/
 │   │   └── site.ts                # ★ dati della struttura + SITE_URL
 │   ├── styles/
@@ -86,11 +95,13 @@ locanda-seggiovia/
 │   ├── generate_og.py              # genera immagine social e icona iOS
 │   ├── verify_build.py             # controlli automatici sull'output
 │   ├── check_visibility.mjs        # nessun contenuto nascosto, anche senza JS
+│   ├── test_form.mjs               # collaudo del modulo contatti
 │   ├── diag.mjs                    # diagnostica dei valori CSS calcolati
 │   └── shot.mjs                    # screenshot per la revisione visiva
 ├── astro.config.mjs
 ├── tailwind.config.mjs
 ├── netlify.toml
+├── vercel.json
 └── .env.example
 ```
 
@@ -349,15 +360,29 @@ antispam di Web3Forms, che è quanto offre il servizio a quel livello.
 
 ---
 
-## 8. Cosa arriva nelle prossime settimane
+## 8. Cosa arriva nella prossima settimana
 
 | Settimana | Contenuto |
 |---|---|
-| 3 | Pagina Gnocchi con la Fioreta · 6 pagine sentiero · completamento di Contatti (mappa, orari, dati strutturati) · Privacy e Cookie Policy |
 | 4 | Audit Lighthouse · test mobile · formazione alla cliente · DNS e go-live |
 
-I contenuti dei sentieri si creano già da `/admin`: la collezione e lo schema
-esistono, le pagine di dettaglio arrivano nella settimana 3.
+Tutte le pagine previste dalla roadmap sono realizzate. Restano le attività di
+collaudo e pubblicazione, non di sviluppo.
+
+### Decisione sulla mappa di Google
+
+La mappa nella pagina Contatti è a **caricamento differito**: l'iframe di Google
+parte solo dopo un clic dell'utente. Non è una scelta estetica.
+
+L'iframe di Google Maps imposta cookie di terze parti appena viene caricato.
+Caricandolo automaticamente, il sito avrebbe dovuto mostrare un banner cookie e
+chiedere il consenso prima di renderlo visibile. Con il caricamento differito non
+c'è nulla da autorizzare, quindi **il sito non ha banner cookie** — coerente con
+la scelta di non includere analytics né altri script di terze parti.
+
+Il codice è in `src/scripts/mappa.ts`. Se si volesse caricare la mappa
+automaticamente, bisognerebbe anche aggiungere un banner di consenso e
+aggiornare la Cookie Policy.
 
 ---
 
@@ -396,19 +421,26 @@ Dopo il push, aggiornare `repo:` in `public/admin/config.yml` con
 | `Menu` e `OfferCatalog` sulle pagine nuove | menù e tariffe diventano leggibili anche dai motori di ricerca |
 | Politiche di soggiorno in `site.ts` | valgono per tutte le camere: nel CMS sarebbero duplicabili e divergenti |
 | `/grazie` esclusa da sitemap e robots | è una conferma, non un contenuto: contraddirebbe il suo `noindex` |
+| Sentieri come pagina dinamica `[id].astro` | una sola impaginazione per sei schede, e il CMS può aggiungerne altre senza toccare il codice |
+| Mappa a caricamento differito | l'iframe di Google imposta cookie: caricandolo su clic, il sito non ha bisogno di un banner |
+| Difficoltà CAI in `additionalProperty` | non esiste un campo schema.org equivalente: dichiararla come proprietà aggiuntiva è più onesto che forzarla altrove |
+| Nessun anno di fondazione citato | la cliente non l'ha confermato: meglio omettere la data che inventarla |
 
 ### Limiti noti di questa consegna
 
-- **Mancano ancora le pagine** Gnocchi con la Fioreta, i 6 sentieri, La Locanda,
-  Privacy e Cookie Policy: arrivano nella settimana 3. I link puntano a URL
-  previsti, e `verify_build.py` li elenca come "previsti" e non come rotti.
 - **Il collaudo end-to-end del modulo non è concluso.** I 24 controlli superano,
   ma con la chiave dimostrativa nessuna email parte e il browser di collaudo viene
   bloccato da Cloudflare. Serve una prova manuale con la chiave reale (§7).
-- **La pagina Contatti è volutamente minima**: mancano mappa, orari e dati
-  strutturati, che arrivano nella settimana 3 insieme al resto.
+- **I dati societari restano segnaposto** in `src/data/site.ts`: telefono,
+  partita IVA, codice fiscale, orari e anno di fondazione. La Privacy Policy li
+  mostra esplicitamente come «da confermare».
+- **Privacy e Cookie Policy sono testi base da far validare.** Descrivono con
+  precisione come il sito tratta i dati, ma non sostituiscono il parere di un
+  consulente privacy.
 - **I prezzi del menù sono vuoti**: la cliente non li ha forniti, e la pagina lo
   dichiara apertamente invece di inventarli.
+- **Le immagini sono segnaposto**, incluse le sei copertine dei sentieri e la
+  foto degli ambienti: sono disegni generati proceduralmente, non fotografie.
 - **Nessuna verifica con un lettore di schermo reale** è stata eseguita. Sono
   applicati contrasto, focus visibile, ordine dei titoli, skip-link, `alt`
   veritieri e rispetto di `prefers-reduced-motion`, ma un test manuale con

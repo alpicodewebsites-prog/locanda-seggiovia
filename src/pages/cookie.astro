@@ -1,0 +1,152 @@
+---
+/**
+ * Cookie Policy.
+ *
+ * ⚠️ DOCUMENTO DA FAR VALIDARE, come la Privacy Policy.
+ *
+ * Il punto centrale — e la ragione per cui questo sito non mostra un banner
+ * cookie — è che NON viene impostato alcun cookie prima di un'azione esplicita
+ * dell'utente. La mappa di Google è a caricamento differito proprio per questo.
+ * Se un giorno si aggiungesse analytics o si caricasse la mappa da sola, questa
+ * pagina e il banner diventerebbero obbligatori.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, SITE_URL } from '../data/site';
+
+const description =
+  'Cookie Policy del sito della Locanda Seggiovia: il sito non imposta cookie prima di un’azione dell’utente, e la mappa di Google si carica solo su richiesta.';
+
+/**
+ * Cookie e memorizzazioni realmente presenti.
+ * Va tenuto allineato al codice: se cambia qualcosa nel sito, cambia qui.
+ */
+const elenco = [
+  {
+    nome: 'Cookie tecnici propri',
+    tipo: 'Nessuno',
+    durata: '—',
+    nota: 'Il sito non imposta cookie propri: non ci sono sessioni, carrelli o preferenze da ricordare.',
+  },
+  {
+    nome: 'Cookie di Google Maps',
+    tipo: 'Di terze parti',
+    durata: 'Stabilita da Google',
+    nota:
+      'Vengono impostati solo dopo che l’utente ha premuto «Carica la mappa» nella pagina Contatti. Se non si preme il pulsante, nessun cookie di Google viene impostato.',
+  },
+  {
+    nome: 'Cookie di reCAPTCHA (Google)',
+    tipo: 'Di terze parti',
+    durata: 'Stabilita da Google',
+    nota:
+      'Presenti solo se è attiva la verifica reCAPTCHA sul modulo di contatto. Al momento l’opzione è disattivata, quindi questi cookie non vengono impostati.',
+  },
+  {
+    nome: 'Log tecnici dell’hosting',
+    tipo: 'Non sono cookie',
+    durata: 'Breve periodo',
+    nota:
+      'Il fornitore di hosting registra indirizzo IP e richieste per sicurezza e diagnostica. Non sono cookie e non servono a profilare.',
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `Cookie Policy — ${site.nome}`,
+  url: `${SITE_URL}/cookie`,
+  inLanguage: 'it-IT',
+  isPartOf: { '@id': `${SITE_URL}/#locanda` },
+};
+---
+
+<BaseLayout title="Cookie Policy" description={description} schema={schema}>
+  <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
+    <div class="shell">
+      <p class="eyebrow">Informativa</p>
+      <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">Cookie Policy</h1>
+      <p class="lede mt-6 max-w-[58ch]">
+        Questo sito non ti chiede di accettare cookie che non usa. Ecco esattamente
+        cosa viene impostato e quando.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-y" aria-labelledby="titolo-elenco">
+    <div class="shell">
+      <h2 id="titolo-elenco" class="display-2 max-w-[24ch] text-stone-900">
+        Cosa viene impostato, in concreto
+      </h2>
+
+      <div class="mt-10 overflow-x-auto">
+        <table class="tariffe tariffe--testo min-w-[42rem]">
+          <caption class="sr-only">
+            Elenco dei cookie e delle memorizzazioni tecniche del sito
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Voce</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Durata</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              elenco.map((voce) => (
+                <tr>
+                  <th scope="row">
+                    {voce.nome}
+                    <span class="mt-1 block max-w-[46ch] text-[0.85rem] font-normal leading-relaxed text-stone-600">
+                      {voce.nota}
+                    </span>
+                  </th>
+                  <td>{voce.tipo}</td>
+                  <td>{voce.durata}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-6 max-w-[70ch] text-[0.875rem] leading-relaxed text-stone-500">
+        L’elenco è aggiornato alla data di pubblicazione e viene rivisto quando cambia
+        qualcosa nel sito. Se in futuro venisse attivato uno strumento di statistica,
+        verrebbe indicato qui e il sito chiederebbe il consenso prima di attivarlo.
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-[var(--spacing-section)]" aria-labelledby="titolo-gestione">
+    <div class="shell grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <h2 id="titolo-gestione" class="display-2 max-w-[18ch] text-stone-900">
+          Come gestirli dal browser
+        </h2>
+      </div>
+      <div class="md:col-span-8">
+        <p class="max-w-[62ch] text-[1.0625rem] leading-relaxed text-stone-600">
+          Puoi bloccare o cancellare i cookie dalle impostazioni del tuo browser. Bloccare
+          i cookie di terze parti non impedisce di usare questo sito: l’unica cosa che non
+          funzionerebbe è la mappa incorporata, che puoi comunque aprire in una nuova
+          scheda.
+        </p>
+
+        <h3 class="mt-10 font-[family-name:var(--font-display)] text-xl text-stone-900">
+          Perché non c’è un banner
+        </h3>
+        <p class="mt-3 max-w-[62ch] text-[0.95rem] leading-relaxed text-stone-600">
+          Il banner serve quando un sito imposta cookie non necessari <em>prima</em> che
+          l’utente acconsenta. Qui non accade: la mappa di Google si carica solo dopo un
+          clic, e non ci sono altri script di terze parti. Senza cookie da autorizzare,
+          un banner sarebbe solo un ostacolo in più.
+        </p>
+
+        <p class="mt-10 flex flex-wrap gap-x-8 gap-y-3">
+          <a href="/privacy" class="link-arrow">Leggi la Privacy Policy</a>
+          <a href="/contatti" class="link-arrow">Contatti</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -69,24 +69,31 @@ class LinkParser(HTMLParser):
             self.h2.append(testo)
 
 
-# Pagine che devono esistere e i controlli SEO specifici.
+# Pagine che devono esistere e superare i controlli SEO.
+# I sentieri di dettaglio sono elencati esplicitamente: se un contenuto venisse
+# rinominato, il controllo fallirebbe invece di passare in silenzio.
 PAGINE = {
-    "index.html": {"titolo_min": 10, "richiede_h1": True},
-    "camere/index.html": {"titolo_min": 10, "richiede_h1": True},
-    "ristorante/index.html": {"titolo_min": 10, "richiede_h1": True},
-    "contatti/index.html": {"titolo_min": 10, "richiede_h1": True},
-    "grazie/index.html": {"titolo_min": 10, "richiede_h1": True},
-    "404.html": {"titolo_min": 10, "richiede_h1": True},
+    "index.html": {"richiede_h1": True},
+    "la-locanda/index.html": {"richiede_h1": True},
+    "camere/index.html": {"richiede_h1": True},
+    "ristorante/index.html": {"richiede_h1": True},
+    "gnocchi-con-la-fioreta/index.html": {"richiede_h1": True},
+    "sentieri/index.html": {"richiede_h1": True},
+    "sentieri/grandi-alberi/index.html": {"richiede_h1": True},
+    "sentieri/campogrosso/index.html": {"richiede_h1": True},
+    "sentieri/ponte-tibetano/index.html": {"richiede_h1": True},
+    "sentieri/strada-52-gallerie/index.html": {"richiede_h1": True},
+    "sentieri/sentiero-mole/index.html": {"richiede_h1": True},
+    "sentieri/gino-solda/index.html": {"richiede_h1": True},
+    "contatti/index.html": {"richiede_h1": True},
+    "privacy/index.html": {"richiede_h1": True},
+    "cookie/index.html": {"richiede_h1": True},
+    "grazie/index.html": {"richiede_h1": True},
+    "404.html": {"richiede_h1": True},
 }
 
-# Pagine previste ma non ancora realizzate (settimana 3).
-PAGINE_FUTURE = {
-    "/la-locanda",
-    "/gnocchi-con-la-fioreta",
-    "/sentieri",
-    "/privacy",
-    "/cookie",
-}
+# Nessuna eccezione: dalla settimana 3 tutte le pagine linkate esistono davvero.
+PAGINE_FUTURE: set[str] = set()
 
 
 def seo_pagina(percorso: Path, rel: str) -> LinkParser:
@@ -175,12 +182,90 @@ def main() -> int:
     check("ristorante: schema Menu presente", '"@type": "Menu"' in rist_html or '"@type":"Menu"' in rist_html)
     check("ristorante: categorie del menù presenti", "Antipasti" in rist_html and "Dolci" in rist_html)
 
+    # --- Gnocchi con la Fioreta ---------------------------------------------
+    gno = DIST / "gnocchi-con-la-fioreta/index.html"
+    gno_html = leggi(gno) if gno.exists() else ""
+    check("gnocchi: schema Recipe presente", '"Recipe"' in gno_html)
+    check("gnocchi: ingredienti della ricetta De.Co.", "Fioreta" in gno_html and "Farina bianca" in gno_html)
+    check("gnocchi: la fioreta è spiegata", "ricotta in fase liquida" in gno_html)
+    check("gnocchi: riconoscimento De.Co. presente", "Denominazione Comunale di Origine" in gno_html)
+    check("gnocchi: le tre fasi di lavorazione", gno_html.count("HowToStep") >= 3)
+    check("gnocchi: riferimento a Nonna Maria", "Nonna Maria" in gno_html)
+
+    # --- Sentieri: le sei schede --------------------------------------------
+    sentieri_attesi = {
+        "grandi-alberi": ["Sentiero dei Grandi Alberi", "12 km", "E"],
+        "campogrosso": ["Anello Storico di Campogrosso", "10 km", "E"],
+        "ponte-tibetano": ["Ponte Tibetano AVIS", "105", "E"],
+        "strada-52-gallerie": ["Strada delle 52 Gallerie", "6,6 km", "EE"],
+        "sentiero-mole": ["Sentiero delle Mole", "151/144", "T"],
+        "gino-solda": ["Sentiero Gino Soldà", "4,25 km", "E"],
+    }
+    for slug, attesi in sentieri_attesi.items():
+        percorso = DIST / f"sentieri/{slug}/index.html"
+        if not percorso.exists():
+            check(f"sentiero {slug}: pagina generata", False)
+            continue
+        html = leggi(percorso)
+        check(f"sentiero {slug}: pagina generata", True)
+        check(f"sentiero {slug}: schema TouristAttraction", '"TouristAttraction"' in html)
+        for atteso in attesi:
+            check(f"sentiero {slug}: contiene «{atteso}»", atteso in html)
+        check(
+            f"sentiero {slug}: dati tecnici in scheda",
+            "Dati tecnici" in html and "Difficoltà" in html,
+        )
+
+    panoramica = DIST / "sentieri/index.html"
+    pan_html = leggi(panoramica) if panoramica.exists() else ""
+    check("sentieri: panoramica con schema ItemList", '"ItemList"' in pan_html)
+    check("sentieri: la scala CAI è spiegata", "Escursionisti esperti" in pan_html)
+    check(
+        "sentieri: ogni scheda è linkata dalla panoramica",
+        all(f"/sentieri/{slug}" in pan_html for slug in sentieri_attesi),
+    )
+
+    # --- La Locanda ---------------------------------------------------------
+    loc = DIST / "la-locanda/index.html"
+    loc_html = leggi(loc) if loc.exists() else ""
+    check("la-locanda: famiglia Asnicar Bertoldi citata", "Asnicar Bertoldi" in loc_html)
+    check("la-locanda: posizionamento da rifugio", "rifugio" in loc_html.lower())
+    check(
+        "la-locanda: nessun anno di fondazione inventato",
+        "dal 19" not in loc_html and "dal 20" not in loc_html,
+    )
+
     contatti_html = leggi(DIST / "contatti/index.html") if (DIST / "contatti/index.html").exists() else ""
     check("contatti: form Web3Forms presente", 'action="https://api.web3forms.com/submit"' in contatti_html)
     check("contatti: campo access_key presente", 'name="access_key"' in contatti_html)
     check("contatti: campo esca antispam presente", 'name="botcheck"' in contatti_html)
     check("contatti: redirect a /grazie configurato", 'name="redirect"' in contatti_html and "/grazie" in contatti_html)
     check("contatti: campo consenso privacy", 'name="privacy"' in contatti_html)
+    check("contatti: schema ContactPage", '"ContactPage"' in contatti_html)
+    check("contatti: orari pubblicati", "Orari" in contatti_html and "Reception" in contatti_html)
+    check(
+        "contatti: mappa a caricamento differito (nessun iframe automatico)",
+        "data-src=" in contatti_html and "<iframe" not in contatti_html,
+    )
+    check("contatti: pulsante per caricare la mappa", "Carica la mappa" in contatti_html)
+
+    # --- Privacy e Cookie ---------------------------------------------------
+    priv = DIST / "privacy/index.html"
+    priv_html = leggi(priv) if priv.exists() else ""
+    check("privacy: pagina presente", priv.exists())
+    check("privacy: tratta il modulo di contatto", "Modulo di contatto" in priv_html)
+    check("privacy: diritti dell'interessato", "Garante" in priv_html)
+    check(
+        "privacy: dati societari segnalati come da confermare",
+        "da confermare" in priv_html,
+    )
+
+    cook = DIST / "cookie/index.html"
+    cook_html = leggi(cook) if cook.exists() else ""
+    check("cookie: pagina presente", cook.exists())
+    check("cookie: dichiara l'assenza di cookie propri", "non imposta cookie propri" in cook_html)
+    check("cookie: spiega la mappa differita", "Carica la mappa" in cook_html)
+    check("cookie: spiega perché non c'è il banner", "banner" in cook_html)
 
     # --- Il CMS non deve essere indicizzabile ma deve essere pubblicato ------
     admin = DIST / "admin" / "index.html"
@@ -204,8 +289,9 @@ def main() -> int:
                 (radice / "src" / "content" / cartella).is_dir(),
             )
 
-    # --- Link interni: ogni href deve esistere o essere previsto ------------
+    # --- Link interni: ogni href deve esistere ------------------------------
     rotti = []
+    previsti = []
     for href in href_raccolti:
         pulito = href.split("#")[0].split("?")[0]
         if not pulito or pulito == "/":
@@ -218,9 +304,16 @@ def main() -> int:
         if any(c.exists() for c in candidati):
             continue
         if pulito.rstrip("/") in PAGINE_FUTURE:
+            previsti.append(href)
             continue
         rotti.append(href)
     check("nessun link interno rotto", not rotti, ", ".join(sorted(rotti)[:6]))
+    # Dalla settimana 3 non deve restare nessun link a pagine non realizzate.
+    check(
+        "nessun link a pagine «previste» non realizzate",
+        not previsti,
+        ", ".join(sorted(set(previsti))[:6]),
+    )
 
     # --- File statici -------------------------------------------------------
     for f in ("robots.txt", "sitemap-index.xml", "favicon.svg", "og-default.jpg", "apple-touch-icon.png"):
@@ -237,6 +330,24 @@ def main() -> int:
         check("sitemap: non include /admin/", "/admin/" not in s)
         check("sitemap: non include /grazie", "/grazie" not in s)
         check("sitemap: include /camere", "/camere" in s)
+        check("sitemap: include i sentieri di dettaglio", "/sentieri/gino-solda" in s)
+        check("sitemap: include privacy e cookie", "/privacy" in s and "/cookie" in s)
+
+    # --- Il footer deve linkare le pagine legali ----------------------------
+    check(
+        "footer: link a Privacy Policy e Cookie Policy",
+        "/privacy" in html_home and "/cookie" in html_home,
+    )
+
+    # --- Nessun dato inventato ----------------------------------------------
+    for valore in ("000 000 0000", "00000000000"):
+        if valore in html_home:
+            check(
+                "i dati segnaposto restano tali (nessun valore finto immesso)",
+                True,
+                f"«{valore}» ancora presente, come previsto",
+            )
+            break
 
     # --- Il segnaposto non deve spacciarsi per foto reale -------------------
     check(

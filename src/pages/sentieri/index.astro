@@ -1,0 +1,173 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site, SITE_URL } from '../../data/site';
+import imgChiusura from '../../assets/sentieri-piccole-dolomiti.jpg';
+
+const sentieri = (await getCollection('sentieri')).sort((a, b) => a.data.ordine - b.data.ordine);
+
+/** Il significato delle sigle CAI, spiegato dove serve. */
+const scalaCai = [
+  { sigla: 'T', nome: 'Turistico', nota: 'Sentieri facili, adatti anche alle famiglie.' },
+  { sigla: 'E', nome: 'Escursionistico', nota: 'Serve un minimo di allenamento e scarpe adatte.' },
+  { sigla: 'EE', nome: 'Escursionisti esperti', nota: 'Terreno impervio, attrezzatura adeguata.' },
+];
+
+const description =
+  'Sei itinerari escursionistici da Recoaro Terme: Piccole Dolomiti, Gruppo del Carega e Pasubio, con distanze, dislivelli e difficoltà CAI.';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Sentieri da Recoaro Terme',
+  url: `${SITE_URL}/sentieri`,
+  numberOfItems: sentieri.length,
+  itemListElement: sentieri.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: s.data.nome,
+    url: `${SITE_URL}/sentieri/${s.id}`,
+  })),
+};
+---
+
+<BaseLayout title="Sentieri" description={description} schema={schema}>
+  <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
+    <div class="shell grid gap-8 md:grid-cols-12 md:items-end">
+      <div class="md:col-span-7">
+        <p class="eyebrow">Territorio e sentieri</p>
+        <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">
+          I sentieri cominciano dal centro del paese
+        </h1>
+      </div>
+      <div class="md:col-span-5">
+        <p class="lede text-[1rem]">
+          Sei itinerari fra Piccole Dolomiti, Gruppo del Carega e Pasubio. Difficoltà dal
+          turistico all'escursionistico esposto, con i dati tecnici di ciascuno.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Elenco: si comporta come un tabellone di sentiero
+       ================================================================== -->
+  <section class="section-y" aria-labelledby="titolo-elenco">
+    <div class="shell">
+      <h2 id="titolo-elenco" class="sr-only">Elenco degli itinerari</h2>
+
+      <div>
+        {
+          sentieri.map((sentiero, i) => (
+            <article
+              class="group grid gap-x-8 gap-y-4 border-t border-stone-300 py-8 md:grid-cols-12 md:items-baseline"
+              data-aos="fade-in"
+              data-aos-delay={i * 50}
+            >
+              <h3 class="md:col-span-4">
+                <a
+                  href={`/sentieri/${sentiero.id}`}
+                  class="font-[family-name:var(--font-display)] text-xl leading-snug text-stone-900 transition-colors duration-300 group-hover:text-forest-700 md:text-[1.375rem]"
+                >
+                  {sentiero.data.nome}
+                </a>
+              </h3>
+
+              <p class="text-[0.95rem] leading-relaxed text-stone-600 md:col-span-6">
+                {sentiero.data.sommario}
+              </p>
+
+              <dl class="flex flex-wrap gap-x-6 gap-y-1 text-[0.8rem] tabular-nums text-stone-500 md:col-span-2 md:flex-col md:items-end md:gap-y-0.5 md:text-right">
+                {sentiero.data.distanza && <dd>{sentiero.data.distanza}</dd>}
+                {sentiero.data.dislivello && <dd>{sentiero.data.dislivello}</dd>}
+                <dd class="font-medium text-stone-700">{sentiero.data.difficolta}</dd>
+              </dl>
+            </article>
+          ))
+        }
+        <div class="border-t border-stone-300"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Scala CAI
+       ================================================================== -->
+  <section class="section-y-tight bg-stone-50" aria-labelledby="titolo-cai">
+    <div class="shell grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <h2 id="titolo-cai" class="display-2 max-w-[18ch] text-stone-900">
+          Come si leggono le difficoltà
+        </h2>
+        <p class="mt-5 max-w-[44ch] text-[0.95rem] leading-relaxed text-stone-600">
+          Le sigle sono la classificazione ufficiale del Club Alpino Italiano. Non sono
+          un giudizio: dicono cosa aspettarsi dal terreno.
+        </p>
+      </div>
+
+      <dl class="md:col-span-8">
+        {
+          scalaCai.map((voce) => (
+            <div class="grid gap-1 border-t border-stone-300 py-5 sm:grid-cols-12 sm:gap-6">
+              <dt class="font-[family-name:var(--font-display)] text-xl text-stone-900 sm:col-span-3">
+                {voce.sigla}
+              </dt>
+              <dd class="sm:col-span-3">
+                <span class="text-[0.95rem] font-medium text-stone-800">{voce.nome}</span>
+              </dd>
+              <dd class="text-[0.9rem] leading-relaxed text-stone-600 sm:col-span-6">
+                {voce.nota}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Immagine di chiusura
+       ================================================================== -->
+  <section class="relative isolate overflow-hidden bg-stone-800">
+    <Image
+      src={imgChiusura}
+      alt="Segnaposto grafico di creste montuose con foschia nelle valli"
+      widths={[640, 960, 1280, 1600, 1920]}
+      sizes="100vw"
+      format="webp"
+      quality={74}
+      loading="lazy"
+      decoding="async"
+      class="absolute inset-0 -z-20 h-full w-full object-cover"
+    />
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/88 to-stone-900/45"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="shell py-24 text-center md:py-28">
+      <h2 class="display-2 mx-auto max-w-[22ch] text-stone-50 text-shadow-hero" data-aos="fade-up">
+        Dove si dorme, prima di partire
+      </h2>
+      <p
+        class="mx-auto mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-stone-200/95"
+        data-aos="fade-up"
+        data-aos-delay="80"
+      >
+        La Locanda è in piazza a Recoaro Terme: colazione presto, consigli su misura,
+        e i sentieri che cominciano fuori dalla porta.
+      </p>
+      <div
+        class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
+        data-aos="fade-up"
+        data-aos-delay="160"
+      >
+        <a href="/camere" class="btn btn--onDark">Le camere</a>
+        <a href="/contatti" class="btn btn--onDark">Chiedi informazioni</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

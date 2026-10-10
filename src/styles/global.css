@@ -332,6 +332,18 @@
     background-color: color-mix(in oklab, var(--color-stone-50) 6%, transparent);
   }
 
+  /* Variante per tabelle di testo (non di cifre): niente allineamento a destra
+     né divieto di andare a capo, che sulle tariffe ha senso e qui no. */
+  .tariffe--testo th,
+  .tariffe--testo td {
+    text-align: left;
+    white-space: normal;
+    vertical-align: top;
+  }
+  .tariffe--testo tbody th {
+    font-weight: 500;
+  }
+
   /* --- Voce di menù ---------------------------------------------------- */
   .piatto {
     display: flex;

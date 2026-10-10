@@ -39,7 +39,7 @@ Accedi con l'account GitHub che ha accesso al progetto. Da lì trovi quattro sez
 | **Camere e tariffe** | i tipi di camera, le tre tariffe, i servizi in camera |
 | **Menù del ristorante** | i piatti, divisi per antipasti, primi, secondi, dolci |
 | **Gnocchi con la Fioreta** | la pagina del piatto: storia, ricetta, lavorazione, condimento |
-| **Sentieri** | gli itinerari escursionistici |
+| **Sentieri** | i sei itinerari, con dati tecnici e difficoltà CAI |
 
 Apri la voce che ti interessa, modifica quello che serve e premi **Publish**.
 Dopo circa un minuto le modifiche sono online.
@@ -111,13 +111,18 @@ Per sostituirle:
 | Nome file | Dove appare | Soggetto ideale |
 |---|---|---|
 | `hero-piccole-dolomiti.jpg` | apertura della home | le Piccole Dolomiti viste da Recoaro |
-| `locanda-facciata.jpg` | sezione «Un rifugio, non un albergo» | la facciata della locanda |
-| `sentieri-piccole-dolomiti.jpg` | fascia finale della home | un sentiero o un panorama |
+| `locanda-facciata.jpg` | home, sezione «Un rifugio, non un albergo» | la facciata della locanda |
+| `locanda-ambienti.jpg` | pagina La Locanda | gli interni, la sala, i dettagli |
+| `sentieri-piccole-dolomiti.jpg` | chiusura della home e dei sentieri | un sentiero o un panorama |
 | `camere-interno.jpg` | pagina Camere | una camera rifatta |
 | `ristorante-sala.jpg` | pagina Ristorante | la sala del ristorante |
 | `gnocchi-fioreta.jpg` | pagina Gnocchi con la Fioreta | il piatto |
-| `sentieri-pasubio.jpg` | pagina Sentieri | il Pasubio |
-| `territorio-malghe.jpg` | pagina Territorio | una malga |
+| `sentieri-grandi-alberi.jpg` | scheda del sentiero | il bosco di faggi e betulle |
+| `sentieri-campogrosso.jpg` | scheda del sentiero | le trincee e la Strada del Re |
+| `sentieri-ponte-tibetano.jpg` | scheda del sentiero | il ponte sospeso |
+| `sentieri-52-gallerie.jpg` | scheda del sentiero | una galleria o il Rifugio Papa |
+| `sentieri-mole.jpg` | scheda del sentiero | le macine in pietra o la fioritura |
+| `sentieri-gino-solda.jpg` | scheda del sentiero | il Monte Spitz o il centro di Recoaro |
 
 Tutte le fotografie stanno nella **stessa cartella** (`src/assets/`): non ci sono
 copie da aggiornare in altri posti. Il sistema si occupa da solo di ridurle e
@@ -172,15 +177,16 @@ operazioni delicate sono rinominare i file e modificare le cartelle.
 No. L'unico costo ricorrente è il dominio (circa 15–20 € all'anno). Hosting,
 pannello di amministrazione e certificato HTTPS sono gratuiti.
 
+**Come si aggiunge un nuovo sentiero?**
+Dal pannello, sezione **Sentieri**: premi **New**, compila nome, sommario,
+descrizione, difficoltà e i dati tecnici che conosci, poi pubblica. La scheda si
+crea da sola e compare subito nell'elenco. **Compila solo i dati che conosci**:
+i campi vuoti non vengono mostrati, mentre un dato sbagliato resta sbagliato.
+
 **Come si aggiunge un nuovo piatto o una nuova camera?**
 Dal pannello: apri la sezione, premi **New**, compila i campi e pubblica. Per una
 camera nuova servono le tre tariffe; per un piatto basta il nome e la categoria,
 il prezzo si può aggiungere dopo.
-
-**Come si aggiunge un nuovo sentiero?**
-La sezione **Sentieri** esiste già nel pannello e i sentieri si possono creare da
-subito. Le pagine di dettaglio, con la scheda completa di ogni itinerario,
-arrivano nella prossima consegna.
 
 **Il modulo di contatto dove manda le email?**
 A `locandaseggiovia@gmail.com`. Il modulo è pronto e funzionante nel suo
@@ -190,3 +196,13 @@ Web3Forms: è un'operazione da fare una volta sola, chiedi assistenza.
 **Cosa succede se il modulo non funziona?**
 Chi scrive vede un messaggio di errore che invita a scrivere direttamente a
 `locandaseggiovia@gmail.com`, quindi nessun messaggio va perso in silenzio.
+
+**Perché la mappa non si vede subito?**
+Perché il sito non vuole caricare i cookie di Google senza che l'utente lo
+decida. C'è un pulsante «Carica la mappa»: chi lo preme vede la mappa, chi non
+lo preme non riceve cookie di terze parti. È il motivo per cui il sito non ha
+quei banner fastidiosi da accettare a ogni visita.
+
+**Il sito raccoglie statistiche sulle visite?**
+No. Non ci sono analytics e non ci sono cookie di profilazione. L'unico cookie
+possibile è quello di Google Maps, e solo se l'utente decide di caricare la mappa.
