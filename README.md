@@ -170,14 +170,48 @@ devono avere un URL fisso (favicon, icona iOS, immagine social, robots.txt).
 
 ---
 
-## 5. Deploy su Netlify
+## 5. Deploy
+
+### Anteprima attiva su Vercel (revisione cliente)
+
+Il sito è pubblicato su Vercel ed è raggiungibile qui:
+
+**https://locanda-seggiovia.vercel.app**
+
+È un indirizzo **temporaneo** di anteprima, non il dominio definitivo.
+Non è protetto da login: il link si può mandare direttamente alla cliente.
+
+Il canonical e i tag Open Graph puntano già a `www.locandaseggiovia.com`, quindi
+questa anteprima **non entra in concorrenza** con il sito vero nelle ricerche:
+Google attribuisce il contenuto al dominio definitivo.
+
+Per ripubblicare dopo una modifica:
+
+```bash
+vercel deploy --prod        # aggiorna locanda-seggiovia.vercel.app
+vercel deploy               # crea una anteprima separata, con URL usa e getta
+```
+
+Il progetto è collegato all'account Vercel: la configurazione locale sta in
+`.vercel/`, che è escluso da Git.
+
+> Il file `vercel.json` imposta comandi di build, cartella di output e header di
+> sicurezza. Deve contenere **JSON puro**: Vercel non accetta commenti, quindi le
+> note stanno qui. Vercel applica i propri valori predefiniti per
+> `Referrer-Policy` e `Strict-Transport-Security` e ignora i duplicati: le altre
+> intestazioni sono efficaci.
+
+### Netlify (alternativa, o hosting definitivo)
+
+Il file `netlify.toml` è pronto per Netlify, che resta l'hosting previsto dal
+progetto per il go-live.
 
 1. Creare un repository su GitHub e caricare il progetto (vedi §7).
 2. Su [netlify.com](https://netlify.com) → **Add new site** → **Import an existing project**.
 3. Collegare il repository. Netlify legge `netlify.toml`: comando `npm run build`,
    cartella `dist`. Non serve configurare altro.
 4. **Site configuration → Environment variables**: aggiungere le variabili
-   elencate in `.env.example` (in particolare `PUBLIC_WEB3FORMS_KEY` e `SITE_URL`).
+   elencate in `.env.example` (in particolare `PUBLIC_WEB3FORMS_KEY`).
 5. **Domain management**: puntare `locandaseggiovia.com` e attivare HTTPS
    (certificato automatico, gratuito).
 

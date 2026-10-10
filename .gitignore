@@ -5,6 +5,9 @@ node_modules/
 dist/
 .astro/
 
+# Vercel (configurazione locale del progetto collegato)
+.vercel/
+
 # Immagini di revisione (generate da scripts/shot.mjs, non fanno parte del sito)
 screenshots/
 
@@ -31,3 +34,5 @@ desktop.ini
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+
+.vercel
