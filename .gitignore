@@ -39,3 +39,9 @@ pnpm-debug.log*
 
 # Script di servizio locale, non fa parte del sito
 CARICA-SU-GITHUB.cmd
+
+# Rete di sicurezza: file di credenziali creati per errore da comandi con
+# percorsi assoluti non espansi. Non devono MAI finire nel repository.
+Usersaless*
+*AppDataLocalTemp*
+*.txt.tmp
