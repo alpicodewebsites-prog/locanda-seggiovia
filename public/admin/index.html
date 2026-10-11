@@ -15,9 +15,12 @@
 
       Per accedere serve un account GitHub con permesso di scrittura sul
       repository indicato in `repo` dentro config.yml.
+
+      IMPORTANTE — non aggiungere un <link> al foglio di stile di Sveltia e non
+      mettere `type="module"` sullo script: la libreria se ne occupa da sola e
+      segnala entrambe le cose come errori. Lo script va incluso così com'è.
     -->
-    <link rel="stylesheet" href="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.css" />
-    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js" type="module"></script>
+    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
   </head>
 
   <body>
