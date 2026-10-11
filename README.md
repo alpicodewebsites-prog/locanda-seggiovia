@@ -474,7 +474,41 @@ aggiornare la Cookie Policy.
 
 ---
 
-## 9. Inizializzare il repository Git
+## 9. Repository e pubblicazione
+
+Il progetto è su GitHub:
+
+**https://github.com/alpicodewebsites-prog/locanda-seggiovia** (branch `main`)
+
+Vercel è collegato a questo repository: **ogni push ricostruisce il sito da solo**.
+Non serve più pubblicare a mano dal terminale — e soprattutto, quando la
+proprietaria salva un contenuto dal pannello `/admin`, quel salvataggio è un
+commit, quindi il sito si aggiorna da sé in circa un minuto.
+
+### Comandi utili
+
+```bash
+git add <file>          # mettere in attesa SOLO i file voluti
+git commit -m "..."     # salvare la modifica
+git push                # pubblicare (Vercel ricostruisce da solo)
+```
+
+> Non usare `git add -A` in questo progetto senza aver controllato `git status`
+> prima: in passato ha incluso per errore file temporanei. Meglio indicare i file
+> per nome.
+
+---
+
+## 9-bis. Autenticazione su GitHub
+
+Git su questa macchina è autenticato con l'account `alpicodewebsites-prog`
+tramite il Credential Manager di Windows. Le credenziali si gestiscono da
+**Pannello di controllo ? Gestione credenziali ? Credenziali Windows**, cercando
+`git:https://github.com`.
+
+Se un push viene rifiutato con *«Permission denied»*, quasi sempre significa che
+è salvata la credenziale di un **account diverso**: va cancellata, e il push
+successivo chiederà di accedere di nuovo.
 
 ```bash
 git init
