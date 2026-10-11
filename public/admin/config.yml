@@ -11,6 +11,10 @@ backend:
   name: github
   repo: alpicodewebsites-prog/locanda-seggiovia
   branch: main
+  # Il pannello è servito da Vercel, ma il login passa da Netlify. Netlify
+  # riconosce il sito dal dominio: senza questa riga non capisce per quale sito
+  # sta autorizzando l'accesso e rifiuta la richiesta.
+  site_domain: locanda-seggiovia.netlify.app
 
 # --- Cartelle dei file multimediali -----------------------------------------
 # Le immagini caricate dalla proprietaria finiscono in public/images e vengono
