@@ -1,5 +1,5 @@
 ---
-titolo: Gnocchi con la Fioreta
+titolo: Gnocchi con perini
 sottotitolo: Prodotto bandiera De.Co. di Recoaro Terme
 storia: "«Al scoro che resta dopo aver fato el formaio, ghe vienn xontà el sale amaro o el caio vecio e tuto fato boere. Dopo un poco vien su la fioreta.» La fioreta è la ricotta in fase liquida che affiora durante la lavorazione del latte vaccino nelle malghe. Non è un ingrediente che si compra: è ciò che resta di un gesto antico, e per questo gli gnocchi con la fioreta si fanno solo dove le malghe esistono ancora. Recoaro Terme, che nel Medioevo si chiamava Requaro — dall'unione dei termini cimbri rech e quar, terreno melmoso — è il territorio dove questa preparazione ha messo radici. La prima domenica di settembre la tradizione si rinnova con la Festa dei gnocchi con la fioreta."
 ricetta:
