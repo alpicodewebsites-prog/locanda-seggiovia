@@ -15,6 +15,11 @@ backend:
   # riconosce il sito dal dominio: senza questa riga non capisce per quale sito
   # sta autorizzando l'accesso e rifiuta la richiesta.
   site_domain: locanda-seggiovia.netlify.app
+  # Si accede SOLO con token. Il pulsante «Accedi con GitHub» (OAuth via Netlify)
+  # non funziona su questo progetto: mostrarlo confonderebbe la proprietaria, che
+  # non saprebbe perché quel percorso non porta da nessuna parte.
+  # Se un domani si sistema l'OAuth, basta rimettere: [oauth, token]
+  auth_methods: [token]
 
 # --- Cartelle dei file multimediali -----------------------------------------
 # Le immagini caricate dalla proprietaria finiscono in public/images e vengono
