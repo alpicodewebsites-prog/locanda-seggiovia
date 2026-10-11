@@ -3,10 +3,11 @@ import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import Cresta from '../components/Cresta.astro';
 import { site } from '../data/site';
 
 import imgLocanda from '../assets/locanda-esterno.jpg';
-import imgSentieri from '../assets/territorio-montagne.jpg';
+import imgSentieri from '../assets/piccole-dolomiti-large.jpg';
 
 /**
  * Home — pagina di apertura.
@@ -108,6 +109,11 @@ const sentieri = [
       </dl>
     </div>
   </section>
+
+  <!-- Pausa grafica fra la riga di credenziali e il racconto. -->
+  <div class="shell py-10 md:py-14">
+    <Cresta accento="bosco" altezza={44} />
+  </div>
 
   <!-- ==================================================================
        1. La Locanda — impaginazione editoriale asimmetrica
@@ -232,18 +238,23 @@ const sentieri = [
     </div>
   </section>
 
+  <!-- Pausa grafica prima della fascia della cucina. -->
+  <div class="shell py-10 md:py-14">
+    <Cresta accento="alba" altezza={44} />
+  </div>
+
   <!-- ==================================================================
        3. Gastronomia — fascia scura a piena larghezza
        ================================================================== -->
   <section class="section-y bg-forest-900 text-stone-200" aria-labelledby="titolo-cucina">
-    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
-      <div class="md:col-span-4">
+    <div class="shell grid gap-12 md:grid-cols-2 md:gap-14 lg:gap-20">
+      <div>
         <p class="eyebrow text-glow-300">Cucina</p>
         <h2 id="titolo-cucina" class="display-2 mt-4 text-stone-50">
           Quello che si cucina in vallata
         </h2>
         <span class="filo-accento filo-accento--alba" aria-hidden="true"></span>
-        <p class="mt-6 text-[0.95rem] leading-relaxed text-forest-300">
+        <p class="mt-7 max-w-[46ch] text-[0.95rem] leading-relaxed text-forest-300">
           Il menù segue le stagioni e le malghe, non le mode. Il bacalà arriva da una
           tradizione lunga, la sopressa si fa in casa.
         </p>
@@ -252,57 +263,54 @@ const sentieri = [
         </p>
       </div>
 
-      <div class="md:col-span-8">
-        <ul class="grid gap-px overflow-hidden bg-stone-50/15 sm:grid-cols-2">
-          <li
-            class="card-accento card-accento--alba bg-forest-900 p-7 md:p-8"
-            data-aos="fade-up"
-          >
-            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
+      <div>
+        <ul class="grid gap-4 sm:grid-cols-2">
+          <li class="card-accento card-accento--alba p-5 md:p-6" data-aos="fade-up">
+            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-900">
               Bacalà alla vicentina
             </h3>
-            <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+            <p class="mt-2.5 text-[0.9rem] leading-relaxed text-stone-600">
               Ammollato, cotto lentamente con latte e cipolla, servito con la polenta.
               Il piatto che a Vicenza non si discute.
             </p>
           </li>
           <li
-            class="card-accento card-accento--alba bg-forest-900 p-7 md:p-8"
+            class="card-accento card-accento--alba p-5 md:p-6"
             data-aos="fade-up"
             data-aos-delay="90"
           >
-            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
+            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-900">
               Sopressa fatta in casa
             </h3>
-            <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+            <p class="mt-2.5 text-[0.9rem] leading-relaxed text-stone-600">
               Insaccata e stagionata da noi, servita con i sottaceti di casa.
             </p>
           </li>
           <li
-            class="card-accento card-accento--alba bg-forest-900 p-7 md:p-8"
+            class="card-accento card-accento--alba p-5 md:p-6"
             data-aos="fade-up"
             data-aos-delay="180"
           >
-            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
+            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-900">
               Trota affumicata
             </h3>
-            <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+            <p class="mt-2.5 text-[0.9rem] leading-relaxed text-stone-600">
               Affumicatura leggera, servita fredda: si comincia così.
             </p>
           </li>
           <li
-            class="card-accento card-accento--alba bg-forest-900 p-7 outline outline-1 -outline-offset-1 outline-stone-50/30 md:p-8"
+            class="card-accento card-accento--alba p-5 md:p-6"
             data-aos="fade-up"
             data-aos-delay="270"
           >
-            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
+            <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-900">
               Gnocchi con la Fioreta
             </h3>
-            <p class="mt-3 text-[0.95rem] leading-relaxed text-forest-300">
+            <p class="mt-2.5 text-[0.9rem] leading-relaxed text-stone-600">
               Il piatto della casa, riconosciuto De.Co. Ha una pagina tutta sua.
             </p>
-            <p class="mt-5">
-              <a href="/gnocchi-con-la-fioreta" class="link-arrow text-glow-300">
+            <p class="mt-4">
+              <a href="/gnocchi-con-la-fioreta" class="link-arrow">
                 La storia e la ricetta
               </a>
             </p>
@@ -318,14 +326,14 @@ const sentieri = [
   <section class="relative isolate overflow-hidden bg-stone-800">
     <Image
       src={imgSentieri}
-      alt="Le creste innevate delle Piccole Dolomiti con il tricolore, viste da Recoaro Terme"
-      widths={[400, 640, 960, 1280]}
+      alt="Panorama delle Piccole Dolomiti con i boschi di conifere e la foschia nelle valli"
+      widths={[640, 960, 1280, 1600, 1920, 2560]}
       sizes="100vw"
       format="webp"
-      quality={82}
+      quality={78}
       loading="lazy"
       decoding="async"
-      class="absolute inset-0 -z-20 h-full w-full object-cover"
+      class="absolute inset-0 -z-20 h-full w-full object-cover object-bottom"
     />
     <div
       class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/85 to-stone-900/40"

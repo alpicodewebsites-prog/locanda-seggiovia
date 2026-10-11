@@ -62,6 +62,10 @@
      Due valori soli, così la forma resta coerente in tutto il sito. */
   --raggio: 2px;
   --raggio-micro: 1px;
+  /* Immagini e card: la fotografia deve sembrare una fotografia, non un
+     blocco rettangolare incollato sulla pagina. */
+  --raggio-media: 0.75rem;
+  --raggio-card: 0.5rem;
 }
 
 /* ==========================================================================
@@ -148,7 +152,11 @@
      Una linea spessa in alto, colorata secondo il contenuto: dà ritmo senza
      aggiungere decorazione. Le varianti si scelgono con una classe. */
   .card-accento {
-    border-top: 4px solid var(--card-accento, var(--color-stone-400));
+    border-top: 4px solid var(--card-accento, var(--color-acc-pietra));
+    border-radius: var(--raggio-card);
+    /* Tinta tenue dello stesso accento: la card si stacca dal fondo senza
+       bisogno di un bordo o di un'ombra. */
+    background-color: color-mix(in oklab, var(--card-accento, var(--color-acc-pietra)) 12%, var(--color-stone-50));
   }
   .card-accento--bosco {
     --card-accento: var(--color-acc-bosco);
@@ -549,6 +557,7 @@
   .media {
     position: relative;
     overflow: hidden;
+    border-radius: var(--raggio-media);
     background-color: var(--color-stone-200);
   }
   .media img {

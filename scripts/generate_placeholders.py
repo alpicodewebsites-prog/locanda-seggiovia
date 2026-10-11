@@ -303,6 +303,14 @@ SCENES = [
         [(146, 150, 154), (34, 44, 40)], 6, 0.18, 0.78, GLOW_300,
     ),
     (
+        # Panorama ampio usato a tutta larghezza nella chiusura della home.
+        # Le fotografie fornite sono piccole: a 400px si sgranano su schermo
+        # intero, quindi qui serve un disegno che regga qualsiasi larghezza.
+        "piccole-dolomiti-large", 2560, 1440, 4301,
+        [(112, 126, 142), (206, 186, 168)],
+        [(148, 152, 156), (34, 42, 38)], 7, 0.20, 0.64, GLOW_300,
+    ),
+    (
         "territorio-malghe", 1920, 1280, 4108,
         [(140, 156, 162), (216, 216, 206)],
         [(164, 166, 160), (62, 84, 62)], 6, 0.62, 0.42, STONE_100,
