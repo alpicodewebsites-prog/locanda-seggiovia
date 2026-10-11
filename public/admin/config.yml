@@ -31,7 +31,10 @@ output:
   omit_empty_optional_fields: true
 
 # --- Interfaccia -------------------------------------------------------------
-locale: it
+# NON aggiungere `locale: it`: Sveltia non supporta quell'opzione (è un residuo
+# di Decap CMS) e la sua presenza fa fallire la lettura dell'intera
+# configurazione, autenticazione compresa. L'interfaccia di Sveltia è già
+# multilingua e segue la lingua del browser.
 
 collections:
   # ==========================================================================
