@@ -26,13 +26,22 @@ Ci sono due modi per modificare i contenuti:
 
 ## 2. Modificare i contenuti dal pannello
 
-Apri l'indirizzo del sito seguito da `/admin`, per esempio:
+Apri questo indirizzo nel browser:
 
 ```
-https://locandaseggiovia.vercel.app/admin
+https://locanda-seggiovia.vercel.app/admin
 ```
 
-Accedi con l'account GitHub che ha accesso al progetto. Da lì trovi quattro sezioni:
+> ⚠️ **Attenzione al trattino.** L'indirizzo ha un trattino fra «locanda» e
+> «seggiovia»: `locanda-seggiovia.vercel.app`. Se lo dimentichi, il browser
+> risponde che la pagina non esiste — non è un guasto, è solo l'indirizzo
+> sbagliato.
+
+Compare la schermata di accesso con un solo pulsante, **«Sign In with Token»**.
+Incolla il token che ti è stato consegnato e premi conferma. **Va fatto una volta
+sola**: da quel momento il pannello ti riconosce e non te lo chiede più.
+
+Da lì trovi quattro sezioni:
 
 | Sezione | Cosa contiene |
 |---|---|
