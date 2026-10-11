@@ -128,28 +128,69 @@ segnaposto**: serve uno scatto di almeno 2500 pixel di larghezza.
 Finché non arrivano, al loro posto ci sono riquadri neutri con la scritta
 «FOTO IN ARRIVO»: si vede subito che è un segnaposto e non una foto sbagliata.
 
-### Come sostituirle
+### Come vedere dove appare una fotografia
 
-1. Preparare la fotografia **orizzontale**, almeno **1600 pixel** di larghezza.
-2. Rinominarla **esattamente** come il file che sostituisce.
-3. Copiarla nella cartella **`src/assets/`**, sovrascrivendo il file esistente.
+Nella libreria, **clicca una fotografia** e poi l'icona **`i`** (l'ultima a
+destra, accanto alle icone per cambiare la vista). Si apre il pannello **Info**,
+che contiene l'elenco **«Used in»**: lì è scritto in quali contenuti e in quali
+campi quella fotografia viene usata.
 
-| Nome file | Dove appare |
+È il modo più rapido per rispondere alla domanda «questa foto dove finisce?».
+
+### Dove appare ogni fotografia
+
+Le fotografie delle **pagine** si cambiano dalla sezione **«Foto delle pagine»**,
+dove ogni campo dice già a cosa serve:
+
+| Campo nella sezione | Dove si vede |
 |---|---|
-| `hero-piccole-dolomiti.jpg` | apertura della home |
-| `camere-interno.jpg` | pagina Camere |
-| `ristorante-sala.jpg` | pagina Ristorante |
-| `gnocchi-fioreta.jpg` | pagina Gnocchi con la Fioreta |
-| `sentieri-grandi-alberi.jpg` | scheda del sentiero |
-| `sentieri-campogrosso.jpg` | scheda del sentiero |
-| `sentieri-ponte-tibetano.jpg` | scheda del sentiero |
-| `sentieri-52-gallerie.jpg` | scheda del sentiero |
-| `sentieri-mole.jpg` | scheda del sentiero |
-| `sentieri-gino-solda.jpg` | scheda del sentiero |
+| Apertura della home | la prima schermata del sito |
+| Panorama | la fascia finale della home e la pagina Sentieri |
+| La locanda vista da fuori | home, La Locanda, Camere, Ristorante |
+| Il tavolo di cucina | pagina Camere e pagina degli Gnocchi |
+| Le montagne | pagina Sentieri |
 
-Tutte le fotografie stanno nella **stessa cartella** (`src/assets/`): non ci sono
-copie da aggiornare in altri posti. Il sistema si occupa da solo di ridurle e
-converterle nel formato giusto per il web.
+Le altre si cambiano **dentro la scheda a cui appartengono**:
+
+| Dove | Cosa cambia |
+|---|---|
+| Camere e tariffe → una camera | la foto di quella camera |
+| Menù del ristorante → un piatto | la foto di quel piatto |
+| Gnocchi con la Fioreta | la foto del piatto finito e quella degli ingredienti |
+| Sentieri → un sentiero | la foto di copertina di quel percorso |
+
+### Come sostituire una fotografia
+
+Non c'è un pulsante «sostituisci»: si fa **caricando un file con lo stesso nome**
+di quello da cambiare.
+
+1. Prepara la fotografia nuova e **rinominala esattamente come quella vecchia**
+   (per esempio `hero-piccole-dolomiti.jpg`).
+2. Nel pannello apri la **libreria immagini** e premi **Carica**.
+3. Scegli il file. Il sistema avverte che esiste già un file con quel nome:
+   **conferma**.
+4. Il vecchio viene sostituito, e **tutti i punti del sito dove compariva si
+   aggiornano da soli**.
+
+Il motivo è che i contenuti non contengono la fotografia, ma il suo **nome**: se
+il nome resta lo stesso, il sito la ritrova ovunque.
+
+> In alternativa puoi aprire la scheda interessata e scegliere un'immagine
+> diversa dal campo corrispondente. Funziona, ma il vecchio file resta nella
+> libreria: è meno pulito.
+
+### Che caratteristiche devono avere
+
+| | |
+|---|---|
+| **Formato** | `.jpg` per le fotografie, `.png` solo se serve lo sfondo trasparente (il logo) |
+| **Orientamento** | orizzontale, tranne il logo |
+| **Larghezza minima** | 1600 pixel — **2500** per l'apertura della home |
+| **Peso** | fino a 5 MB va bene: il sito le alleggerisce da solo |
+
+Non serve ridimensionarle o convertirle: **il sistema se ne occupa in fase di
+pubblicazione**, producendo il formato WebP e le versioni di dimensione adatta a
+telefoni, tablet e schermi grandi.
 
 **Non** usare fotografie scaricate da internet: servono scatti vostri, o foto di
 cui avete i diritti.

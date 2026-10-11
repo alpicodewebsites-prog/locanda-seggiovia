@@ -288,32 +288,12 @@ SCENES = [
         [(150, 156, 160), (36, 42, 40)], 6, 0.20, 0.68, GLOW_300,
     ),
     (
-        "locanda-facciata", 1920, 1280, 4102,
-        [(158, 160, 158), (218, 214, 204)],
-        [(170, 170, 164), (74, 70, 62)], 5, 0.72, 0.50, STONE_200,
-    ),
-    (
-        "sentieri-pasubio", 1920, 1280, 4106,
-        [(120, 138, 154), (212, 208, 198)],
-        [(158, 162, 164), (48, 60, 50)], 7, 0.22, 0.30, STONE_200,
-    ),
-    (
-        "sentieri-piccole-dolomiti", 1920, 1280, 4107,
-        [(104, 118, 136), (198, 176, 160)],
-        [(146, 150, 154), (34, 44, 40)], 6, 0.18, 0.78, GLOW_300,
-    ),
-    (
         # Panorama ampio usato a tutta larghezza nella chiusura della home.
         # Le fotografie fornite sono piccole: a 400px si sgranano su schermo
         # intero, quindi qui serve un disegno che regga qualsiasi larghezza.
         "piccole-dolomiti-large", 2560, 1440, 4301,
         [(112, 126, 142), (206, 186, 168)],
         [(148, 152, 156), (34, 42, 38)], 7, 0.20, 0.64, GLOW_300,
-    ),
-    (
-        "territorio-malghe", 1920, 1280, 4108,
-        [(140, 156, 162), (216, 216, 206)],
-        [(164, 166, 160), (62, 84, 62)], 6, 0.62, 0.42, STONE_100,
     ),
     (
         "sentieri-grandi-alberi", 1920, 1280, 4201,
@@ -345,20 +325,12 @@ SCENES = [
         [(126, 138, 150), (208, 200, 192)],
         [(154, 156, 154), (46, 56, 50)], 6, 0.34, 0.66, GLOW_300,
     ),
-    (
-        "locanda-ambienti", 1920, 1280, 4207,
-        [(126, 116, 100), (188, 172, 150)],
-        [(138, 124, 104), (54, 42, 30)], 4, 0.84, 0.46, WOOD_700,
-    ),
 ]
 
 # Interni e soggetti non paesaggistici: riquadro vuoto etichettato.
 # Un disegno astratto NON può sostituire la foto di una camera o di un piatto,
 # e far finta che sia un panorama sarebbe fuorviante.
 EMPTY_SLOTS = [
-    ("camere-interno", 1600, 1200, "camera"),
-    ("ristorante-sala", 1600, 1200, "sala ristorante"),
-    ("gnocchi-fioreta", 1600, 1200, "gnocchi con la fioreta"),
 ]
 
 
