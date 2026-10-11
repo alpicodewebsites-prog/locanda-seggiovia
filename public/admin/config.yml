@@ -9,8 +9,7 @@
 
 backend:
   name: github
-  # ⚠️ DA AGGIORNARE: sostituire TUO-UTENTE con l'account GitHub che ospita il sito.
-  repo: TUO-UTENTE/locanda-seggiovia
+  repo: gremesdaniele3-collab/Seggiovia
   branch: main
 
 # --- Cartelle dei file multimediali -----------------------------------------
