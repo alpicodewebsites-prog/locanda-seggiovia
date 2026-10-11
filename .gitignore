@@ -36,3 +36,6 @@ yarn-debug.log*
 pnpm-debug.log*
 
 .vercel
+
+# Script di servizio locale, non fa parte del sito
+CARICA-SU-GITHUB.cmd
