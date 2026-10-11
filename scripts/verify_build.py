@@ -339,30 +339,47 @@ def main() -> int:
         "/privacy" in html_home and "/cookie" in html_home,
     )
 
-    # --- Le fotografie devono comparire su ogni pagina ----------------------
-    # Il conteggio è per pagina e comprende il logo del footer, presente sempre.
-    # Serve a intercettare il caso peggiore: un'immagine referenziata nei
-    # contenuti che non si risolve più e sparisce in silenzio dalla pagina.
-    immagini_attese = {
-        "index.html": 4,
-        "camere/index.html": 3,
-        "ristorante/index.html": 4,
-        "gnocchi-con-la-fioreta/index.html": 3,
-        "la-locanda/index.html": 2,
-        "sentieri/index.html": 3,
+    # --- Le fotografie obbligatorie devono comparire su ogni pagina ----------
+    # Si verifica QUALI fotografie ci sono, non quante: il numero cambia ogni
+    # volta che la proprietaria aggiunge o toglie la foto di un piatto o di una
+    # camera, e un controllo sul conteggio fallirebbe a ogni modifica legittima.
+    #
+    # Astro nomina i file ottimizzati anteponendo il nome originale
+    # (es. `locanda-esterno.QGmMnSRb.webp`), quindi si può riconoscere la
+    # fotografia di partenza.
+    #
+    # Sono le fotografie che lo sviluppatore controlla: quelle delle pagine.
+    # Le foto di piatti, camere e sentieri le gestisce la proprietaria, quindi
+    # non si pretendono.
+    foto_obbligatorie = {
+        "index.html": ["hero-piccole-dolomiti", "locanda-esterno", "piccole-dolomiti-large"],
+        "camere/index.html": ["locanda-preparazione", "locanda-esterno"],
+        "ristorante/index.html": ["locanda-esterno"],
+        "gnocchi-con-la-fioreta/index.html": ["piatto-gnocchi-fioreta", "locanda-preparazione"],
+        "la-locanda/index.html": ["locanda-esterno"],
+        "sentieri/index.html": ["piccole-dolomiti-large", "territorio-montagne"],
     }
-    for rel, attese in immagini_attese.items():
+    for rel, attese in foto_obbligatorie.items():
         percorso = DIST / rel
         if not percorso.exists():
             continue
         html = leggi(percorso)
-        # Immagini ottimizzate da Astro, contate una volta sola (il srcset
-        # ripeterebbe lo stesso file più volte).
-        trovate = {m for m in re.findall(r'src="(/_astro/[^"]+\.webp)"', html)}
+        trovate = set(re.findall(r'src="/_astro/([^."]+)\.', html))
+        mancanti = [nome for nome in attese if nome not in trovate]
         check(
-            f"{rel}: fotografie presenti ({attese} attese)",
-            len(trovate) == attese,
-            f"trovate {len(trovate)}",
+            f"{rel}: fotografie di pagina presenti",
+            not mancanti,
+            "tutte presenti" if not mancanti else f"mancano: {', '.join(mancanti)}",
+        )
+
+    # Il logo del footer deve esserci su tutte le pagine controllate
+    for rel in foto_obbligatorie:
+        percorso = DIST / rel
+        if not percorso.exists():
+            continue
+        check(
+            f"{rel}: logo nel footer",
+            "locanda-logo" in leggi(percorso),
         )
 
     # --- Nessun dato inventato ----------------------------------------------
