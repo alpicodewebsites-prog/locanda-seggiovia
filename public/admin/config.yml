@@ -9,7 +9,7 @@
 
 backend:
   name: github
-  repo: gremesdaniele3-collab/Seggiovia
+  repo: alpicodewebsites-prog/locanda-seggiovia
   branch: main
 
 # --- Cartelle dei file multimediali -----------------------------------------
