@@ -15,5 +15,5 @@ dislivello: 400 m
 durata: 3 ore e 30 minuti
 partenza: Rifugio La Guardia
 segnavia: CAI 151/144
-immagine: sentieri-mole
+immagine: /assets/sentieri-mole.jpg
 ---

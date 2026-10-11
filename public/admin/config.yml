@@ -22,11 +22,16 @@ backend:
   auth_methods: [token]
 
 # --- Cartelle dei file multimediali -----------------------------------------
-# Le immagini caricate dalla proprietaria finiscono in public/images e vengono
-# servite così come sono: le fotografie ufficiali le ottimizza lo sviluppatore
-# in fase di build, perché passino da WebP e srcset.
-media_folder: public/images
-public_folder: /images
+# Le immagini stanno TUTTE in src/assets: da lì Astro le ottimizza (WebP e
+# versioni ridimensionate), quindi il sito resta leggero.
+# Il pannello deve puntare a quella stessa cartella, altrimenti la libreria
+# appare vuota e la proprietaria non può sostituire nessuna fotografia.
+#
+# `public_folder` non è un indirizzo raggiungibile: serve solo a comporre il
+# valore salvato nei file di contenuto. Le pagine ne estraggono il nome del
+# file e risolvono l'immagine da src/assets.
+media_folder: src/assets
+public_folder: /assets
 
 # --- Output ------------------------------------------------------------------
 output:

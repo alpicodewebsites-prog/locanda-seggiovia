@@ -14,5 +14,5 @@ difficolta: E
 distanza: 12 km (solo andata)
 dislivello: 400-550 m
 partenza: Falde di Recoaro Mille
-immagine: sentieri-grandi-alberi
+immagine: /assets/sentieri-grandi-alberi.jpg
 ---

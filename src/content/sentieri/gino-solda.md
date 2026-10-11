@@ -15,5 +15,5 @@ dislivello: 630 m
 durata: 4 ore e 30 minuti
 partenza: Parcheggio fonti centrali, Recoaro Terme
 segnavia: CAI 133
-immagine: sentieri-gino-solda
+immagine: /assets/sentieri-gino-solda.jpg
 ---
