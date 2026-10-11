@@ -5,8 +5,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import { site } from '../data/site';
 
-import imgLocanda from '../assets/locanda-facciata.jpg';
-import imgSentieri from '../assets/sentieri-piccole-dolomiti.jpg';
+import imgLocanda from '../assets/locanda-esterno.jpg';
+import imgSentieri from '../assets/territorio-montagne.jpg';
 
 /**
  * Home — pagina di apertura.
@@ -73,7 +73,12 @@ const sentieri = [
 ];
 ---
 
-<BaseLayout title={`${site.nome} — ${site.tagline}`} description={description} schema={webPageSchema}>
+<BaseLayout
+  title={`${site.nome} — ${site.tagline}`}
+  description={description}
+  schema={webPageSchema}
+  headerTrasparente={true}
+>
   <Hero />
 
   <!-- ==================================================================
@@ -113,11 +118,11 @@ const sentieri = [
         <div class="media aspect-4/5">
           <Image
             src={imgLocanda}
-            alt="Segnaposto grafico in attesa della fotografia della facciata della Locanda Seggiovia"
-            widths={[420, 640, 900, 1200]}
+            alt="La Locanda Seggiovia in piazza a Recoaro Terme, con i balconi in legno e le Piccole Dolomiti sullo sfondo"
+            widths={[420, 600, 900]}
             sizes="(min-width: 768px) 40vw, 92vw"
             format="webp"
-            quality={76}
+            quality={84}
             loading="lazy"
             decoding="async"
           />
@@ -296,11 +301,11 @@ const sentieri = [
   <section class="relative isolate overflow-hidden bg-stone-800">
     <Image
       src={imgSentieri}
-      alt="Segnaposto grafico di creste montuose con foschia nelle valli"
-      widths={[640, 960, 1280, 1600, 1920]}
+      alt="Le creste innevate delle Piccole Dolomiti con il tricolore, viste da Recoaro Terme"
+      widths={[400, 640, 960, 1280]}
       sizes="100vw"
       format="webp"
-      quality={74}
+      quality={82}
       loading="lazy"
       decoding="async"
       class="absolute inset-0 -z-20 h-full w-full object-cover"

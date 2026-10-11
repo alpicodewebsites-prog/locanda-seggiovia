@@ -45,11 +45,15 @@ export const site = {
     paese: 'IT',
   },
 
-  // TODO: inserire i recapiti reali. Il numero è un segnaposto.
-  telefono: '+39 000 000 0000',
-  telefonoLink: 'tel:+390000000000',
+  // Recapiti reali. Il numero è quello storico dell'attività, pubblicato sul
+  // sito precedente: 0445 76162 (fisso, unico per tavoli e informazioni).
+  telefono: '0445 76162',
+  telefonoLink: 'tel:+39044576162',
 
   email: 'locandaseggiovia@gmail.com',
+
+  /** Apertura continuativa: dal sito precedente, «Siamo aperti tutto l'anno». */
+  apertoTuttoLAnno: true,
 
   // TODO: confermare che l'account esista e inserire l'URL definitivo.
   instagram: null as string | null,
@@ -63,8 +67,16 @@ export const site = {
   // TODO: confermare gli orari reali di ristorante e reception.
   orari: [
     { giorno: 'Ristorante', valore: 'A pranzo e a cena — orari da confermare' },
-    { giorno: 'Reception', valore: 'Tutti i giorni, 8:00 – 21:00 (da confermare)' },
+    { giorno: 'Reception', valore: 'Tutti i giorni (da confermare)' },
   ],
+
+  // Dal listino del sito precedente:
+  //   «In B&B è compresa la prima colazione»
+  //   «A disposizione con richiesta: linea wi-fi negli spazi comuni dell'hotel»
+  // Il Wi-Fi era quindi negli spazi comuni, non in camera: la pagina Camere
+  // non deve prometterlo in camera.
+  colazioneInclusaBnb: true,
+  wifiSpaziComuni: true,
 
   // --- Politiche di soggiorno (fornite dalla cliente) ----------------------
   // Stanno qui, e non nei file del CMS, perché valgono per tutte le camere:
@@ -80,8 +92,11 @@ export const site = {
   },
 
   // TODO: dati fiscali obbligatori per la pubblicazione.
+  // La ragione sociale è quella pubblicata sul sito precedente; partita IVA e
+  // codice fiscale restano da confermare (erano pubblicati solo nell'elenco dei
+  // contributi regionali, non come dati societari).
   fiscale: {
-    ragioneSociale: 'Locanda Seggiovia di Asnicar Loris',
+    ragioneSociale: 'Ristorante Asnicar Bertoldi SNC',
     partitaIva: '00000000000',
     codiceFiscale: '0000000000000000',
     rea: null as string | null,

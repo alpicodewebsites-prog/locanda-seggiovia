@@ -2,11 +2,26 @@
 /**
  * Header — navigazione principale.
  *
- * Il menu mobile usa <details>/<summary>: funziona anche senza JavaScript,
- * quindi resta utilizzabile con rete debole o JS non caricato.
+ * Due stati:
+ *  - `header--trasparente`: solo dove la pagina ha un'immagine a tutta larghezza
+ *    in cima (la home). La barra non ha sfondo e si confonde con la fotografia.
+ *  - `header--solido`: barra leggibile su fondo chiaro. È lo stato di tutte le
+ *    altre pagine e della home dopo lo scroll.
+ *
+ * Il passaggio fra i due stati avviene con una dissolvenza gestita via CSS, e
+ * il cambio di stato è l'unica cosa che fa il JavaScript — poche righe, nessuna
+ * libreria.
+ *
+ * Il menu mobile usa <details>/<summary>: funziona anche senza JavaScript.
  */
 import { site, navigazione } from '../data/site';
 
+export interface Props {
+  /** True se la pagina inizia con un'immagine a tutta larghezza. */
+  trasparente?: boolean;
+}
+
+const { trasparente = false } = Astro.props;
 const path = Astro.url.pathname;
 
 /** Una voce è attiva se la rotta corrente inizia con il suo href. */
@@ -15,22 +30,22 @@ const isAttiva = (href: string) =>
 ---
 
 <header
-  class="sticky top-0 z-50 border-b border-stone-200/80 bg-stone-100/85 backdrop-blur-md"
+  id="header-sito"
+  class:list={['site-header sticky top-0 z-50', trasparente && 'site-header--trasparente']}
   style="--header-h: 4.5rem"
+  data-trasparente={trasparente ? 'true' : 'false'}
 >
   <div class="shell flex h-[4.5rem] items-center justify-between gap-6">
     {/* --- Wordmark --- */}
     <a
       href="/"
-      class="group flex shrink-0 items-baseline gap-2.5 leading-none"
+      class="site-header__wordmark group flex shrink-0 items-baseline gap-2.5 leading-none"
       aria-label={`${site.nome} — home`}
     >
-      <span class="font-[family-name:var(--font-display)] text-[1.3rem] leading-none tracking-tight text-stone-900">
+      <span class="font-[family-name:var(--font-display)] text-[1.3rem] leading-none tracking-tight">
         Locanda Seggiovia
       </span>
-      <span
-        class="hidden text-[0.68rem] leading-none tracking-[0.14em] text-stone-500 uppercase sm:inline"
-      >
+      <span class="site-header__sotto hidden text-[0.68rem] leading-none tracking-[0.14em] uppercase sm:inline">
         Recoaro Terme
       </span>
     </a>
@@ -44,12 +59,7 @@ const isAttiva = (href: string) =>
               <a
                 href={voce.href}
                 aria-current={isAttiva(voce.href) ? 'page' : undefined}
-                class:list={[
-                  'text-[0.9rem] whitespace-nowrap transition-colors duration-300 hover:text-forest-700',
-                  isAttiva(voce.href)
-                    ? 'text-forest-700 underline decoration-forest-700/40 decoration-1 underline-offset-[0.4em]'
-                    : 'text-stone-700',
-                ]}
+                class:list={['nav-link', isAttiva(voce.href) && 'nav-link--attivo']}
               >
                 {voce.label}
               </a>
@@ -65,7 +75,7 @@ const isAttiva = (href: string) =>
 
       <details class="menu-mobile relative lg:hidden">
         <summary
-          class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-sm border border-stone-300 text-stone-700 transition-colors hover:border-stone-500"
+          class="site-header__bottone flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-sm border transition-colors"
           aria-label="Apri il menu di navigazione"
         >
           <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden="true" fill="none">
@@ -105,7 +115,123 @@ const isAttiva = (href: string) =>
 </header>
 
 <style>
-  /* Nasconde il marcatore nativo di <summary>. */
+  /* ==========================================================================
+     Due stati della barra
+     ========================================================================== */
+
+  .site-header {
+    transition:
+      background-color 0.5s var(--ease-alpine),
+      border-color 0.5s var(--ease-alpine),
+      backdrop-filter 0.5s var(--ease-alpine);
+    border-bottom: 1px solid transparent;
+  }
+
+  /* Stato solido: quello di default, leggibile su fondo chiaro. */
+  .site-header {
+    background-color: color-mix(in oklab, var(--color-stone-100) 88%, transparent);
+    border-bottom-color: color-mix(in oklab, var(--color-stone-200) 80%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Stato trasparente: solo in cima alle pagine con immagine a tutta larghezza,
+     e SOLO se JavaScript è attivo (la classe `js-ready` la mette lo script).
+     Senza JavaScript la barra resta solida e leggibile: la trasparenza è un
+     miglioramento, non un requisito. */
+  :global(.js-ready) .site-header--trasparente:not(.site-header--solido) {
+    background-color: transparent;
+    border-bottom-color: transparent;
+    backdrop-filter: none;
+  }
+
+  .site-header__wordmark {
+    color: var(--color-stone-900);
+    transition: color 0.5s var(--ease-alpine);
+  }
+  .site-header__sotto {
+    color: var(--color-stone-500);
+    transition: color 0.5s var(--ease-alpine);
+  }
+  .site-header__bottone {
+    border-color: var(--color-stone-300);
+    color: var(--color-stone-700);
+    transition:
+      color 0.5s var(--ease-alpine),
+      border-color 0.5s var(--ease-alpine);
+  }
+
+  :global(.js-ready) .site-header--trasparente:not(.site-header--solido) .site-header__wordmark {
+    color: var(--color-stone-50);
+    /* Leggibilità sopra la fotografia. */
+    text-shadow: 0 1px 12px rgb(28 27 25 / 0.5);
+  }
+  :global(.js-ready) .site-header--trasparente:not(.site-header--solido) .site-header__sotto {
+    color: color-mix(in oklab, var(--color-stone-50) 75%, transparent);
+    text-shadow: 0 1px 12px rgb(28 27 25 / 0.5);
+  }
+  :global(.js-ready) .site-header--trasparente:not(.site-header--solido) .site-header__bottone {
+    border-color: color-mix(in oklab, var(--color-stone-50) 45%, transparent);
+    color: var(--color-stone-50);
+  }
+
+  /* ==========================================================================
+     Voce di navigazione con sottolineatura che si allunga
+     ========================================================================== */
+
+  .nav-link {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.35rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    color: var(--color-stone-700);
+    text-decoration: none;
+    transition: color 0.35s var(--ease-alpine);
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    /* Parte da sinistra e si allunga: è il gesto che segnala il passaggio. */
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.28s var(--ease-alpine);
+  }
+
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  .nav-link:hover {
+    color: var(--color-forest-700);
+  }
+
+  /* La voce della pagina corrente tiene la sottolineatura, senza animazione. */
+  .nav-link--attivo {
+    color: var(--color-forest-700);
+  }
+  .nav-link--attivo::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  /* Sopra la fotografia le voci sono chiare. */
+  :global(.js-ready) .site-header--trasparente:not(.site-header--solido) .nav-link {
+    color: color-mix(in oklab, var(--color-stone-50) 88%, transparent);
+    text-shadow: 0 1px 12px rgb(28 27 25 / 0.5);
+  }
+  :global(.js-ready) .site-header--trasparente:not(.site-header--solido) .nav-link:hover,
+  :global(.js-ready) .site-header--trasparente:not(.site-header--solido) .nav-link--attivo {
+    color: var(--color-stone-50);
+  }
+
+  /* --- Menu mobile --- */
   .menu-mobile > summary::-webkit-details-marker {
     display: none;
   }
@@ -113,6 +239,45 @@ const isAttiva = (href: string) =>
     content: '';
   }
 
-  /* Chiusura del menu al click su una voce: <details> non lo fa da sé,
-     ma il browser naviga comunque verso la nuova pagina. */
+  /* Con movimento ridotto la sottolineatura compare senza scorrere. */
+  @media (prefers-reduced-motion: reduce) {
+    .nav-link::after {
+      transition: none;
+    }
+  }
 </style>
+
+<script>
+  /**
+   * Fa passare la barra da trasparente a solida.
+   *
+   * Si legge la posizione di scroll dentro requestAnimationFrame, così il
+   * calcolo avviene una volta per frame invece che a ogni evento.
+   * Se JavaScript non è attivo la barra resta solida: sempre leggibile.
+   */
+  const header = document.getElementById('header-sito');
+
+  if (header && header.dataset.trasparente === 'true') {
+    // Soglia bassa: la barra deve diventare solida appena si lascia la fotografia.
+    const SOGLIA = 40;
+    let inCoda = false;
+
+    const aggiorna = () => {
+      const solido = window.scrollY > SOGLIA;
+      header.classList.toggle('site-header--solido', solido);
+      inCoda = false;
+    };
+
+    aggiorna();
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (inCoda) return;
+        inCoda = true;
+        requestAnimationFrame(aggiorna);
+      },
+      { passive: true },
+    );
+  }
+</script>

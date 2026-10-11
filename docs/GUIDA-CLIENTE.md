@@ -96,33 +96,47 @@ sostituiti con i dati reali:
 
 ---
 
-## 3. Sostituire le fotografie
+## 3. Le fotografie
 
-Le fotografie attuali sono **segnaposto**, non foto reali. Si riconoscono perché
-sono disegni astratti oppure riquadri con la scritta «FOTO IN ARRIVO».
+Sul sito sono già installate le fotografie che hai fornito: la facciata della
+locanda, le montagne, il tavolo di cucina con gli ingredienti, i due piatti e il
+logo nel footer.
 
-Per sostituirle:
+**Le foto che hai dato sono piccole** (la più grande è 600×450 pixel). Vanno
+bene dove sono adesso, ma non si possono ingrandire: se le ingrandisci si
+vedono sfocate. Per questo **l'immagine di apertura della home è ancora un
+segnaposto**: serve uno scatto di almeno 2500 pixel di larghezza.
 
-1. Preparare la fotografia in formato **orizzontale**, almeno **1920 pixel** di
-   larghezza, in formato `.jpg`.
+### Cosa serve ancora
+
+| Serve una foto di | Dove andrà | Requisito |
+|---|---|---|
+| Le Piccole Dolomiti o un sentiero | apertura della home | almeno 2500 px di larghezza |
+| Le camere | pagina Camere | orizzontale, almeno 1600 px |
+| La sala del ristorante | pagina Ristorante | orizzontale, almeno 1600 px |
+| I sentieri (6 foto) | schede dei sentieri | orizzontale, almeno 1600 px |
+
+Finché non arrivano, al loro posto ci sono riquadri neutri con la scritta
+«FOTO IN ARRIVO»: si vede subito che è un segnaposto e non una foto sbagliata.
+
+### Come sostituirle
+
+1. Preparare la fotografia **orizzontale**, almeno **1600 pixel** di larghezza.
 2. Rinominarla **esattamente** come il file che sostituisce.
 3. Copiarla nella cartella **`src/assets/`**, sovrascrivendo il file esistente.
 
-| Nome file | Dove appare | Soggetto ideale |
-|---|---|---|
-| `hero-piccole-dolomiti.jpg` | apertura della home | le Piccole Dolomiti viste da Recoaro |
-| `locanda-facciata.jpg` | home, sezione «Un rifugio, non un albergo» | la facciata della locanda |
-| `locanda-ambienti.jpg` | pagina La Locanda | gli interni, la sala, i dettagli |
-| `sentieri-piccole-dolomiti.jpg` | chiusura della home e dei sentieri | un sentiero o un panorama |
-| `camere-interno.jpg` | pagina Camere | una camera rifatta |
-| `ristorante-sala.jpg` | pagina Ristorante | la sala del ristorante |
-| `gnocchi-fioreta.jpg` | pagina Gnocchi con la Fioreta | il piatto |
-| `sentieri-grandi-alberi.jpg` | scheda del sentiero | il bosco di faggi e betulle |
-| `sentieri-campogrosso.jpg` | scheda del sentiero | le trincee e la Strada del Re |
-| `sentieri-ponte-tibetano.jpg` | scheda del sentiero | il ponte sospeso |
-| `sentieri-52-gallerie.jpg` | scheda del sentiero | una galleria o il Rifugio Papa |
-| `sentieri-mole.jpg` | scheda del sentiero | le macine in pietra o la fioritura |
-| `sentieri-gino-solda.jpg` | scheda del sentiero | il Monte Spitz o il centro di Recoaro |
+| Nome file | Dove appare |
+|---|---|
+| `hero-piccole-dolomiti.jpg` | apertura della home |
+| `camere-interno.jpg` | pagina Camere |
+| `ristorante-sala.jpg` | pagina Ristorante |
+| `gnocchi-fioreta.jpg` | pagina Gnocchi con la Fioreta |
+| `sentieri-grandi-alberi.jpg` | scheda del sentiero |
+| `sentieri-campogrosso.jpg` | scheda del sentiero |
+| `sentieri-ponte-tibetano.jpg` | scheda del sentiero |
+| `sentieri-52-gallerie.jpg` | scheda del sentiero |
+| `sentieri-mole.jpg` | scheda del sentiero |
+| `sentieri-gino-solda.jpg` | scheda del sentiero |
 
 Tutte le fotografie stanno nella **stessa cartella** (`src/assets/`): non ci sono
 copie da aggiornare in altri posti. Il sistema si occupa da solo di ridurle e
@@ -130,6 +144,13 @@ converterle nel formato giusto per il web.
 
 **Non** usare fotografie scaricate da internet: servono scatti vostri, o foto di
 cui avete i diritti.
+
+### Il logo
+
+Il logo è nel footer, con lo sfondo bianco reso trasparente. La versione che
+abbiamo è piccola (281 pixel): se ne esiste una **vettoriale** (file `.svg`,
+`.ai` o `.eps`) o una versione molto più grande, vale la pena sostituirla — sul
+footer si nota.
 
 ---
 

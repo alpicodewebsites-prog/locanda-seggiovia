@@ -16,7 +16,15 @@ import { site } from '../data/site';
 const anno = site.annoFondazione;
 ---
 
-<section class="relative isolate flex min-h-[86svh] flex-col justify-end overflow-hidden bg-stone-800">
+<!--
+  Il margine negativo fa salire la fotografia SOTTO la barra di navigazione.
+  L'header è `sticky`, quindi occupa spazio nel flusso: senza questo, la
+  fotografia comincerebbe sotto la barra e la barra resterebbe una fascia
+  separata. Così invece la barra le sta sopra e si confonde con l'immagine.
+-->
+<section
+  class="relative isolate -mt-[var(--header-h)] flex min-h-[86svh] flex-col justify-end overflow-hidden bg-stone-800"
+>
   <!--
     ATTENZIONE — questo è un segnaposto generato proceduralmente, non una foto
     delle Piccole Dolomiti. L'alt lo dice esplicitamente: descrivere come reale

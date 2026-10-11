@@ -4,7 +4,9 @@ import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
-import imgRistorante from '../assets/ristorante-sala.jpg';
+import imgRistorante from '../assets/locanda-esterno.jpg';
+import imgBacala from '../assets/piatto-bacala-vicentina.jpg';
+import imgGnocchi from '../assets/piatto-gnocchi-fioreta.jpg';
 
 const piatti = await getCollection('menu');
 
@@ -77,11 +79,11 @@ const schema = {
         <div class="media aspect-4/3">
           <Image
             src={imgRistorante}
-            alt="Segnaposto grafico in attesa della fotografia della sala del ristorante"
-            widths={[420, 640, 900, 1200]}
+            alt="La Locanda Seggiovia vista dalla piazza di Recoaro Terme, con i balconi in legno"
+            widths={[420, 600, 900]}
             sizes="(min-width: 768px) 40vw, 92vw"
             format="webp"
-            quality={76}
+            quality={84}
             loading="lazy"
             decoding="async"
           />
@@ -120,6 +122,45 @@ const schema = {
               </li>
             ))}
           </ul>
+
+          {/* Le due specialità di cui esiste una fotografia reale. */}
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <figure>
+              <div class="media aspect-4/3">
+                <Image
+                  src={imgBacala}
+                  alt="Il bacalà alla vicentina servito con la polenta"
+                  widths={[200, 300, 420]}
+                  sizes="(min-width: 640px) 22vw, 92vw"
+                  format="webp"
+                  quality={84}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption class="mt-3 text-[0.8rem] text-forest-300">
+                Bacalà alla vicentina, con la polenta.
+              </figcaption>
+            </figure>
+
+            <figure>
+              <div class="media aspect-4/3">
+                <Image
+                  src={imgGnocchi}
+                  alt="Gli gnocchi con la fioreta conditi con burro di malga rosolato"
+                  widths={[300, 420, 640]}
+                  sizes="(min-width: 640px) 22vw, 92vw"
+                  format="webp"
+                  quality={84}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption class="mt-3 text-[0.8rem] text-forest-300">
+                Gnocchi con la fioreta, il piatto della casa.
+              </figcaption>
+            </figure>
+          </div>
         </div>
       </section>
     )

@@ -10,7 +10,6 @@ tariffe:
   mezzaPensione: 78
   pensioneCompleta: 84
 servizi:
-  - Wi-Fi
   - TV
   - Cassaforte
   - Set di cortesia

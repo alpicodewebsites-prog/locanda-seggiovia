@@ -162,7 +162,8 @@ progressivi, come da specifica.
 
 | Campo | Stato | Perché conta |
 |---|---|---|
-| `telefono` / `telefonoLink` | `+39 000 000 0000` — segnaposto | è la CTA di contatto principale |
+| `telefono` / `telefonoLink` | ✅ **0445 76162** — dal sito precedente | è la CTA di contatto principale |
+| `fiscale.ragioneSociale` | ✅ **Ristorante Asnicar Bertoldi SNC** — dal sito precedente | compare nel footer |
 | `annoFondazione` | `null` | finché è `null` il titolo omette l'anno invece di inventarlo |
 | `fiscale.partitaIva`, `fiscale.codiceFiscale` | zeri | obbligatori per legge nel footer |
 | `orari` | da confermare | informazione operativa |
@@ -170,30 +171,52 @@ progressivi, come da specifica.
 | `geo.lat/lng` | centro di Recoaro | da raffinare sul civico esatto |
 | `url` (in `astro.config.mjs`) | dominio ipotizzato | canonical, OG e sitemap |
 
+**Altri dati ricavati dal sito precedente** e già applicati:
+
+- la **colazione è compresa** nella tariffa B&B;
+- il **Wi-Fi è negli spazi comuni**, non in camera: la pagina Camere non lo
+  promette più in camera (prima lo elencava, ed era sbagliato);
+- l'attività è **aperta tutto l'anno**;
+- il condimento degli gnocchi comprende anche **300 g di formaggio di malga
+  stagionato** e il sale;
+- la **prima domenica di settembre** si tiene la Festa dei gnocchi con la
+  fioreta.
+
 **Nessun dato inventato è stato inserito al posto dei valori reali.** Dove
-l'informazione mancava, il sito la omette invece di riempirla.
+l'informazione mancava, il sito la omette invece di riempirla. L'anno di
+fondazione (1968) compare su un sito **di un'altra attività** presente fra gli
+screenshot ed è stato volutamente **non** usato: va confermato dalla cliente.
 
 ### Immagini
 
-Le immagini attuali sono **segnaposto generati proceduralmente**
-(`scripts/generate_placeholders.py`), non fotografie e non foto stock — il brief
-le esclude. Sono di due tipi:
+Il sito usa **fotografie reali dell'attività**, fornite dalla cliente e importate
+con `scripts/importa_foto.py`:
 
-- **Paesaggi disegnati** (`hero-piccole-dolomiti`, `sentieri-*`,
-  `territorio-malghe`, `locanda-facciata`): composizioni astratte che servono a
-  valutare il taglio fotografico e i contrasti.
-- **Riquadri vuoti etichettati** (`camere-interno`, `ristorante-sala`,
-  `gnocchi-fioreta`): per camere, sala e piatto un disegno astratto sarebbe
-  fuorviante, quindi il segnaposto dichiara esplicitamente «FOTO IN ARRIVO».
+| File in `src/assets/` | Sorgente in `foto sito locanda/` | Dove appare |
+|---|---|---|
+| `locanda-esterno.jpg` | `seggiovia esterno.jpeg` | home, La Locanda, Camere, Ristorante |
+| `territorio-montagne.jpg` | `seggiovia 1.jpeg` | chiusura della home |
+| `locanda-preparazione.jpg` | `seggiovia 2.jpg` | pagina Gnocchi, pagina Camere |
+| `piatto-gnocchi-fioreta.jpg` | `gnocchi alla fioreta.jpeg` | pagina Gnocchi, Ristorante |
+| `piatto-bacala-vicentina.jpg` | `gnocchi alla vicentina.jpeg` | pagina Ristorante |
+| `locanda-logo.png` | `locanda logo.gif` | footer (sfondo reso trasparente) |
 
-I testi `alt` **dicono che si tratta di segnaposto**. Quando arrivano gli scatti
-reali: sostituire il file mantenendo il nome e aggiornare l'`alt` con la
-descrizione vera del soggetto.
+La cartella `foto sito locanda/` è conservata nel repository come archivio degli
+originali: è da lì che si rigenerano gli asset.
 
-**Tutte le fotografie stanno in `src/assets/`**, in un unico posto: da lì Astro
-le converte in WebP e genera le varianti responsive. Le pagine le richiamano con
-`import immagine from '../assets/nome.jpg'`. In `public/` restano solo i file che
-devono avere un URL fisso (favicon, icona iOS, immagine social, robots.txt).
+**Restano segnaposto** le immagini di ambienti e camere
+(`camere-interno.jpg`, `ristorante-sala.jpg`, `gnocchi-fioreta.jpg`) e le
+copertine dei sentieri: sono disegni generati proceduralmente da
+`scripts/generate_placeholders.py`, non fotografie. I testi `alt` lo dichiarano.
+
+**I file forniti sono piccoli** (il più grande è 600×450 px, il logo 281×218).
+Vanno bene per gli spazi in cui sono usati, ma non reggono un ingrandimento a
+schermo intero: per la fotografia di apertura della home serve uno scatto
+almeno 2560 px di larghezza.
+
+Le immagini stanno **tutte in `src/assets/`**, in un unico posto: da lì Astro le
+converte in WebP e genera le varianti responsive. In `public/` restano solo i
+file con URL fisso (favicon, icona iOS, immagine social, robots.txt).
 
 ---
 

@@ -4,7 +4,8 @@ import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
-import imgCamere from '../assets/camere-interno.jpg';
+import imgCamere from '../assets/locanda-preparazione.jpg';
+import imgEsterno from '../assets/locanda-esterno.jpg';
 
 const camere = (await getCollection('camere')).sort((a, b) => a.data.ordine - b.data.ordine);
 
@@ -58,12 +59,8 @@ const schema = {
     <div class="shell">
       <p class="eyebrow">Camere e tariffe</p>
       <h1 class="display-2 mt-5 max-w-[20ch] text-stone-900">
-        Camere semplici, montagna seria
+        Camere semplici ed accoglienti
       </h1>
-      <p class="lede mt-6 max-w-[58ch]">
-        Nessun lusso inutile: letti comodi, bagno privato, silenzio. Quello che serve dopo
-        una giornata sui sentieri, e quello che serve per ripartire la mattina.
-      </p>
     </div>
   </section>
 
@@ -76,17 +73,17 @@ const schema = {
         <div class="media aspect-4/5">
           <Image
             src={imgCamere}
-            alt="Segnaposto grafico in attesa della fotografia di una camera della Locanda Seggiovia"
-            widths={[420, 640, 900, 1200]}
+            alt="Il tavolo di lavoro della cucina con gli ingredienti per gli gnocchi con la fioreta"
+            widths={[300, 420, 640]}
             sizes="(min-width: 768px) 40vw, 92vw"
             format="webp"
-            quality={76}
+            quality={82}
             loading="lazy"
             decoding="async"
           />
         </div>
         <p class="mt-3 text-[0.8rem] text-stone-500">
-          Fotografia in arrivo: gli interni sono in fase di ristrutturazione.
+          In cucina: la fioreta, la farina e il burro di malga.
         </p>
       </div>
 
@@ -127,9 +124,53 @@ const schema = {
                     ))}
                   </ul>
                 )}
+
+                {camera === camere[0] && (
+                  <p class="mt-5 max-w-[52ch] text-[0.85rem] leading-relaxed text-stone-500">
+                    La colazione è compresa nella tariffa B&amp;B. La linea Wi-Fi è
+                    disponibile su richiesta negli spazi comuni.
+                  </p>
+                )}
               </article>
             ))
           }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       Galleria: cosa si trova arrivando
+       ================================================================== -->
+  <section class="pb-[var(--spacing-section)]" aria-labelledby="titolo-ambienti">
+    <div class="shell">
+      <h2 id="titolo-ambienti" class="eyebrow border-b border-stone-300 pb-3 text-stone-500">
+        La struttura
+      </h2>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <figure class="media aspect-4/3" data-aos="fade-in">
+          <Image
+            src={imgEsterno}
+            alt="La facciata della Locanda Seggiovia con i balconi in legno, nel centro di Recoaro Terme"
+            widths={[420, 600, 900]}
+            sizes="(min-width: 640px) 46vw, 92vw"
+            format="webp"
+            quality={82}
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+
+        <div class="flex flex-col justify-center gap-5 sm:pl-8">
+          <p class="max-w-[52ch] text-[0.95rem] leading-relaxed text-stone-600">
+            L'edificio è in piazza, con i balconi in legno che guardano le Piccole
+            Dolomiti. Le camere sono ai piani, il ristorante al piano terra.
+          </p>
+          <p class="text-[0.8rem] leading-relaxed text-stone-500">
+            Altre fotografie degli interni sono in arrivo: gli ambienti sono in fase di
+            ristrutturazione.
+          </p>
         </div>
       </div>
     </div>

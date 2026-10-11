@@ -11,7 +11,9 @@ import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site, mappaLinkUrl } from '../data/site';
-import imgAmbienti from '../assets/locanda-ambienti.jpg';
+import imgEsterno from '../assets/locanda-esterno.jpg';
+import imgPreparazione from '../assets/locanda-preparazione.jpg';
+import imgLogo from '../assets/locanda-logo.png';
 
 const description =
   'La Locanda Seggiovia a Recoaro Terme: una casa di pietra e legno in piazza, gestita dalla famiglia Asnicar Bertoldi, ai piedi delle Piccole Dolomiti.';
@@ -68,20 +70,20 @@ const schema = {
   <section class="section-y" aria-labelledby="titolo-storia">
     <div class="shell grid gap-12 md:grid-cols-12 md:gap-10 lg:gap-16">
       <div class="md:col-span-5 md:order-2" data-aos="fade-in">
-        <div class="media aspect-4/5">
+        <div class="media aspect-3/4">
           <Image
-            src={imgAmbienti}
-            alt="Segnaposto grafico in attesa della fotografia degli ambienti della locanda"
-            widths={[420, 640, 900, 1200]}
+            src={imgEsterno}
+            alt="La Locanda Seggiovia in piazza a Recoaro Terme: i balconi in legno e le montagne sullo sfondo"
+            widths={[420, 600, 900]}
             sizes="(min-width: 768px) 40vw, 92vw"
             format="webp"
-            quality={76}
+            quality={84}
             loading="lazy"
             decoding="async"
           />
         </div>
         <p class="mt-3 text-[0.8rem] text-stone-500">
-          Fotografia in arrivo: gli ambienti sono in fase di ristrutturazione.
+          La locanda in piazza, con i balconi che guardano le Piccole Dolomiti.
         </p>
       </div>
 
