@@ -179,14 +179,14 @@ rettangolare incollato sulla pagina.
 ### Card colorate
 
 `.card-accento--*` applica insieme tre cose: un bordo superiore spesso, gli
-angoli arrotondati e una **tinta di fondo dello stesso accento** (12%). Così la
-card si stacca dal fondo senza bordi né ombre.
+angoli arrotondati e una **tinta di fondo dello stesso accento** (12%). Cos la
+card si stacca dal fondo senza bordi n ombre.
 
 ### Elemento grafico: `Cresta.astro`
 
 Un profilo di montagna disegnato in linea, usato come pausa fra le sezioni e per
-riempire gli spazi vuoti. Riprende la forma del favicon, quindi è coerente con
-l'identità invece di essere decorazione casuale. È `aria-hidden`: non porta
+riempire gli spazi vuoti. Riprende la forma del favicon, quindi  coerente con
+l'identit invece di essere decorazione casuale.  `aria-hidden`: non porta
 informazione.
 
 ### Tipografia
@@ -254,16 +254,16 @@ con `scripts/importa_foto.py`:
 | File in `src/assets/` | Sorgente in `foto sito locanda/` | Dove appare |
 |---|---|---|
 | `locanda-esterno.jpg` | `seggiovia esterno.jpeg` | home, La Locanda, Camere, Ristorante |
-| `territorio-montagne.jpg` | `seggiovia 1.jpeg` | pagina Sentieri, in piccolo (è 400×297: a tutta larghezza si sgrana) |
+| `territorio-montagne.jpg` | `seggiovia 1.jpeg` | pagina Sentieri, in piccolo ( 400297: a tutta larghezza si sgrana) |
 | `locanda-preparazione.jpg` | `seggiovia 2.jpg` | pagina Gnocchi, pagina Camere |
 | `piatto-gnocchi-fioreta.jpg` | `gnocchi alla fioreta.jpeg` | pagina Gnocchi, Ristorante |
 | `piatto-bacala-vicentina.jpg` | `gnocchi alla vicentina.jpeg` | pagina Ristorante |
 | `locanda-logo.png` | `locanda logo.gif` | footer (sfondo reso trasparente) |
 
-Una sola immagine è **generata proceduralmente** perché serve a tutta larghezza e
-le foto fornite non bastano: `piccole-dolomiti-large.jpg` (2560×1440), usata
+Una sola immagine  **generata proceduralmente** perch serve a tutta larghezza e
+le foto fornite non bastano: `piccole-dolomiti-large.jpg` (25601440), usata
 nella chiusura della home e nella pagina Sentieri. Il panorama reale con il
-tricolore è 400×297: steso su 1440 pixel si sgrana, quindi compare **in piccolo**
+tricolore  400297: steso su 1440 pixel si sgrana, quindi compare **in piccolo**
 nella pagina Sentieri, dove la sua risoluzione basta.
 
 La cartella `foto sito locanda/` Ã¨ conservata nel repository come archivio degli
@@ -476,14 +476,14 @@ aggiornare la Cookie Policy.
 
 ## 9. Repository e pubblicazione
 
-Il progetto è su GitHub:
+Il progetto  su GitHub:
 
 **https://github.com/alpicodewebsites-prog/locanda-seggiovia** (branch `main`)
 
-Vercel è collegato a questo repository: **ogni push ricostruisce il sito da solo**.
-Non serve più pubblicare a mano dal terminale — e soprattutto, quando la
-proprietaria salva un contenuto dal pannello `/admin`, quel salvataggio è un
-commit, quindi il sito si aggiorna da sé in circa un minuto.
+Vercel  collegato a questo repository: **ogni push ricostruisce il sito da solo**.
+Non serve pi pubblicare a mano dal terminale  e soprattutto, quando la
+proprietaria salva un contenuto dal pannello `/admin`, quel salvataggio  un
+commit, quindi il sito si aggiorna da s in circa un minuto.
 
 ### Comandi utili
 
@@ -501,14 +501,14 @@ git push                # pubblicare (Vercel ricostruisce da solo)
 
 ## 9-bis. Autenticazione su GitHub
 
-Git su questa macchina è autenticato con l'account `alpicodewebsites-prog`
+Git su questa macchina  autenticato con l'account `alpicodewebsites-prog`
 tramite il Credential Manager di Windows. Le credenziali si gestiscono da
 **Pannello di controllo ? Gestione credenziali ? Credenziali Windows**, cercando
 `git:https://github.com`.
 
-Se un push viene rifiutato con *«Permission denied»*, quasi sempre significa che
-è salvata la credenziale di un **account diverso**: va cancellata, e il push
-successivo chiederà di accedere di nuovo.
+Se un push viene rifiutato con *Permission denied*, quasi sempre significa che
+ salvata la credenziale di un **account diverso**: va cancellata, e il push
+successivo chieder di accedere di nuovo.
 
 ```bash
 git init

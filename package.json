@@ -9,7 +9,18 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "verifica": "python scripts/controlla_codifica.py && node scripts/verifica_config.mjs && python scripts/verify_build.py",
+    "verifica:codifica": "python scripts/controlla_codifica.py",
+    "verifica:config": "node scripts/verifica_config.mjs",
+    "verifica:sito": "python scripts/verify_build.py",
+    "verifica:header": "node scripts/test_header.mjs",
+    "verifica:scroll": "node scripts/test_scroll.mjs",
+    "verifica:sovrapposizione": "node scripts/test_overlap.mjs",
+    "verifica:visibilita": "node scripts/check_visibility.mjs",
+    "verifica:form": "node scripts/test_form.mjs",
+    "verifica:mappa": "node scripts/test_mappa.mjs",
+    "screenshot": "node scripts/shot.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

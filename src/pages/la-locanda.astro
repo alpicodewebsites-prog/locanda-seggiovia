@@ -12,8 +12,8 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Cresta from '../components/Cresta.astro';
 import { site, mappaLinkUrl } from '../data/site';
-import imgEsterno from '../assets/locanda-esterno.jpg';
-import imgPreparazione from '../assets/locanda-preparazione.jpg';
+import { caricaFotoSito } from '../lib/foto-sito';
+const foto = await caricaFotoSito();
 import imgLogo from '../assets/locanda-logo.png';
 
 const description =
@@ -73,7 +73,7 @@ const schema = {
       <div class="md:col-span-5 md:order-2" data-aos="fade-in">
         <div class="media aspect-3/4">
           <Image
-            src={imgEsterno}
+            src={foto.locandaEsterno}
             alt="La Locanda Seggiovia in piazza a Recoaro Terme: i balconi in legno e le montagne sullo sfondo"
             widths={[420, 600, 900]}
             sizes="(min-width: 768px) 40vw, 92vw"

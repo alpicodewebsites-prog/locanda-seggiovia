@@ -5,8 +5,8 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Cresta from '../components/Cresta.astro';
 import { site } from '../data/site';
-import imgCamere from '../assets/locanda-preparazione.jpg';
-import imgEsterno from '../assets/locanda-esterno.jpg';
+import { caricaFotoSito } from '../lib/foto-sito';
+const foto = await caricaFotoSito();
 
 const camere = (await getCollection('camere')).sort((a, b) => a.data.ordine - b.data.ordine);
 
@@ -73,7 +73,7 @@ const schema = {
       <div class="md:col-span-5" data-aos="fade-in">
         <div class="media aspect-4/5">
           <Image
-            src={imgCamere}
+            src={foto.locandaCucina}
             alt="Il tavolo di lavoro della cucina con gli ingredienti per gli gnocchi con la fioreta"
             widths={[300, 420, 640]}
             sizes="(min-width: 768px) 40vw, 92vw"
@@ -152,7 +152,7 @@ const schema = {
       <div class="mt-8 grid gap-4 sm:grid-cols-2">
         <figure class="media aspect-4/3" data-aos="fade-in">
           <Image
-            src={imgEsterno}
+            src={foto.locandaEsterno}
             alt="La facciata della Locanda Seggiovia con i balconi in legno, nel centro di Recoaro Terme"
             widths={[420, 600, 900]}
             sizes="(min-width: 640px) 46vw, 92vw"

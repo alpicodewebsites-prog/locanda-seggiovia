@@ -5,8 +5,10 @@
  * Il titolo principale (h1) è il testo reale della pagina, non un'immagine:
  * resta leggibile, selezionabile, indicizzabile e accessibile.
  *
- * L'immagine è l'elemento LCP: viene caricata con priorità alta, in WebP,
- * con srcset responsive perché i telefoni non scarichino 2560px.
+ * L'immagine arriva dalle impostazioni del sito, quindi la proprietaria può
+ * sostituirla dal pannello senza toccare il codice. È l'elemento LCP: viene
+ * caricata con priorità alta, in WebP, con srcset responsive perché i telefoni
+ * non scarichino 2560px.
  *
  * Sull'impaginazione: la fotografia sale SOTTO la barra di navigazione (che è
  * `sticky`, quindi occupa spazio nel flusso) grazie a un margine negativo. Lo
@@ -14,33 +16,42 @@
  * contenuto non finisce mai dietro la barra.
  */
 import { Image } from 'astro:assets';
-import heroImg from '../assets/hero-piccole-dolomiti.jpg';
+import type { ImageMetadata } from 'astro';
 import { site } from '../data/site';
+
+export interface Props {
+  /** Fotografia di apertura. Se manca, resta il fondo scuro. */
+  immagine?: ImageMetadata | null;
+  /** Descrizione della fotografia, per chi usa un lettore di schermo. */
+  alt?: string;
+}
+
+const {
+  immagine = null,
+  alt = 'Panorama delle Piccole Dolomiti sopra Recoaro Terme',
+} = Astro.props;
 
 // Le date in cui il titolo cambia forma: evita di inventare un anno.
 const anno = site.annoFondazione;
 ---
 
 <section class="hero-apertura bg-stone-800">
-  <!--
-    ATTENZIONE — questo è un segnaposto generato proceduralmente, non una foto
-    delle Piccole Dolomiti. L'alt lo dice esplicitamente: descrivere come reale
-    una fotografia che non esiste sarebbe fuorviante per chi usa un lettore di
-    schermo. Quando arriva lo scatto vero, sostituire il file in src/assets e
-    aggiornare l'alt con la descrizione del paesaggio reale.
-  -->
-  <Image
-    src={heroImg}
-    alt="Segnaposto grafico di montagne con boschi di conifere, in attesa della fotografia delle Piccole Dolomiti"
-    widths={[640, 960, 1280, 1600, 2000, 2560]}
-    sizes="100vw"
-    format="webp"
-    quality={78}
-    loading="eager"
-    fetchpriority="high"
-    decoding="async"
-    class="absolute inset-0 -z-20 h-full w-full object-cover"
-  />
+  {
+    immagine && (
+      <Image
+        src={immagine}
+        alt={alt}
+        widths={[640, 960, 1280, 1600, 2000, 2560]}
+        sizes="100vw"
+        format="webp"
+        quality={78}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="absolute inset-0 -z-20 h-full w-full object-cover"
+      />
+    )
+  }
 
   <!-- Velo: garantisce il contrasto del testo su qualsiasi fotografia. -->
   <div

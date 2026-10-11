@@ -9,10 +9,18 @@
  * esiste, va lasciata vuota: non va inventata. Il CMS è configurato con
  * `omit_empty_optional_fields`, quindi un campo vuoto non viene scritto nel file
  * e il sito semplicemente non lo mostra.
+ *
+ * SULLE IMMAGINI: le fotografie stanno tutte in `src/assets` e i campi immagine
+ * contengono il percorso che il pannello salva, del tipo
+ * `/assets/nome-file.jpg`. La risoluzione avviene con `src/lib/immagini.ts`,
+ * che accetta anche il vecchio formato a sigla (`sentieri-mole`).
  */
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+
+/** Campo immagine riutilizzabile: percorso in src/assets. */
+const immagine = z.string().optional();
 
 /* -------------------------------------------------------------------------- */
 /* Camere e tariffe                                                            */
@@ -36,6 +44,8 @@ const camere = defineCollection({
     supplementoDus: z.number().optional(),
     /** Dotazione della camera. */
     servizi: z.array(z.string()).default([]),
+    /** Fotografia della camera. */
+    foto: immagine,
   }),
 });
 
@@ -54,6 +64,8 @@ const menu = defineCollection({
     prezzo: z.number().optional(),
     /** Piatto della casa o specialità: viene messo in evidenza. */
     specialita: z.boolean().default(false),
+    /** Fotografia del piatto. Se c'è, il piatto compare anche in galleria. */
+    foto: immagine,
   }),
 });
 
@@ -83,17 +95,18 @@ const gnocchi = defineCollection({
     condimento: z.string(),
     /** Riconoscimenti: al momento la De.Co. di Recoaro Terme. */
     riconoscimenti: z.array(z.string()).default([]),
+    /** Fotografia del piatto finito. */
+    foto: immagine,
+    /** Fotografia degli ingredienti o della preparazione. */
+    fotoPreparazione: immagine,
   }),
 });
 
 /* -------------------------------------------------------------------------- */
-/* Sentieri — schema pronto; i contenuti arrivano nella settimana 3             */
+/* Sentieri                                                                    */
 /* -------------------------------------------------------------------------- */
 
 const sentieri = defineCollection({
-  // Pattern passato come stringa singola con negazione: il loader unisce gli
-  // array in una sola stringa, quindi la forma ad array non funziona.
-  // README.md è documentazione per chi sviluppa, non un contenuto del sito.
   loader: glob({ pattern: '**/*.md', base: './src/content/sentieri' }),
   schema: z.object({
     nome: z.string(),
@@ -111,9 +124,33 @@ const sentieri = defineCollection({
     /** Segnaletica CAI, se presente. */
     segnavia: z.string().optional(),
     partenza: z.string().optional(),
-    /** Immagine di copertina, percorso relativo alla root (es. /images/...). */
-    immagine: z.string().optional(),
+    /** Immagine di copertina. */
+    immagine,
   }),
 });
 
-export const collections = { camere, menu, gnocchi, sentieri };
+/* -------------------------------------------------------------------------- */
+/* Impostazioni generali — contenuto singolo                                   */
+/*                                                                             */
+/* Le fotografie che non appartengono a una scheda ma a una pagina intera:     */
+/* l'apertura della home, la facciata, il panorama. Stanno tutte qui perché la */
+/* proprietaria abbia UN posto solo dove cambiarle.                            */
+/* -------------------------------------------------------------------------- */
+
+const impostazioni = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/impostazioni' }),
+  schema: z.object({
+    /** Fotografia di apertura della home. */
+    hero: immagine,
+    /** Facciata della locanda: home, La Locanda, Camere, Ristorante. */
+    locandaEsterno: immagine,
+    /** Tavolo di cucina con gli ingredienti: pagina Camere e Gnocchi. */
+    locandaCucina: immagine,
+    /** Panorama ampio: chiusura della home e pagina Sentieri. */
+    panorama: immagine,
+    /** Fotografia delle montagne: pagina Sentieri. */
+    montagne: immagine,
+  }),
+});
+
+export const collections = { camere, menu, gnocchi, sentieri, impostazioni };

@@ -4,8 +4,8 @@ import { Image } from 'astro:assets';
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { site, SITE_URL } from '../../data/site';
-import imgChiusura from '../../assets/piccole-dolomiti-large.jpg';
-import imgMontagne from '../../assets/territorio-montagne.jpg';
+import { caricaFotoSito } from '../../lib/foto-sito';
+const foto = await caricaFotoSito();
 
 const sentieri = (await getCollection('sentieri')).sort((a, b) => a.data.ordine - b.data.ordine);
 
@@ -142,7 +142,7 @@ const schema = {
       <figure class="md:col-span-7" data-aos="fade-up">
         <div class="media aspect-3/2">
           <Image
-            src={imgMontagne}
+            src={foto.montagne}
             alt="Le creste innevate delle Piccole Dolomiti con il tricolore, sopra Recoaro Terme"
             widths={[400, 600, 900]}
             sizes="(min-width: 768px) 56vw, 92vw"
@@ -181,7 +181,7 @@ const schema = {
        ================================================================== -->
   <section class="relative isolate overflow-hidden bg-stone-800">
     <Image
-      src={imgChiusura}
+      src={foto.panorama}
       alt="Segnaposto grafico di creste montuose con foschia nelle valli"
       widths={[640, 960, 1280, 1600, 1920]}
       sizes="100vw"

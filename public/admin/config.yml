@@ -94,6 +94,11 @@ collections:
         widget: list
         required: false
         hint: 'Un servizio per riga. Il Wi-Fi è negli spazi comuni, non in camera: non va elencato qui.'
+      - name: foto
+        label: Fotografia della camera
+        widget: image
+        required: false
+        hint: 'Facoltativa. Se manca, la camera compare senza foto.'
 
   # ==========================================================================
   # MENÙ DEL RISTORANTE
@@ -142,6 +147,11 @@ collections:
         widget: boolean
         default: false
         hint: Le specialità vengono messe in evidenza nella pagina.
+      - name: foto
+        label: Fotografia del piatto
+        widget: image
+        required: false
+        hint: 'Facoltativa. Se c''e, il piatto compare anche in galleria.'
 
   # ==========================================================================
   # GNOCCHI CON LA FIORETA (contenuto singolo)
@@ -190,6 +200,16 @@ collections:
         widget: list
         required: false
         default: ['Denominazione Comunale di Origine — Comune di Recoaro Terme']
+      - name: foto
+        label: Fotografia del piatto finito
+        widget: image
+        required: false
+        hint: 'Facoltativa.'
+      - name: fotoPreparazione
+        label: Fotografia degli ingredienti
+        widget: image
+        required: false
+        hint: 'Facoltativa.'
 
   # ==========================================================================
   # SENTIERI  (i contenuti arrivano nella settimana 3)
@@ -240,3 +260,43 @@ collections:
         widget: image
         required: false
         hint: 'Facoltativa. Se manca, la scheda usa un segnaposto neutro.'
+
+  # ==========================================================================
+  # FOTO DELLE PAGINE
+  # Le fotografie che non appartengono a una scheda ma a una pagina intera.
+  # Sono tutte qui perche' la proprietaria abbia un posto solo dove cambiarle.
+  # ==========================================================================
+  - name: impostazioni
+    label: Foto delle pagine
+    description: >-
+      Le fotografie di apertura e di sfondo delle pagine. Sostituendone una qui,
+      cambia in tutto il sito dove compare.
+    files:
+      - name: sito
+        label: Fotografie generali
+        file: src/content/impostazioni/sito.md
+        fields:
+          - name: hero
+            label: Apertura della home
+            widget: image
+            required: false
+            hint: 'La fotografia grande della prima schermata. Serve almeno 2500 pixel di larghezza.'
+          - name: panorama
+            label: Panorama (chiusura della home e pagina Sentieri)
+            widget: image
+            required: false
+            hint: 'Usata a tutta larghezza: serve una fotografia grande e orizzontale.'
+          - name: locandaEsterno
+            label: La locanda vista da fuori
+            widget: image
+            required: false
+            hint: 'Compare nella home, in La Locanda, in Camere e in Ristorante.'
+          - name: locandaCucina
+            label: Il tavolo di cucina
+            widget: image
+            required: false
+            hint: 'Ingredienti o preparazione. Compare in Camere e nella pagina degli gnocchi.'
+          - name: montagne
+            label: Le montagne (pagina Sentieri)
+            widget: image
+            required: false

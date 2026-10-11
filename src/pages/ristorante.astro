@@ -5,11 +5,20 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Cresta from '../components/Cresta.astro';
 import { site } from '../data/site';
-import imgRistorante from '../assets/locanda-esterno.jpg';
-import imgBacala from '../assets/piatto-bacala-vicentina.jpg';
-import imgGnocchi from '../assets/piatto-gnocchi-fioreta.jpg';
+import { caricaFotoSito } from '../lib/foto-sito';
+import { risolviImmagine } from '../lib/immagini';
 
+const foto = await caricaFotoSito();
 const piatti = await getCollection('menu');
+
+/**
+ * I piatti di cui esiste una fotografia. La foto si assegna dal pannello, nella
+ * scheda del piatto: aggiungendone una, compare da sola in questa galleria.
+ */
+const piattiConFoto = piatti
+  .map((piatto) => ({ piatto, immagine: risolviImmagine(piatto.data.foto) }))
+  .filter((voce) => voce.immagine !== null)
+  .sort((a, b) => a.piatto.data.ordine - b.piatto.data.ordine);
 
 /** Categorie nell'ordine in cui si mangiano, non in ordine alfabetico.
  *  Ogni categoria porta un colore: serve a rendere il menù leggibile a colpo
@@ -79,18 +88,22 @@ const schema = {
       </div>
 
       <div class="md:col-span-5 md:order-last">
-        <div class="media aspect-4/3">
-          <Image
-            src={imgRistorante}
-            alt="La Locanda Seggiovia vista dalla piazza di Recoaro Terme, con i balconi in legno"
-            widths={[420, 600, 900]}
-            sizes="(min-width: 768px) 40vw, 92vw"
-            format="webp"
-            quality={84}
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
+        {
+          foto.locandaEsterno && (
+            <div class="media aspect-4/3">
+              <Image
+                src={foto.locandaEsterno}
+                alt="La Locanda Seggiovia vista dalla piazza di Recoaro Terme, con i balconi in legno"
+                widths={[420, 600, 900]}
+                sizes="(min-width: 768px) 40vw, 92vw"
+                format="webp"
+                quality={84}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          )
+        }
       </div>
     </div>
   </section>
@@ -139,48 +152,36 @@ const schema = {
             ))}
           </ul>
 
-          {/* Le due specialità di cui esiste una fotografia reale.
+          {/* Galleria dei piatti fotografati. Le foto si assegnano dal pannello
+              nella scheda di ogni piatto; qui compaiono da sole.
               `object-contain` perché gli scatti sono piccoli: ritagliarli per
               riempire il riquadro li renderebbe sfocati. */}
-          <div class="mt-8 grid gap-8 sm:grid-cols-2">
-            <figure data-aos="fade-up">
-              <div class="media aspect-4/3 bg-forest-700/40">
-                <Image
-                  src={imgBacala}
-                  alt="Il bacalà alla vicentina servito con la polenta"
-                  widths={[200, 300, 420]}
-                  sizes="(min-width: 640px) 44vw, 92vw"
-                  format="webp"
-                  quality={86}
-                  loading="lazy"
-                  decoding="async"
-                  class="object-contain!"
-                />
+          {
+            piattiConFoto.length > 0 && (
+              <div class="mt-8 grid gap-8 sm:grid-cols-2">
+                {piattiConFoto.map(({ piatto, immagine }, i) => (
+                  <figure data-aos="fade-up" data-aos-delay={i * 90}>
+                    <div class="media aspect-4/3 bg-forest-700/40">
+                      <Image
+                        src={immagine}
+                        alt={`${piatto.data.nome}, ${piatto.data.descrizione}`}
+                        widths={[200, 300, 420, 640]}
+                        sizes="(min-width: 640px) 44vw, 92vw"
+                        format="webp"
+                        quality={86}
+                        loading="lazy"
+                        decoding="async"
+                        class="object-contain!"
+                      />
+                    </div>
+                    <figcaption class="mt-3 text-[0.8rem] text-forest-300">
+                      {piatto.data.nome}
+                    </figcaption>
+                  </figure>
+                ))}
               </div>
-              <figcaption class="mt-3 text-[0.8rem] text-forest-300">
-                Bacalà alla vicentina, con la polenta.
-              </figcaption>
-            </figure>
-
-            <figure data-aos="fade-up" data-aos-delay="90">
-              <div class="media aspect-4/3 bg-forest-700/40">
-                <Image
-                  src={imgGnocchi}
-                  alt="Gli gnocchi con la fioreta conditi con burro di malga rosolato"
-                  widths={[300, 420, 640]}
-                  sizes="(min-width: 640px) 44vw, 92vw"
-                  format="webp"
-                  quality={86}
-                  loading="lazy"
-                  decoding="async"
-                  class="object-contain!"
-                />
-              </div>
-              <figcaption class="mt-3 text-[0.8rem] text-forest-300">
-                Gnocchi con la fioreta, il piatto della casa.
-              </figcaption>
-            </figure>
-          </div>
+            )
+          }
         </div>
       </section>
     )

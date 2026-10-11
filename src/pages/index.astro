@@ -5,9 +5,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Cresta from '../components/Cresta.astro';
 import { site } from '../data/site';
+import { caricaFotoSito } from '../lib/foto-sito';
 
-import imgLocanda from '../assets/locanda-esterno.jpg';
-import imgSentieri from '../assets/piccole-dolomiti-large.jpg';
+/** Fotografie generali, modificabili dal pannello. */
+const foto = await caricaFotoSito();
+
+const imgLocanda = foto.locandaEsterno;
+const imgSentieri = foto.panorama;
 
 /**
  * Home — pagina di apertura.
@@ -80,7 +84,7 @@ const sentieri = [
   schema={webPageSchema}
   headerTrasparente={true}
 >
-  <Hero />
+  <Hero immagine={foto.hero} alt="Panorama delle Piccole Dolomiti sopra Recoaro Terme" />
 
   <!-- ==================================================================
        Riga di credenziali
@@ -121,18 +125,22 @@ const sentieri = [
   <section class="section-y" aria-labelledby="titolo-locanda">
     <div class="shell grid items-center gap-12 md:grid-cols-12 md:gap-10 lg:gap-16">
       <div class="md:col-span-5 md:order-2" data-aos="fade-in">
-        <div class="media aspect-4/5">
-          <Image
-            src={imgLocanda}
-            alt="La Locanda Seggiovia in piazza a Recoaro Terme, con i balconi in legno e le Piccole Dolomiti sullo sfondo"
-            widths={[420, 600, 900]}
-            sizes="(min-width: 768px) 40vw, 92vw"
-            format="webp"
-            quality={84}
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
+        {
+          imgLocanda && (
+            <div class="media aspect-4/5">
+              <Image
+                src={imgLocanda}
+                alt="La Locanda Seggiovia in piazza a Recoaro Terme, con i balconi in legno e le Piccole Dolomiti sullo sfondo"
+                widths={[420, 600, 900]}
+                sizes="(min-width: 768px) 40vw, 92vw"
+                format="webp"
+                quality={84}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          )
+        }
       </div>
 
       <div class="md:col-span-7 md:order-1" data-aos="fade-up">
@@ -324,17 +332,21 @@ const sentieri = [
        4. La finestra — chiusura, una sola immagine a piena larghezza
        ================================================================== -->
   <section class="relative isolate overflow-hidden bg-stone-800">
-    <Image
-      src={imgSentieri}
-      alt="Panorama delle Piccole Dolomiti con i boschi di conifere e la foschia nelle valli"
-      widths={[640, 960, 1280, 1600, 1920, 2560]}
-      sizes="100vw"
-      format="webp"
-      quality={78}
-      loading="lazy"
-      decoding="async"
-      class="absolute inset-0 -z-20 h-full w-full object-cover object-bottom"
-    />
+    {
+      imgSentieri && (
+        <Image
+          src={imgSentieri}
+          alt="Panorama delle Piccole Dolomiti con i boschi di conifere e la foschia nelle valli"
+          widths={[640, 960, 1280, 1600, 1920, 2560]}
+          sizes="100vw"
+          format="webp"
+          quality={78}
+          loading="lazy"
+          decoding="async"
+          class="absolute inset-0 -z-20 h-full w-full object-cover object-bottom"
+        />
+      )
+    }
     <div
       class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/85 to-stone-900/40"
       aria-hidden="true"

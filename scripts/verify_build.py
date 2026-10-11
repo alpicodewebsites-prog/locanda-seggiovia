@@ -339,6 +339,32 @@ def main() -> int:
         "/privacy" in html_home and "/cookie" in html_home,
     )
 
+    # --- Le fotografie devono comparire su ogni pagina ----------------------
+    # Il conteggio è per pagina e comprende il logo del footer, presente sempre.
+    # Serve a intercettare il caso peggiore: un'immagine referenziata nei
+    # contenuti che non si risolve più e sparisce in silenzio dalla pagina.
+    immagini_attese = {
+        "index.html": 4,
+        "camere/index.html": 3,
+        "ristorante/index.html": 4,
+        "gnocchi-con-la-fioreta/index.html": 3,
+        "la-locanda/index.html": 2,
+        "sentieri/index.html": 3,
+    }
+    for rel, attese in immagini_attese.items():
+        percorso = DIST / rel
+        if not percorso.exists():
+            continue
+        html = leggi(percorso)
+        # Immagini ottimizzate da Astro, contate una volta sola (il srcset
+        # ripeterebbe lo stesso file più volte).
+        trovate = {m for m in re.findall(r'src="(/_astro/[^"]+\.webp)"', html)}
+        check(
+            f"{rel}: fotografie presenti ({attese} attese)",
+            len(trovate) == attese,
+            f"trovate {len(trovate)}",
+        )
+
     # --- Nessun dato inventato ----------------------------------------------
     for valore in ("000 000 0000", "00000000000"):
         if valore in html_home:
