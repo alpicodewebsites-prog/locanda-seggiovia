@@ -84,23 +84,23 @@ const sentieri = [
   <!-- ==================================================================
        Riga di credenziali
        ================================================================== -->
-  <section class="border-b border-stone-200 bg-stone-50">
+  <section class="border-b border-stone-200 sezione-legno">
     <div class="shell">
       <dl class="grid grid-cols-1 sm:grid-cols-3">
         <div class="py-7 sm:py-8 sm:pr-8">
-          <dt class="eyebrow">Dove</dt>
+          <dt class="eyebrow text-forest-500">Dove</dt>
           <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
             Centro di Recoaro Terme
           </dd>
         </div>
-        <div class="border-t border-stone-200 py-7 sm:border-t-0 sm:border-l sm:py-8 sm:px-8">
-          <dt class="eyebrow">Cucina</dt>
+        <div class="border-t border-wood-300/50 py-7 sm:border-t-0 sm:border-l sm:py-8 sm:px-8">
+          <dt class="eyebrow text-glow-500">Cucina</dt>
           <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
             Gnocchi con la Fioreta De.Co.
           </dd>
         </div>
-        <div class="border-t border-stone-200 py-7 sm:border-t-0 sm:border-l sm:py-8 sm:pl-8">
-          <dt class="eyebrow">Sentieri</dt>
+        <div class="border-t border-wood-300/50 py-7 sm:border-t-0 sm:border-l sm:py-8 sm:pl-8">
+          <dt class="eyebrow text-wood-500">Sentieri</dt>
           <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
             Piccole Dolomiti e Pasubio
           </dd>
@@ -130,9 +130,11 @@ const sentieri = [
       </div>
 
       <div class="md:col-span-7 md:order-1" data-aos="fade-up">
-        <h2 id="titolo-locanda" class="display-2 max-w-[22ch] text-stone-900">
+        <p class="eyebrow text-forest-500">La locanda</p>
+        <h2 id="titolo-locanda" class="display-2 mt-4 max-w-[22ch] text-stone-900">
           Un rifugio, non un albergo
         </h2>
+        <span class="filo-accento" aria-hidden="true"></span>
 
         <div class="prose-body mt-7 max-w-[62ch] space-y-0 text-[1.0625rem] text-stone-600">
           <p>
@@ -175,9 +177,11 @@ const sentieri = [
     <div class="shell">
       <div class="grid gap-8 md:grid-cols-12 md:items-end">
         <div class="md:col-span-7">
-          <h2 id="titolo-territorio" class="display-2 max-w-[24ch] text-stone-900">
+          <p class="eyebrow text-wood-500">Territorio</p>
+          <h2 id="titolo-territorio" class="display-2 mt-4 max-w-[24ch] text-stone-900">
             I sentieri cominciano dal centro del paese
           </h2>
+          <span class="filo-accento filo-accento--legno" aria-hidden="true"></span>
         </div>
         <div class="md:col-span-5">
           <p class="lede text-[1rem]" data-aos="fade-in">
@@ -234,9 +238,11 @@ const sentieri = [
   <section class="section-y bg-forest-900 text-stone-200" aria-labelledby="titolo-cucina">
     <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
       <div class="md:col-span-4">
-        <h2 id="titolo-cucina" class="display-2 text-stone-50">
+        <p class="eyebrow text-glow-300">Cucina</p>
+        <h2 id="titolo-cucina" class="display-2 mt-4 text-stone-50">
           Quello che si cucina in vallata
         </h2>
+        <span class="filo-accento filo-accento--alba" aria-hidden="true"></span>
         <p class="mt-6 text-[0.95rem] leading-relaxed text-forest-300">
           Il menù segue le stagioni e le malghe, non le mode. Il bacalà arriva da una
           tradizione lunga, la sopressa si fa in casa.
@@ -248,7 +254,10 @@ const sentieri = [
 
       <div class="md:col-span-8">
         <ul class="grid gap-px overflow-hidden bg-stone-50/15 sm:grid-cols-2">
-          <li class="bg-forest-900 p-7 md:p-8" data-aos="fade-in">
+          <li
+            class="card-accento card-accento--alba bg-forest-900 p-7 md:p-8"
+            data-aos="fade-up"
+          >
             <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
               Bacalà alla vicentina
             </h3>
@@ -257,7 +266,11 @@ const sentieri = [
               Il piatto che a Vicenza non si discute.
             </p>
           </li>
-          <li class="bg-forest-900 p-7 md:p-8" data-aos="fade-in" data-aos-delay="80">
+          <li
+            class="card-accento card-accento--alba bg-forest-900 p-7 md:p-8"
+            data-aos="fade-up"
+            data-aos-delay="90"
+          >
             <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
               Sopressa fatta in casa
             </h3>
@@ -265,7 +278,11 @@ const sentieri = [
               Insaccata e stagionata da noi, servita con i sottaceti di casa.
             </p>
           </li>
-          <li class="bg-forest-900 p-7 md:p-8" data-aos="fade-in" data-aos-delay="160">
+          <li
+            class="card-accento card-accento--alba bg-forest-900 p-7 md:p-8"
+            data-aos="fade-up"
+            data-aos-delay="180"
+          >
             <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
               Trota affumicata
             </h3>
@@ -274,9 +291,9 @@ const sentieri = [
             </p>
           </li>
           <li
-            class="bg-forest-900 p-7 outline outline-1 -outline-offset-1 outline-stone-50/30 md:p-8"
-            data-aos="fade-in"
-            data-aos-delay="240"
+            class="card-accento card-accento--alba bg-forest-900 p-7 outline outline-1 -outline-offset-1 outline-stone-50/30 md:p-8"
+            data-aos="fade-up"
+            data-aos-delay="270"
           >
             <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-50">
               Gnocchi con la Fioreta
@@ -285,7 +302,7 @@ const sentieri = [
               Il piatto della casa, riconosciuto De.Co. Ha una pagina tutta sua.
             </p>
             <p class="mt-5">
-              <a href="/gnocchi-con-la-fioreta" class="link-arrow text-stone-100">
+              <a href="/gnocchi-con-la-fioreta" class="link-arrow text-glow-300">
                 La storia e la ricetta
               </a>
             </p>

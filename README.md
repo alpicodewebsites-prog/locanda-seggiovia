@@ -33,9 +33,26 @@ Dopo `npm run build` si possono eseguire i controlli automatici:
 ```bash
 python scripts/verify_build.py        # 300 controlli: SEO di tutte le pagine, contenuti, CMS, link
 node scripts/check_visibility.mjs     # il contenuto resta visibile anche senza JS
+node scripts/test_header.mjs          # barra trasparente/solida, anche senza JS
+node scripts/test_overlap.mjs         # la barra non copre mai il testo (28 misure di schermo)
+node scripts/test_scroll.mjs          # ogni pagina scorre davvero
 node scripts/test_form.mjs            # collaudo del modulo contatti (richiede `npm run preview`)
+node scripts/test_mappa.mjs           # la mappa non parte prima del clic
 node scripts/shot.mjs                 # screenshot desktop + mobile per la revisione
 ```
+
+Tre di questi meritano una nota, perché nascono da difetti veri trovati durante
+lo sviluppo:
+
+- `test_overlap.mjs` misura **28 combinazioni** di larghezza e altezza. La
+  sovrapposizione fra barra e titolo si manifestava solo su schermi bassi (560–700
+  px): provando a 900 px non si vedeva.
+- `test_header.mjs` verifica anche **senza JavaScript**: la prima versione della
+  barra trasparente diventava invisibile sopra la fotografia se lo script non
+  partiva.
+- `test_scroll.mjs` nasce da un falso allarme del proprio autore: misurava la
+  posizione di scroll subito dopo averla impostata, ma con `scroll-behavior:
+  smooth` lo scorrimento è animato. Ora attende che si assesti.
 
 `check_visibility.mjs` merita una nota: verifica che nessun elemento con
 `data-aos` resti invisibile in quattro situazioni — JavaScript attivo su desktop,
@@ -129,6 +146,34 @@ Da lì Tailwind genera sia le classi (`bg-stone-100`) sia le variabili CSS
 | Verde bosco | `forest-700` | `#2D3D31` | accenti, link, CTA |
 | | `forest-900` | `#1E2A21` | fascia gastronomia |
 | Alpenglow | `glow-300` | `#D8B3A3` | micro-accento, firma grafica |
+
+### Accenti grafici
+
+I toni sopra sono **spenti di proposito** perché devono funzionare come testo.
+Come segno grafico però non si vedevano: `--color-forest-500` è `#5a7a5e`, che su
+fondo chiaro sparisce. Esiste quindi una **seconda rampa satura**, usata solo per
+linee, fili e bordi:
+
+| Token | Valore | Dove |
+|---|---|---|
+| `--color-acc-bosco` | `#3f7a4a` | antipasti, sezioni verdi |
+| `--color-acc-legno` | `#b57a3c` | primi, territorio, tariffe |
+| `--color-acc-alba` | `#c9663f` | secondi, specialità della casa |
+| `--color-acc-pietra` | `#9c958a` | dolci, contenuti neutri |
+
+Si usano con le classi `.card-accento--*` (bordo superiore spesso) e
+`.filo-accento--*` / `.cat-menu--*` (filo sotto i titoli).
+
+### Fasce colorate
+
+`.sezione-legno`, `.sezione-alba`, `.sezione-bosco-chiara` alternano il fondo di
+alcune sezioni. Sono mescolate a sufficienza per vedersi: sotto il 40% di
+color-mix il colore scompare nel grigio.
+
+### Angoli
+
+Squadrati, per scelta: `--raggio: 2px`. Un'immagine con angoli arrotondati
+assomiglia a un riquadro da applicazione, non a una fotografia incorniciata.
 
 ### Tipografia
 

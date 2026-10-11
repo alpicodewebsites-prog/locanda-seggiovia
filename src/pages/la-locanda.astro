@@ -118,12 +118,14 @@ const schema = {
   <!-- ==================================================================
        Che cosa la rende un rifugio
        ================================================================== -->
-  <section class="section-y bg-stone-50" aria-labelledby="titolo-rifugio">
+  <section class="section-y sezione-bosco-chiara" aria-labelledby="titolo-rifugio">
     <div class="shell">
-      <h2 id="titolo-rifugio" class="display-2 max-w-[24ch] text-stone-900">
+      <p class="eyebrow text-forest-500">Il carattere della casa</p>
+      <h2 id="titolo-rifugio" class="display-2 mt-4 max-w-[24ch] text-stone-900">
         Perché diciamo rifugio e non albergo
       </h2>
-      <p class="lede mt-5 max-w-[58ch] text-[1rem]">
+      <span class="filo-accento" aria-hidden="true"></span>
+      <p class="lede mt-6 max-w-[58ch] text-[1rem]">
         Non è una questione di parole. Sono tre cose concrete che cambiano il modo in cui
         si sta qui.
       </p>
@@ -131,7 +133,11 @@ const schema = {
       <ul class="mt-12 grid gap-px overflow-hidden bg-stone-300 md:grid-cols-3">
         {
           carattere.map((voce, i) => (
-            <li class="bg-stone-50 p-7 md:p-8" data-aos="fade-in" data-aos-delay={i * 70}>
+            <li
+              class="card-accento card-accento--bosco bg-stone-50 p-7 md:p-8"
+              data-aos="fade-up"
+              data-aos-delay={i * 100}
+            >
               <h3 class="font-[family-name:var(--font-display)] text-xl leading-snug text-stone-900">
                 {voce.titolo}
               </h3>

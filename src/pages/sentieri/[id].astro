@@ -83,7 +83,7 @@ const schema = {
   <!-- ==================================================================
        Intestazione con immagine di copertina
        ================================================================== -->
-  <section class="relative isolate overflow-hidden bg-stone-800">
+  <section class="hero-apertura bg-stone-800">
     {
       copertina ? (
         <Image
@@ -107,7 +107,9 @@ const schema = {
     >
     </div>
 
-    <div class="shell flex min-h-[52svh] flex-col justify-end pt-28 pb-12 md:min-h-[58svh] md:pb-16">
+    <div class="hero-apertura__sopra" aria-hidden="true"></div>
+
+    <div class="hero-apertura__sotto shell">
       <nav aria-label="Percorso di navigazione" class="mb-6">
         <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8rem] text-stone-300">
           <li><a href="/sentieri" class="transition-colors hover:text-stone-50">Sentieri</a></li>

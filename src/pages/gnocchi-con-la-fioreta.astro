@@ -102,7 +102,7 @@ const schema = {
   <!-- ==================================================================
        Ricetta De.Co. — impaginata come una ricetta, non come una tabella
        ================================================================== -->
-  <section class="section-y bg-stone-50" aria-labelledby="titolo-ricetta">
+  <section class="section-y sezione-legno" aria-labelledby="titolo-ricetta">
     <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
       <div class="md:col-span-5">
         <p class="eyebrow">Ricetta De.Co.</p>
@@ -158,12 +158,21 @@ const schema = {
         La lavorazione
       </h2>
 
-      <ol class="mt-12 grid gap-px overflow-hidden bg-stone-200 md:grid-cols-3">
+      <ol class="mt-12 grid gap-px overflow-hidden bg-stone-300 md:grid-cols-3">
         {
           d.lavorazione.map((fase, i) => (
-            <li class="bg-stone-100 p-7 md:p-8" data-aos="fade-in" data-aos-delay={i * 70}>
+            <li
+              class:list={[
+                'bg-stone-100 p-7 md:p-8 card-accento',
+                i === 0 && 'card-accento--bosco',
+                i === 1 && 'card-accento--legno',
+                i === 2 && 'card-accento--alba',
+              ]}
+              data-aos="fade-up"
+              data-aos-delay={i * 110}
+            >
               <span
-                class="font-[family-name:var(--font-display)] text-[0.9rem] tabular-nums text-forest-500"
+                class="font-[family-name:var(--font-display)] text-[0.9rem] tabular-nums text-stone-400"
                 aria-hidden="true"
               >
                 {String(i + 1).padStart(2, '0')}

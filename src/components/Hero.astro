@@ -7,6 +7,11 @@
  *
  * L'immagine è l'elemento LCP: viene caricata con priorità alta, in WebP,
  * con srcset responsive perché i telefoni non scarichino 2560px.
+ *
+ * Sull'impaginazione: la fotografia sale SOTTO la barra di navigazione (che è
+ * `sticky`, quindi occupa spazio nel flusso) grazie a un margine negativo. Lo
+ * spazio per il testo è riservato dalla griglia, così su schermi bassi il
+ * contenuto non finisce mai dietro la barra.
  */
 import { Image } from 'astro:assets';
 import heroImg from '../assets/hero-piccole-dolomiti.jpg';
@@ -16,15 +21,7 @@ import { site } from '../data/site';
 const anno = site.annoFondazione;
 ---
 
-<!--
-  Il margine negativo fa salire la fotografia SOTTO la barra di navigazione.
-  L'header è `sticky`, quindi occupa spazio nel flusso: senza questo, la
-  fotografia comincerebbe sotto la barra e la barra resterebbe una fascia
-  separata. Così invece la barra le sta sopra e si confonde con l'immagine.
--->
-<section
-  class="relative isolate -mt-[var(--header-h)] flex min-h-[86svh] flex-col justify-end overflow-hidden bg-stone-800"
->
+<section class="hero-apertura bg-stone-800">
   <!--
     ATTENZIONE — questo è un segnaposto generato proceduralmente, non una foto
     delle Piccole Dolomiti. L'alt lo dice esplicitamente: descrivere come reale
@@ -52,17 +49,14 @@ const anno = site.annoFondazione;
   >
   </div>
 
-  <div class="shell w-full pb-20 md:pb-28">
-    <p
-      class="max-w-[34ch] text-[0.95rem] leading-relaxed text-stone-200/90"
-      data-aos="fade-in"
-    >
+  <div class="hero-apertura__sopra" aria-hidden="true"></div>
+
+  <div class="hero-apertura__sotto shell w-full">
+    <p class="max-w-[34ch] text-[0.95rem] leading-relaxed text-stone-200/90" data-aos="fade-in">
       {site.indirizzo.citta}, Valle dell’Agno — Provincia di Vicenza
     </p>
 
-    <h1
-      class="display-1 mt-5 max-w-[19ch] text-stone-50 text-shadow-hero"
-    >
+    <h1 class="display-1 mt-5 max-w-[19ch] text-stone-50 text-shadow-hero">
       {anno ? `Rifugio alpino dal ${anno}` : 'Rifugio alpino ai piedi delle Piccole Dolomiti'}
     </h1>
 

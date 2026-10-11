@@ -36,6 +36,15 @@
   --color-glow-300: #d8b3a3;
   --color-glow-500: #b5735c;
 
+  /* --- Accenti grafici -------------------------------------------------
+     Rampa satura usata SOLO per linee, bordi e fili decorativi: i toni
+     precedenti sono spenti di proposito per i testi, ma come segno grafico
+     non si vedono. Questi sono gli stessi colori portati a piena intensità. */
+  --color-acc-bosco: #3f7a4a;
+  --color-acc-legno: #b57a3c;
+  --color-acc-alba: #c9663f;
+  --color-acc-pietra: #9c958a;
+
   /* --- Tipografia --------------------------------------------------- */
   --font-display: 'Fraunces', ui-serif, Georgia, Cambria, 'Times New Roman', serif;
   --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
@@ -47,6 +56,12 @@
 
   /* --- Movimento: una sola curva per tutto il sito ------------------ */
   --ease-alpine: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Angoli ---------------------------------------------------------
+     Squadrati per scelta: l'immagine non deve sembrare un riquadro da app.
+     Due valori soli, così la forma resta coerente in tutto il sito. */
+  --raggio: 2px;
+  --raggio-micro: 1px;
 }
 
 /* ==========================================================================
@@ -129,6 +144,89 @@
     padding-inline: var(--spacing-gutter);
   }
 
+  /* --- Card con accento colorato --------------------------------------
+     Una linea spessa in alto, colorata secondo il contenuto: dà ritmo senza
+     aggiungere decorazione. Le varianti si scelgono con una classe. */
+  .card-accento {
+    border-top: 4px solid var(--card-accento, var(--color-stone-400));
+  }
+  .card-accento--bosco {
+    --card-accento: var(--color-acc-bosco);
+  }
+  .card-accento--legno {
+    --card-accento: var(--color-acc-legno);
+  }
+  .card-accento--alba {
+    --card-accento: var(--color-acc-alba);
+  }
+  .card-accento--pietra {
+    --card-accento: var(--color-acc-pietra);
+  }
+
+  /* --- Sezione colorata -----------------------------------------------
+     Fasce calde che alternano il fondo, per non lasciare tutto sullo stesso
+     grigio. Usate con parsimonia: due o tre per pagina. */
+  .sezione-legno {
+    background-color: color-mix(in oklab, var(--color-wood-100) 78%, var(--color-stone-100));
+  }
+  .sezione-alba {
+    background-color: color-mix(in oklab, var(--color-glow-300) 42%, var(--color-stone-100));
+  }
+  .sezione-bosco-chiara {
+    background-color: color-mix(in oklab, var(--color-forest-100) 92%, var(--color-stone-100));
+  }
+
+  /* Filo colorato che accompagna i titoli di sezione. */
+  .filo-accento {
+    display: block;
+    width: 3.25rem;
+    height: 2px;
+    margin-top: 1.5rem;
+    background-color: var(--filo-colore, var(--color-acc-bosco));
+  }
+  .filo-accento--alba {
+    --filo-colore: var(--color-acc-alba);
+  }
+  .filo-accento--legno {
+    --filo-colore: var(--color-acc-legno);
+  }
+  .filo-accento--pietra {
+    --filo-colore: var(--color-acc-pietra);
+  }
+  .filo-accento--bosco {
+    --filo-colore: var(--color-acc-bosco);
+  }
+
+  /* Intestazione di categoria del menù: etichetta + filo colorato, con il
+     colore scelto in base alla categoria. */
+  .cat-menu {
+    display: block;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-stone-400) 40%, transparent);
+    /* Il colore vive qui, dove il filo lo usa davvero. */
+    --filo-colore: var(--color-acc-pietra);
+  }
+  .cat-menu--bosco {
+    --filo-colore: var(--color-acc-bosco);
+  }
+  .cat-menu--legno {
+    --filo-colore: var(--color-acc-legno);
+  }
+  .cat-menu--alba {
+    --filo-colore: var(--color-acc-alba);
+  }
+  .cat-menu--pietra {
+    --filo-colore: var(--color-acc-pietra);
+  }
+  .cat-menu::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    margin-top: 0.75rem;
+    background-color: var(--filo-colore);
+  }
+
   /* --- Bottoni ------------------------------------------------------- */
 
   .btn {
@@ -143,7 +241,7 @@
     letter-spacing: 0.005em;
     line-height: 1;
     border: 1px solid transparent;
-    border-radius: 2px;
+    border-radius: var(--raggio);
     text-decoration: none;
     cursor: pointer;
     transition:
@@ -403,7 +501,7 @@
     color: var(--color-stone-800);
     background-color: var(--color-stone-50);
     border: 1px solid var(--color-stone-300);
-    border-radius: 2px;
+    border-radius: var(--raggio);
     transition:
       border-color 0.25s var(--ease-alpine),
       box-shadow 0.25s var(--ease-alpine);
@@ -503,6 +601,31 @@
 
 @utility section-y-tight {
   padding-block: calc(var(--spacing-section) * 0.62);
+}
+
+/* --- Aperture con immagine a tutta larghezza ---------------------------
+   L'header è `sticky`, quindi occupa spazio nel flusso. L'apertura sale sotto
+   di esso con un margine negativo, e la griglia riserva lo spazio necessario
+   perché il testo non finisca mai dietro la barra, nemmeno su schermi bassi. */
+@utility hero-apertura {
+  margin-top: calc(var(--header-h) * -1);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: clamp(34rem, 86svh, 54rem);
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+
+@utility hero-apertura__sopra {
+  grid-row: 1;
+  /* Spazio minimo fra barra e testo: metà altezza barra, mai meno di 1,75rem. */
+  padding-top: max(calc(var(--header-h) * 1.5), 4.5rem);
+}
+
+@utility hero-apertura__sotto {
+  grid-row: 2;
+  padding-bottom: clamp(3rem, 7vw, 6rem);
 }
 
 /* ==========================================================================
