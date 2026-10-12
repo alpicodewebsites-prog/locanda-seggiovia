@@ -10,7 +10,6 @@
 import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Cresta from '../components/Cresta.astro';
 import { site, mappaLinkUrl } from '../data/site';
 import { caricaFotoSito } from '../lib/foto-sito';
 const foto = await caricaFotoSito();
@@ -150,10 +149,6 @@ const schema = {
     </div>
   </section>
 
-  <!-- Pausa grafica prima di "dove siamo". -->
-  <div class="shell py-8 md:py-12">
-    <Cresta accento="legno" altezza={40} />
-  </div>
 
   <!-- ==================================================================
        Dove siamo

@@ -3,7 +3,6 @@ import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import Cresta from '../components/Cresta.astro';
 import { site } from '../data/site';
 import { caricaFotoSito } from '../lib/foto-sito';
 
@@ -114,10 +113,6 @@ const sentieri = [
     </div>
   </section>
 
-  <!-- Pausa grafica fra la riga di credenziali e il racconto. -->
-  <div class="shell py-10 md:py-14">
-    <Cresta accento="bosco" altezza={44} />
-  </div>
 
   <!-- ==================================================================
        1. La Locanda — impaginazione editoriale asimmetrica
@@ -246,10 +241,6 @@ const sentieri = [
     </div>
   </section>
 
-  <!-- Pausa grafica prima della fascia della cucina. -->
-  <div class="shell py-10 md:py-14">
-    <Cresta accento="alba" altezza={44} />
-  </div>
 
   <!-- ==================================================================
        3. Gastronomia — fascia scura a piena larghezza
