@@ -774,15 +774,15 @@
      le altre e sembrava vuota. Il colore è un verde bosco desaturato fino a
      leggersi come grigio caldo.
 
-     La trama è una diagonale leggerissima, al 3% di opacità: si percepisce
-     come materia, non come disegno. Non è un'immagine, quindi non pesa e non
-     fa una richiesta in più al server. */
+     La trama è una diagonale finissima al 2,5% di opacità: a 1 pixel ogni 4 si
+     legge come grana della carta, non come disegno a righe. Non è un'immagine,
+     quindi non pesa e non fa una richiesta in più al server. */
   .sezione-camere {
     background-color: var(--color-camere-fondo);
     background-image: repeating-linear-gradient(
       135deg,
-      color-mix(in srgb, var(--color-forest-700) 4%, transparent) 0 1px,
-      transparent 1px 7px
+      color-mix(in srgb, var(--color-forest-700) 2.5%, transparent) 0 1px,
+      transparent 1px 4px
     );
   }
 
