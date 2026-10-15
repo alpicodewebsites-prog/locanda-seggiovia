@@ -87,22 +87,22 @@ const schema = {
       </div>
 
       <div class="md:col-span-5 md:order-last">
-        {
-          foto.locandaEsterno && (
-            <div class="media aspect-4/3">
-              <Image
-                src={foto.locandaEsterno}
-                alt="La Locanda Seggiovia vista dalla piazza di Recoaro Terme, con i balconi in legno"
-                widths={[420, 600, 900]}
-                sizes="(min-width: 768px) 40vw, 92vw"
-                format="webp"
-                quality={84}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          )
-        }
+        <!--
+          Qui c'era la fotografia della facciata: la stessa della home e di La
+          Locanda, mentre il testo parla di cucina. Fuori contesto, e ripetuta.
+
+          Al suo posto un segnaposto DICHIARATO, che dice esattamente quale
+          fotografia serve. Meglio un riquadro onesto che una fotografia che non
+          c'entra: e quando arriva lo scatto della sala, si sostituisce e basta.
+        -->
+        <div
+          class="segnaposto-foto aspect-4/3"
+          role="img"
+          aria-label="Fotografia in arrivo: la sala del ristorante apparecchiata"
+        >
+          <span class="segnaposto-foto__titolo">Foto in arrivo</span>
+          <span class="segnaposto-foto__soggetto">La sala del ristorante</span>
+        </div>
       </div>
     </div>
   </section>

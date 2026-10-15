@@ -13,7 +13,6 @@ import { caricaFotoSito } from '../lib/foto-sito';
 const foto = await caricaFotoSito();
 
 const imgLocanda = foto.locandaEsterno;
-const imgSentieri = foto.panorama;
 
 /**
  * Le specialità della casa, lette dalla collezione del menù.
@@ -90,7 +89,11 @@ const sentieri = (await getCollection('sentieri'))
   schema={webPageSchema}
   headerTrasparente={true}
 >
-  <Hero immagine={foto.hero} alt="Panorama delle Piccole Dolomiti sopra Recoaro Terme" />
+  {/* Il testo alternativo dell'apertura è quello predefinito del componente:
+      dichiara che l'immagine è un disegno, non uno scatto reale. Non va
+      sovrascritto con una descrizione del paesaggio finché la fotografia vera
+      non c'è. */}
+  <Hero immagine={foto.hero} />
 
   <!-- ==================================================================
        Riga di credenziali
@@ -349,45 +352,25 @@ const sentieri = (await getCollection('sentieri'))
   <RichiestaPrenotazione />
 
   <!-- ==================================================================
-       5. La finestra — chiusura, una sola immagine a piena larghezza
+       5. Chiusura
+       ------------------------------------------------------------------
+       Era una fascia scura a piena larghezza con un'immagine di sfondo.
+       Faceva da tappo a metà pagina e, finché la fotografia vera non c'è,
+       ci si vedeva dentro l'etichetta di segnaposto. Ora è una chiusura
+       sobria sul fondo della pagina: lo spazio e la tipografia bastano.
        ================================================================== -->
-  <section class="relative isolate overflow-hidden bg-stone-800">
-    {
-      imgSentieri && (
-        <Image
-          src={imgSentieri}
-          alt="Panorama delle Piccole Dolomiti con i boschi di conifere e la foschia nelle valli"
-          widths={[640, 960, 1280, 1600, 1920, 2560]}
-          sizes="100vw"
-          format="webp"
-          quality={78}
-          loading="lazy"
-          decoding="async"
-          class="absolute inset-0 -z-20 h-full w-full object-cover object-bottom"
-        />
-      )
-    }
-    <div
-      class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/85 to-stone-900/40"
-      aria-hidden="true"
-    >
-    </div>
-
-    <div class="shell py-24 text-center md:py-32">
-      <h2 class="display-2 mx-auto max-w-[24ch] text-stone-50 text-shadow-hero" data-aos="fade-up">
+  <section class="section-y" aria-labelledby="titolo-chiusura">
+    <div class="shell text-center">
+      <h2 id="titolo-chiusura" class="display-2 mx-auto max-w-[24ch] text-stone-900" data-aos="fade-up">
         Ti aspettiamo in piazza
       </h2>
-      <p
-        class="mx-auto mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-stone-200/95"
-      >
+      <p class="mx-auto mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-stone-600">
         Per prenotare una camera, un tavolo o per chiedere informazioni su un sentiero,
         scrivici o chiamaci. Rispondiamo noi.
       </p>
-      <div
-        class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
-      >
-        <a href="/contatti" class="btn btn--onDark">Scrivici</a>
-        <a href={site.telefonoLink} class="btn btn--onDark">{site.telefono}</a>
+      <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+        <a href="/contatti" class="btn btn--primary">Scrivici</a>
+        <a href={site.telefonoLink} class="btn btn--ghost">{site.telefono}</a>
       </div>
     </div>
   </section>

@@ -449,10 +449,17 @@ def main() -> None:
 
         img = finish(img, rng)
 
-        # Etichetta dichiarativa: dice che questa non è una fotografia e che
-        # va sostituita. Solo caratteri ASCII, il font predefinito di PIL non
-        # sa disegnare gli accenti.
-        stamp_label(img, "FOTO IN ARRIVO - segnaposto, non una foto reale")
+        # Etichetta dichiarativa: dice che questa non è una fotografia e che va
+        # sostituita. Solo caratteri ASCII, il font predefinito di PIL non sa
+        # disegnare gli accenti.
+        #
+        # Si scrive su tutte TRANNE quella di apertura: sulla prima schermata il
+        # riquadro «FOTO IN ARRIVO» finirebbe in mezzo al titolo, e il
+        # committente ha chiesto di toglierlo da lì. La trasparenza resta
+        # affidata al testo alternativo dell'immagine in Hero.astro, che dichiara
+        # di essere un disegno e non uno scatto.
+        if name != "hero-piccole-dolomiti":
+            stamp_label(img, "FOTO IN ARRIVO - segnaposto, non una foto reale")
 
         path = OUT_DIR / f"{name}.jpg"
         path.parent.mkdir(parents=True, exist_ok=True)

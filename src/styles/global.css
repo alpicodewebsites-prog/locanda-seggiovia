@@ -7,15 +7,23 @@
 
 @theme {
   /* --- Pietra alpina: grigi caldi, il colore del calcare in ombra --------
-     Il fondo è un bianco d'osso, non crema piena e non grigio freddo: la
-     differenza è di pochi punti di saturazione, ma è quella che fa sembrare
-     la pagina calda invece che clinica. */
-  --color-stone-50: #faf8f3;
-  --color-stone-100: #f4f1e9;
-  --color-stone-200: #e5e1d8;
-  --color-stone-300: #cfcabe;
-  --color-stone-400: #948f84;
-  --color-stone-500: #6e6a61;
+     Il fondo della pagina è un grigio caldo, non un bianco d'osso. Il bianco
+     pieno faceva sembrare la pagina vuota: mancava di corpo. Questo è più
+     scuro di qualche punto, resta chiaro, e conserva una punta di calore.
+
+     I testi secondari sono stati scuriti di conseguenza: su un fondo più scuro
+     gli stessi grigi perdevano contrasto e scendevano sotto la soglia di
+     leggibilità. I valori qui sotto sono verificati da
+     scripts/verifica_contrasti.py — non cambiarli a occhio.
+
+     stone-50 è più CHIARO di stone-100: serve per i pannelli che devono
+     staccarsi dal fondo della pagina. */
+  --color-stone-50: #f5f3ef; /* pannelli, superfici in rilievo */
+  --color-stone-100: #ebe9e4; /* fondo della pagina */
+  --color-stone-200: #dfdcd5;
+  --color-stone-300: #cbc6bc;
+  --color-stone-400: #8f8a7e;
+  --color-stone-500: #67635b; /* note e didascalie: 4,93:1 sul fondo */
   --color-stone-600: #4f4c46;
   --color-stone-700: #37352f;
   --color-stone-800: #232220;
@@ -24,7 +32,7 @@
   /* --- Legno: larice e noce delle baite -------------------------------- */
   --color-wood-100: #ecdfcc;
   --color-wood-300: #c5a276;
-  --color-wood-500: #8d6538;
+  --color-wood-500: #825c31;
   --color-wood-700: #3f2f21;
   --color-wood-900: #2e2218;
 
@@ -60,6 +68,15 @@
      componente Segnavia: è un rosso pieno e riconoscibile, diverso dal
      terracotta spento usato altrove. */
   --color-cai-rosso: #c1272d;
+
+  /* --- Fondo della pagina Camere ---------------------------------------
+     Un verde bosco così desaturato da leggersi come grigio, con appena una
+     punta di verde. Serve a dare alla pagina delle camere una sua identità:
+     prima era identica a tutte le altre e sembrava vuota.
+
+     I contrasti sono verificati da scripts/verifica_contrasti.py: con questo
+     fondo il testo secondario sta a 4,64:1, sopra la soglia di 4,5. */
+  --color-camere-fondo: #e2e4dc;
 
   /* --- Accenti grafici -------------------------------------------------
      Rampa satura usata SOLO per linee, bordi e fili decorativi: i toni
@@ -750,6 +767,23 @@
     .scheda-sentiero__link::before {
       transform: scaleY(1);
     }
+  }
+
+  /* --- Fondo della pagina Camere --------------------------------------
+     Dà alla pagina delle camere una sua identità: prima era identica a tutte
+     le altre e sembrava vuota. Il colore è un verde bosco desaturato fino a
+     leggersi come grigio caldo.
+
+     La trama è una diagonale leggerissima, al 3% di opacità: si percepisce
+     come materia, non come disegno. Non è un'immagine, quindi non pesa e non
+     fa una richiesta in più al server. */
+  .sezione-camere {
+    background-color: var(--color-camere-fondo);
+    background-image: repeating-linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-forest-700) 4%, transparent) 0 1px,
+      transparent 1px 7px
+    );
   }
 
   /* --- Accessibilità ------------------------------------------------- */

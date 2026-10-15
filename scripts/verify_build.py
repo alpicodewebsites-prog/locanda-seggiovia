@@ -352,14 +352,17 @@ def main() -> int:
     # Le foto di piatti, camere e sentieri le gestisce la proprietaria, quindi
     # non si pretendono.
     foto_obbligatorie = {
-        "index.html": ["hero-piccole-dolomiti", "locanda-esterno", "piccole-dolomiti-large"],
-        # Nella pagina Camere resta solo la facciata, che appartiene alla sezione
-        # «La struttura». Il tavolo di cucina è stato rimosso: era fuori contesto
-        # in una pagina di camere, ed è sostituito da segnaposto dichiarati.
-        "camere/index.html": ["locanda-esterno"],
-        "ristorante/index.html": ["locanda-esterno"],
+        # La fascia scura di chiusura con il panorama è stata rimossa: la home
+        # chiude sul fondo della pagina, senza il blocco scuro a metà.
+        "index.html": ["hero-piccole-dolomiti", "locanda-esterno"],
+        # Camere e Ristorante non hanno più nessuna fotografia obbligatoria:
+        # le immagini fuori contesto sono state sostituite da segnaposto
+        # dichiarati, che spariscono quando arrivano gli scatti veri.
+        # Restano controllate solo per il logo del footer, più sotto.
         "gnocchi-con-la-fioreta/index.html": ["piatto-gnocchi-fioreta", "locanda-preparazione"],
-        "la-locanda/index.html": ["locanda-esterno"],
+        # La facciata si è spostata qui, nella sezione «La casa»; il tavolo di
+        # cucina accompagna il racconto della famiglia.
+        "la-locanda/index.html": ["locanda-esterno", "locanda-preparazione"],
         "sentieri/index.html": ["piccole-dolomiti-large", "territorio-montagne"],
     }
     for rel, attese in foto_obbligatorie.items():

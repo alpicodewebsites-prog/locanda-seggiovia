@@ -33,26 +33,37 @@ backend:
 media_folder: src/assets
 public_folder: /assets
 
-# --- Ottimizzazione delle immagini al caricamento ----------------------------
-# Sveltia ottimizza le immagini DENTRO IL BROWSER, prima di salvarle: converte
-# JPEG e PNG in WebP e le ridimensiona se superano il limite. Così la
-# proprietaria può caricare la fotografia così come esce dalla macchina
-# fotografica — anche 8 MB — senza doverla preparare, e il sito resta leggero.
+# --- Immagini caricate ------------------------------------------------------
 #
-# La larghezza massima è 2560 pixel perché la fotografia di apertura della home
-# viene mostrata a tutta larghezza: sotto quella misura si sgranerebbe.
+# PERCHÉ LA CONVERSIONE IN WEBP È DISATTIVATA — leggere prima di riattivarla.
+#
+# Sveltia sa convertire le immagini in WebP dentro il browser al caricamento
+# (opzione `media_libraries.all.transformations.raster_image`). Sembrava un
+# miglioramento, e invece rende IMPOSSIBILE sostituire una fotografia:
+#
+#   1. la proprietaria carica un JPEG per sostituire `hero-piccole-dolomiti.jpg`;
+#   2. Sveltia lo converte in WebP prima di salvarlo;
+#   3. a quel punto prova a sostituire un file JPEG con un file WebP;
+#   4. rifiuta, perché la sostituzione richiede lo stesso formato:
+#      «Questo file non può sostituire … perché è in un formato diverso».
+#
+# In pratica: attivando la conversione, nessuna fotografia può più essere
+# sostituita. Il pannello si blocca proprio nel gesto che serve alla cliente.
+#
+# Non esiste un'opzione documentata per disattivare il controllo di formato
+# sulla sostituzione (verificato nella documentazione ufficiale, sezione
+# «File field» e «Internal Media Storage»). Quindi si tiene la conversione
+# spenta.
+#
+# Non si perde niente: **Astro converte comunque in WebP in fase di build**,
+# quindi il sito pubblicato resta leggero. L'unico costo è che il repository
+# conserva i file nel formato originale, un po' più pesanti.
 media_libraries:
   # Limite al file caricabile: oltre, il pannello avvisa e rifiuta.
+  # Questo non interferisce con la sostituzione e resta utile.
   default:
     config:
       max_file_size: 8388608 # 8 MB
-  all:
-    transformations:
-      raster_image:
-        format: webp
-        quality: 85
-        width: 2560
-        height: 2560
       svg:
         optimize: true
 

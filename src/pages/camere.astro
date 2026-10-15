@@ -55,9 +55,16 @@ const schema = {
 ---
 
 <BaseLayout title="Camere e tariffe" description={description} schema={schema} ogImage="/og-default.jpg">
-  <!-- ==================================================================
-       Intestazione
-       ================================================================== -->
+  {/*
+    Il contenuto è avvolto in un contenitore con fondo proprio: la pagina delle
+    camere ha un tono leggermente diverso dal resto del sito, così non sembra
+    la stessa pagina vuota. Le fasce interne che hanno già un loro fondo
+    (la tabella tariffe, l'invito finale) coprono questo senza problemi.
+  */}
+  <div class="sezione-camere">
+    <!-- ==================================================================
+         Intestazione
+         ================================================================== -->
   <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
     <div class="shell">
       <p class="eyebrow">Camere e tariffe</p>
@@ -159,43 +166,6 @@ const schema = {
             );
           })
         }
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================================================================
-       Galleria: cosa si trova arrivando
-       ================================================================== -->
-  <section class="pb-[var(--spacing-section)]" aria-labelledby="titolo-ambienti">
-    <div class="shell">
-      <h2 id="titolo-ambienti" class="eyebrow border-b border-stone-300 pb-3 text-stone-500">
-        La struttura
-      </h2>
-
-      <div class="mt-8 grid gap-4 sm:grid-cols-2">
-        <figure class="media aspect-4/3">
-          <Image
-            src={foto.locandaEsterno}
-            alt="La facciata della Locanda Seggiovia con i balconi in legno, nel centro di Recoaro Terme"
-            widths={[420, 600, 900]}
-            sizes="(min-width: 640px) 46vw, 92vw"
-            format="webp"
-            quality={82}
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-
-        <div class="flex flex-col justify-center gap-5 sm:pl-8">
-          <p class="max-w-[52ch] text-[0.95rem] leading-relaxed text-stone-600">
-            L'edificio è in piazza, con i balconi in legno che guardano le Piccole
-            Dolomiti. Le camere sono ai piani, il ristorante al piano terra.
-          </p>
-          <p class="text-[0.8rem] leading-relaxed text-stone-500">
-            Altre fotografie degli interni sono in arrivo: gli ambienti sono in fase di
-            ristrutturazione.
-          </p>
-        </div>
       </div>
     </div>
   </section>
@@ -322,4 +292,5 @@ const schema = {
       </div>
     </div>
   </section>
+  </div>
 </BaseLayout>

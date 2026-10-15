@@ -161,23 +161,46 @@ Le altre si cambiano **dentro la scheda a cui appartengono**:
 
 ### Come sostituire una fotografia
 
-Non c'è un pulsante «sostituisci»: si fa **caricando un file con lo stesso nome**
-di quello da cambiare.
+Non c'è un pulsante «sostituisci»: si fa **caricando un file con lo stesso nome e
+nello stesso formato** di quello da cambiare.
 
-1. Prepara la fotografia nuova e **rinominala esattamente come quella vecchia**
-   (per esempio `hero-piccole-dolomiti.jpg`).
-2. Nel pannello apri la **libreria immagini** e premi **Carica**.
-3. Scegli il file. Il sistema avverte che esiste già un file con quel nome:
+1. Guarda il nome e il formato della fotografia da cambiare: per esempio
+   `hero-piccole-dolomiti.jpg` è un **.jpg**.
+2. Prepara la fotografia nuova e **rinominala esattamente come quella vecchia**,
+   **mantenendo lo stesso formato** (`hero-piccole-dolomiti.jpg`).
+3. Nel pannello apri la **libreria immagini** e premi **Carica**.
+4. Scegli il file. Il sistema avverte che esiste già un file con quel nome:
    **conferma**.
-4. Il vecchio viene sostituito, e **tutti i punti del sito dove compariva si
+5. Il vecchio viene sostituito, e **tutti i punti del sito dove compariva si
    aggiornano da soli**.
 
 Il motivo è che i contenuti non contengono la fotografia, ma il suo **nome**: se
 il nome resta lo stesso, il sito la ritrova ovunque.
 
-> In alternativa puoi aprire la scheda interessata e scegliere un'immagine
-> diversa dal campo corrispondente. Funziona, ma il vecchio file resta nella
-> libreria: è meno pulito.
+> ⚠️ **Il formato deve essere lo stesso.** Se provi a sostituire un `.jpg` con un
+> file `.webp` (o viceversa), il pannello rifiuta e dice:
+> *«Questo file non può sostituire … perché è in un formato diverso»*.
+>
+> **Non è un guasto**: cambiando formato cambierebbe anche il nome del file, e il
+> sito perderebbe il collegamento alla fotografia. Il pannello ti sta proteggendo
+> da un'immagine che sparirebbe.
+
+**Se il tuo file ha un formato diverso da quello da sostituire**, ci sono due
+strade. La prima è la più semplice:
+
+**Converti il file nello stesso formato.** Su Windows: apri la fotografia con
+**Paint** → *File* → *Salva con nome* → in *Tipo* scegli **JPEG** → salva con lo
+stesso nome. Su Mac: apri con **Anteprima** → *File* → *Esporta* → formato
+**JPEG**.
+
+Oppure, se preferisci non convertire niente:
+
+1. Nella libreria, **elimina** la fotografia vecchia (il sistema sistema da solo
+   i collegamenti).
+2. **Carica** la nuova, con il nome che vuoi.
+3. Apri la scheda dove deve comparire e scegli la nuova fotografia dal campo.
+
+È un passaggio in più, ma funziona sempre.
 
 ### Caricare una fotografia nuova
 
@@ -210,12 +233,18 @@ campi: non va caricata due volte.
 | **Formato** | `.jpg` per le fotografie, `.png` solo se serve lo sfondo trasparente (il logo) |
 | **Orientamento** | orizzontale, tranne il logo |
 | **Larghezza consigliata** | **almeno 1920 pixel** — **2500** per l'apertura della home |
-| **Peso** | fino a **8 MB**: il sistema le alleggerisce da solo |
+| **Peso** | fino a **8 MB** |
 
-**Le fotografie vengono ottimizzate automaticamente al caricamento.** Non devi
-prepararle: il pannello le converte in WebP e le ridimensiona a un massimo di
-2560 pixel di larghezza, dentro il browser, prima ancora di salvarle. Puoi
-caricare la fotografia così come esce dalla macchina fotografica.
+**Puoi caricare la fotografia così come esce dalla macchina fotografica.** Non
+serve ridimensionarla: **il sito la alleggerisce da solo in fase di
+pubblicazione**, producendo il formato WebP e le versioni di dimensione adatta a
+telefoni, tablet e schermi grandi.
+
+> **Perché non la converte il pannello, allora?** Perché abbiamo provato, e
+> bloccava la sostituzione delle fotografie: se il pannello converte in WebP
+> mentre carichi, poi non riesce più a mettere il file al posto di un `.jpg`
+> esistente — i formati non corrispondono. Meglio un file un po' più pesante nel
+> magazzino e la possibilità di cambiare le foto quando vuoi.
 
 > ⚠️ **Una fotografia piccola non viene ingrandita.** Se carichi un'immagine di
 > 600 pixel di larghezza, resta di 600 pixel: il sito non può inventare i

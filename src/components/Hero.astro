@@ -37,7 +37,13 @@ export interface Props {
 
 const {
   immagine = null,
-  alt = 'Panorama delle Piccole Dolomiti sopra Recoaro Terme',
+  // Il testo alternativo dichiara che questa è un'immagine disegnata, non uno
+  // scatto delle Piccole Dolomiti. Non c'è più nessuna etichetta visibile
+  // sull'immagine di apertura — è stata tolta su richiesta — quindi la
+  // trasparenza verso chi usa un lettore di schermo resta affidata a questa
+  // riga. Quando arriva la fotografia vera, va aggiornata descrivendo il
+  // paesaggio reale.
+  alt = 'Disegno di montagne con boschi di conifere: segnaposto in attesa della fotografia delle Piccole Dolomiti',
 } = Astro.props;
 
 // Le date in cui il titolo cambia forma: evita di inventare un anno.
@@ -97,12 +103,14 @@ const accessi = [
       Recoaro Terme. La montagna comincia fuori dalla porta.
     </p>
 
-    <!-- Biforcazione: da qui si sceglie se dormire o mangiare. -->
+    <!-- Biforcazione: da qui si sceglie se dormire o mangiare.
+         Nessuna linea di separazione: le due scelte si distinguono per lo
+         spazio e per il peso del testo, non per un reticolo di bordi. -->
     <nav class="mt-10 md:mt-12" aria-label="Cosa vuoi esplorare">
-      <ul class="grid border-t border-stone-50/25 sm:grid-cols-2">
+      <ul class="grid gap-x-14 gap-y-1 sm:grid-cols-2">
         {
-          accessi.map((accesso, i) => (
-            <li class:list={['border-b border-stone-50/25 sm:border-b-0', i === 0 && 'sm:border-r']}>
+          accessi.map((accesso) => (
+            <li>
               <a href={accesso.href} class="accesso">
                 <span class="accesso__eyebrow">{accesso.eyebrow}</span>
                 <span class="accesso__riga">
@@ -165,7 +173,7 @@ const accessi = [
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
-    padding: 1.15rem 0 1.3rem;
+    padding: 0.6rem 0 0.7rem;
     color: var(--color-stone-200);
     text-decoration: none;
     transition: color 250ms ease-out;
@@ -173,7 +181,7 @@ const accessi = [
 
   @media (min-width: 640px) {
     .accesso {
-      padding: 1.35rem 1.75rem 1.5rem 0;
+      padding: 0.75rem 0 0.85rem;
     }
   }
 

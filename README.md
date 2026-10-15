@@ -293,10 +293,12 @@ nella pagina Sentieri, dove la sua risoluzione basta.
 La cartella `foto sito locanda/` è conservata nel repository come archivio degli
 originali: è da lì che si rigenerano gli asset.
 
-**Restano segnaposto** le immagini di ambienti e camere
-(`camere-interno.jpg`, `ristorante-sala.jpg`, `gnocchi-fioreta.jpg`) e le
-copertine dei sentieri: sono disegni generati proceduralmente da
-`scripts/generate_placeholders.py`, non fotografie. I testi `alt` lo dichiarano.
+**Restano segnaposto** le copertine dei sentieri e il panorama: sono disegni
+generati proceduralmente da `scripts/generate_placeholders.py`, non fotografie.
+**L'etichetta «FOTO IN ARRIVO» è scritta dentro l'immagine**, non nel codice della
+pagina: quando la fotografa vera sostituisce il file, l'avviso sparisce da solo.
+Dove non c'è nessuna immagine (camere, sala del ristorante) il riquadro è
+disegnato in CSS e dichiarato nel testo `alt`.
 
 **I file forniti sono piccoli** (il più grande è 600×450 px, il logo 281×218).
 Vanno bene per gli spazi in cui sono usati, ma non reggono un ingrandimento a
@@ -306,6 +308,16 @@ almeno 2560 px di larghezza.
 Le immagini stanno **tutte in `src/assets/`**, in un unico posto: da lì Astro le
 converte in WebP e genera le varianti responsive. In `public/` restano solo i
 file con URL fisso (favicon, icona iOS, immagine social, robots.txt).
+
+> ⚠️ **La conversione in WebP dentro il pannello è deliberatamente disattivata.**
+> `media_libraries.all.transformations.raster_image` è stato rimosso perché
+> rendeva impossibile **sostituire** una fotografia: il pannello convertiva il
+> file caricato in WebP e poi rifiutava di metterlo al posto di un `.jpg`
+> esistente, perché il formato non corrispondeva. Non esiste un'opzione
+> documentata per disattivare quel controllo. Il costo è qualche MB in più nel
+> repository; il sito pubblicato resta leggero perché **Astro converte comunque
+> in WebP in fase di build**. Non riattivare quella opzione senza risolvere prima
+> il problema della sostituzione.
 
 ---
 
