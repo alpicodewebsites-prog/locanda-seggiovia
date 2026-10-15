@@ -69,9 +69,12 @@ const isAttiva = (href: string) =>
       </ul>
     </nav>
 
-    {/* --- CTA + menu mobile --- */}
+    {/* --- Unico invito all'azione: i contatti ---
+        Non c'è più anche il link testuale «Contatti» nell'elenco: portavano
+        alla stessa pagina. Resta questo pulsante, l'ultimo elemento della
+        barra, che è anche l'unico con il fondo ocra. */}
     <div class="flex items-center gap-3">
-      <a href="/contatti" class="btn btn--primary hidden sm:inline-flex">Prenota</a>
+      <a href="/contatti" class="btn btn--primary">Contatti</a>
 
       <details class="menu-mobile relative lg:hidden">
         <summary
@@ -105,7 +108,7 @@ const isAttiva = (href: string) =>
               ))
             }
             <li class="mt-1 border-t border-stone-200 pt-1">
-              <a href="/contatti" class="btn btn--primary mt-1 w-full">Prenota un soggiorno</a>
+              <a href="/contatti" class="btn btn--primary mt-1 w-full">Contatti</a>
             </li>
           </ul>
         </nav>

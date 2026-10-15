@@ -96,30 +96,23 @@ const sentieri = (await getCollection('sentieri'))
   <Hero immagine={foto.hero} />
 
   <!-- ==================================================================
-       Riga di credenziali
+       Invito alla pagina degli gnocchi
+       ------------------------------------------------------------------
+       Prima qui c'era una fascia a tre colonne — Dove / Cucina / Sentieri —
+       con tre etichette e tre testi. Diceva cose vere ma non chiedeva
+       niente: chi leggeva non aveva nulla da fare, e la fascia occupava
+       spazio come un riempitivo.
+
+       Ora c'è un solo invito, con il fondo ocra, che porta al prodotto
+       identitario della casa. Il pulsante è centrato e ha il respiro
+       attorno: è visibile senza essere invadente.
        ================================================================== -->
-  <section class="border-b border-stone-200 sezione-legno">
-    <div class="shell">
-      <dl class="grid grid-cols-1 sm:grid-cols-3">
-        <div class="py-7 sm:py-8 sm:pr-8">
-          <dt class="eyebrow text-forest-500">Dove</dt>
-          <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
-            Centro di Recoaro Terme
-          </dd>
-        </div>
-        <div class="border-t border-wood-300/50 py-7 sm:border-t-0 sm:border-l sm:py-8 sm:px-8">
-          <dt class="eyebrow text-glow-500">Cucina</dt>
-          <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
-            Gnocchi con la Fioreta De.Co.
-          </dd>
-        </div>
-        <div class="border-t border-wood-300/50 py-7 sm:border-t-0 sm:border-l sm:py-8 sm:pl-8">
-          <dt class="eyebrow text-wood-500">Sentieri</dt>
-          <dd class="mt-1.5 font-[family-name:var(--font-display)] text-lg leading-snug text-stone-800">
-            Piccole Dolomiti e Pasubio
-          </dd>
-        </div>
-      </dl>
+  <section class="border-b border-stone-200 py-14 md:py-20">
+    <div class="shell flex justify-center px-4">
+      <a href="/gnocchi-con-la-fioreta" class="btn btn--primary btn--invito">
+        <span>Scopri la nostra produzione di</span>
+        <span>gnocchi con la Fioreta</span>
+      </a>
     </div>
   </section>
 
@@ -148,7 +141,7 @@ const sentieri = (await getCollection('sentieri'))
         }
       </div>
 
-      <div class="md:col-span-7 md:order-1" data-aos="fade-up">
+      <div class="md:col-span-7 md:order-1">
         <p class="eyebrow text-forest-500">La locanda</p>
         <h2 id="titolo-locanda" class="display-2 mt-4 max-w-[22ch] text-stone-900">
           Un rifugio, non un albergo
@@ -292,7 +285,7 @@ const sentieri = (await getCollection('sentieri'))
        ================================================================== -->
   <section class="section-y bg-forest-900 text-stone-200" aria-labelledby="titolo-cucina">
     <div class="shell grid gap-12 md:grid-cols-2 md:gap-14 lg:gap-20">
-      <div data-aos="fade-up">
+      <div>
         <p class="eyebrow text-glow-300">Cucina</p>
         <h2 id="titolo-cucina" class="display-2 mt-4 text-stone-50">
           Quello che si cucina in vallata
@@ -361,7 +354,7 @@ const sentieri = (await getCollection('sentieri'))
        ================================================================== -->
   <section class="section-y" aria-labelledby="titolo-chiusura">
     <div class="shell text-center">
-      <h2 id="titolo-chiusura" class="display-2 mx-auto max-w-[24ch] text-stone-900" data-aos="fade-up">
+      <h2 id="titolo-chiusura" class="display-2 mx-auto max-w-[24ch] text-stone-900">
         Ti aspettiamo in piazza
       </h2>
       <p class="mx-auto mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-stone-600">

@@ -332,6 +332,46 @@
     background-color: var(--color-accento-scuro);
   }
 
+  /*
+    Pulsante d'invito: quello grande, su due righe, che porta alla pagina degli
+    gnocchi. Serve una variante perché il testo è lungo — su un telefono una
+    riga sola lo farebbe sbordare o rimpicciolire troppo.
+
+    Il testo è diviso in due span nel markup, così l'a capo cade dove serve e
+    non a metà di una parola. Il sollevamento è di 2 pixel: si sente, non si
+    vede.
+  */
+  .btn--invito {
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 1.05rem 2rem;
+    font-size: 1rem;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  .btn--invito:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn--invito:active {
+    transform: translateY(0);
+  }
+
+  @media (min-width: 640px) {
+    .btn--invito {
+      padding: 1.15rem 2.75rem;
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn--invito:hover,
+    .btn--invito:active {
+      transform: none;
+    }
+  }
+
   .btn--ghost {
     border-color: color-mix(in oklab, var(--color-stone-800) 30%, transparent);
     color: var(--color-stone-800);
@@ -852,16 +892,72 @@
 
 /* ==========================================================================
    AOS — Animate On Scroll
-   L'attributo [data-aos] è nascosto finché il JS non lo attiva: se lo script
-   non parte, gli elementi restano visibili (§ robustezza, § reduced motion).
+   --------------------------------------------------------------------------
+   Le animazioni sono definite QUI, non importate da `aos/dist/aos.css`.
+
+   Perché: il foglio di stile della libreria non è mai stato incluso, quindi
+   fino a ora gli elementi marcati `data-aos` non facevano altro che comparire
+   in dissolvenza — nessuno spostamento, nessun ingrandimento. Ecco perché le
+   animazioni «non si percepivano»: non c'erano.
+
+   Definendole qui si controlla tutto: la durata, la curva, di quanto si sposta
+   un elemento. E si evita di importare un foglio che porta con sé durate e
+   curve sue, da sovrascrivere una per una.
+
+   Robustezza: `[data-aos]` è VISIBILE per impostazione predefinita. Diventa
+   invisibile solo sotto `html.aos-ready`, classe che lo script aggiunge dopo
+   aver inizializzato la libreria. Se il JavaScript non parte, la pagina si
+   legge tutta.
    ========================================================================== */
 
 [data-aos] {
   opacity: 1;
+  transition-property: opacity, transform;
+  transition-duration: 700ms;
+  /* Curva morbida: parte decisa e si posa, senza rimbalzi. */
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* --- Gli stati di partenza, prima dell'animazione ------------------------- */
 
 html.aos-ready [data-aos]:not(.aos-animate) {
   opacity: 0;
+}
+
+/* Dal basso verso l'alto: il movimento più leggibile e il più discreto. */
+html.aos-ready [data-aos='fade-up']:not(.aos-animate) {
+  transform: translate3d(0, 1.75rem, 0);
+}
+
+/* Solo dissolvenza, per gli elementi lunghi: spostare una tabella intera
+   sarebbe pesante da guardare. */
+html.aos-ready [data-aos='fade-in']:not(.aos-animate) {
+  transform: none;
+}
+
+/* Ingrandimento appena accennato: dal 95% al 100%. Serve alle immagini, che
+   così «si aprono» invece di apparire. */
+html.aos-ready [data-aos='zoom-in']:not(.aos-animate) {
+  transform: scale(0.95);
+}
+
+/* --- I ritardi -----------------------------------------------------------
+   Dichiarati anche qui, oltre che dalla libreria: così il ritardo è scritto
+   nel foglio di stile ed è verificabile leggendo il CSS. */
+[data-aos-delay='100'] {
+  transition-delay: 100ms;
+}
+[data-aos-delay='150'] {
+  transition-delay: 150ms;
+}
+[data-aos-delay='200'] {
+  transition-delay: 200ms;
+}
+[data-aos-delay='300'] {
+  transition-delay: 300ms;
+}
+[data-aos-delay='400'] {
+  transition-delay: 400ms;
 }
 
 /* Rispetto della preferenza di sistema: nessuna animazione, tutto visibile. */
@@ -870,8 +966,13 @@ html.aos-ready [data-aos]:not(.aos-animate) {
     scroll-behavior: auto;
   }
 
+  [data-aos] {
+    transition: none;
+  }
+
   html.aos-ready [data-aos]:not(.aos-animate) {
     opacity: 1;
+    transform: none;
   }
 
   *,

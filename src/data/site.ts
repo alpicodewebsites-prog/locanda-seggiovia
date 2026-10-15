@@ -115,11 +115,18 @@ export const mappaLinkUrl = `https://www.google.com/maps/search/?api=1&query=${e
   `${site.nome}, ${indirizzoBreve}`
 )}`;
 
+/**
+ * Voci della barra di navigazione.
+ *
+ * «Contatti» NON è qui: è il pulsante in fondo alla barra, quello con il fondo
+ * ocra. Prima comparivano entrambi — il link testuale e il pulsante «Prenota» —
+ * e portavano alla stessa pagina: due elementi per la stessa destinazione, che
+ * sono ridondanti e fanno sembrare la barra più carica di quello che è.
+ */
 export const navigazione = [
   { label: 'La Locanda', href: '/la-locanda' },
   { label: 'Camere', href: '/camere' },
   { label: 'Ristorante', href: '/ristorante' },
   { label: 'Gnocchi con la Fioreta', href: '/gnocchi-con-la-fioreta' },
   { label: 'Sentieri', href: '/sentieri' },
-  { label: 'Contatti', href: '/contatti' },
 ] as const;

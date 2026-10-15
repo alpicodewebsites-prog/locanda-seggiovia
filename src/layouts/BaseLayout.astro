@@ -182,6 +182,7 @@ const fullSchema = [businessSchema, ...schemas];
 
     <script>
       import AOS from 'aos';
+      import { preparaAnimazioni } from '../scripts/animazioni';
 
       // AOS è costruito per essere incluso: senza di esso gli elementi
       // marcati [data-aos] verrebbero nascosti dal CSS della libreria.
@@ -189,21 +190,28 @@ const fullSchema = [businessSchema, ...schemas];
       // la classe `aos-ready`, così un errore JS non fa sparire la pagina.
       const riduciMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      // Su mobile le animazioni al scroll costano più di quanto rendano,
-      // e l'escursionista in montagna ha spesso una rete debole.
+      // Sotto i 768 px le animazioni distraggono e rallentano la lettura, e
+      // l'escursionista in montagna ha spesso una rete debole.
       const schermoPiccolo = window.matchMedia('(max-width: 767px)').matches;
 
       if (!riduciMovimento && !schermoPiccolo) {
+        // Gli attributi si assegnano PRIMA di inizializzare: AOS li cerca in
+        // pagina quando parte. Vedi src/scripts/animazioni.ts.
+        preparaAnimazioni();
+
         AOS.init({
-          // 250 ms: dentro la finestra 150-300 ms in cui una transizione si
-          // percepisce come risposta e non come attesa. Con 700 ms l'apertura
-          // di ogni sezione diventava un evento da guardare.
-          duration: 250,
-          easing: 'ease-out-cubic',
+          // 700 ms: dentro la finestra 600-800 in cui il movimento si percepisce
+          // senza diventare attesa. Sotto i 400 non si vede, sopra gli 800
+          // rallenta la lettura.
+          duration: 700,
+          // L'animazione parte quando l'elemento è entrato di circa il 15-20%
+          // dal fondo dello schermo: si vede arrivare, non si vede già arrivato.
+          offset: 150,
+          // Una volta sola per caricamento: ricaricando la pagina si ripete.
           once: true,
-          offset: 80,
           disable: 'phone',
         });
+
         document.documentElement.classList.add('aos-ready');
         AOS.refresh();
       }
