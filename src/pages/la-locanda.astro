@@ -68,8 +68,8 @@ const schema = {
        Storia
        ================================================================== -->
   <section class="section-y" aria-labelledby="titolo-storia">
-    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10 lg:gap-16">
-      <div class="md:col-span-5 md:order-2" data-aos="fade-in">
+    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10 lg:gap-16" data-aos="fade-up">
+      <div class="md:col-span-5 md:order-2">
         <div class="media aspect-3/4">
           <Image
             src={foto.locandaEsterno}
@@ -135,8 +135,6 @@ const schema = {
           carattere.map((voce, i) => (
             <li
               class="card-accento card-accento--bosco bg-stone-50 p-7 md:p-8"
-              data-aos="fade-up"
-              data-aos-delay={i * 100}
             >
               <h3 class="font-[family-name:var(--font-display)] text-xl leading-snug text-stone-900">
                 {voce.titolo}
@@ -213,7 +211,7 @@ const schema = {
        Chiusura
        ================================================================== -->
   <section class="section-y-tight bg-forest-900 text-stone-200">
-    <div class="shell flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
+    <div class="shell flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between" data-aos="fade-up">
       <div>
         <h2 class="display-2 max-w-[22ch] text-stone-50">Vieni a vedere</h2>
         <p class="mt-4 max-w-[48ch] text-[1rem] leading-relaxed text-forest-300">

@@ -1,0 +1,246 @@
+---
+/**
+ * RichiestaPrenotazione — la barra di richiesta disponibilità.
+ *
+ * Non è un motore di prenotazione: la locanda non ne ha uno, e fingere una
+ * disponibilità in tempo reale sarebbe peggio che non averla. Qui si CHIEDE la
+ * disponibilità, e la risposta arriva da una persona.
+ *
+ * Come funziona:
+ *   - i dati vanno a Web3Forms, lo stesso servizio del modulo contatti;
+ *   - con JavaScript, l'esito compare nella pagina senza ricaricarla;
+ *   - senza JavaScript il modulo fa una POST normale e porta a /grazie.
+ *
+ * Le date sono campi `date` nativi: sul telefono si apre il calendario di
+ * sistema, che è più comodo di qualunque calendario disegnato da noi.
+ */
+import { SITE_URL, site } from '../data/site';
+
+export interface Props {
+  /** Titolo del riquadro. Cambia fra la home e la pagina Camere. */
+  titolo?: string;
+  /** Riga di spiegazione sotto il titolo. */
+  descrizione?: string;
+  /** Identificativo del modulo: serve se in pagina ce n'è più d'uno. */
+  id?: string;
+}
+
+const {
+  titolo = 'Chiedi la disponibilità',
+  descrizione = 'Scrivi quando vorresti arrivare. Ti rispondiamo noi, di solito entro un giorno.',
+  id = 'modulo-prenotazione',
+} = Astro.props;
+
+/**
+ * Chiave di accesso Web3Forms.
+ *
+ * Finché non è impostata la variabile d'ambiente, il modulo invia con la chiave
+ * dimostrativa: Web3Forms accetta l'invio ma NON recapita l'email. Va impostata
+ * PUBLIC_WEB3FORMS_KEY prima della pubblicazione.
+ */
+const DEMO_KEY = 'YOUR_ACCESS_KEY_HERE';
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY || DEMO_KEY;
+const chiaveConfigurata = accessKey !== DEMO_KEY;
+
+/** Pagina di ringraziamento, con URL assoluto come richiede Web3Forms. */
+const redirectUrl = new URL('/grazie', SITE_URL).href;
+
+/** Oggi, per impedire di chiedere date già passate. */
+const oggi = new Date().toISOString().slice(0, 10);
+
+const tipiCamera = [
+  { value: 'singola', label: 'Camera singola' },
+  { value: 'doppia', label: 'Camera doppia' },
+  { value: 'indifferente', label: 'Non so ancora' },
+];
+---
+
+<section class="sezione-legno border-y border-wood-300/50" aria-labelledby={`${id}-titolo`}>
+  <div class="shell py-12 md:py-16">
+    <div class="grid gap-8 md:grid-cols-12 md:items-start">
+      <div class="md:col-span-4">
+        <h2 id={`${id}-titolo`} class="display-2 max-w-[18ch] text-stone-900">{titolo}</h2>
+        <p class="mt-3 max-w-[42ch] text-[0.95rem] leading-relaxed text-stone-600">
+          {descrizione}
+        </p>
+      </div>
+
+      <div class="md:col-span-8">
+        <form
+          id={id}
+          class="prenotazione"
+          action="https://api.web3forms.com/submit"
+          method="POST"
+          data-redirect={redirectUrl}
+        >
+          <input type="hidden" name="access_key" value={accessKey} />
+          <input
+            type="hidden"
+            name="subject"
+            value={`Richiesta di disponibilità dal sito — ${site.nome}`}
+          />
+          <input type="hidden" name="from_name" value={`Sito ${site.nome}`} />
+          <input type="hidden" name="redirect" value={redirectUrl} />
+
+          {/* Campo esca: se un robot lo compila, l'invio viene scartato. */}
+          <input
+            type="checkbox"
+            name="botcheck"
+            class="hidden"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
+
+          <div class="prenotazione__campi">
+            <label class="campo">
+              <span class="campo__etichetta">Arrivo</span>
+              <input type="date" name="arrivo" class="input" min={oggi} required />
+            </label>
+
+            <label class="campo">
+              <span class="campo__etichetta">Partenza</span>
+              <input type="date" name="partenza" class="input" min={oggi} required />
+            </label>
+
+            <label class="campo">
+              <span class="campo__etichetta">Ospiti</span>
+              <select name="ospiti" class="select" required>
+                <option value="1">1 persona</option>
+                <option value="2" selected>2 persone</option>
+                <option value="3">3 persone</option>
+                <option value="4">4 persone</option>
+                <option value="5 o più">5 o più</option>
+              </select>
+            </label>
+
+            <label class="campo">
+              <span class="campo__etichetta">Camera</span>
+              <select name="tipologia" class="select" required>
+                {tipiCamera.map((tipo) => <option value={tipo.value}>{tipo.label}</option>)}
+              </select>
+            </label>
+
+            <label class="campo prenotazione__largo">
+              <span class="campo__etichetta">
+                Nome e cognome <span class="campo__obbligatorio" aria-hidden="true">*</span>
+              </span>
+              <input
+                type="text"
+                name="nome"
+                class="input"
+                autocomplete="name"
+                required
+                placeholder="Come ti chiami"
+              />
+            </label>
+
+            <label class="campo prenotazione__largo">
+              <span class="campo__etichetta">
+                Email o telefono <span class="campo__obbligatorio" aria-hidden="true">*</span>
+              </span>
+              <input
+                type="text"
+                name="contatto"
+                class="input"
+                autocomplete="email"
+                required
+                placeholder="Per poterti rispondere"
+              />
+            </label>
+
+            <label class="campo prenotazione__tutto">
+              <span class="campo__etichetta">Note</span>
+              <textarea
+                name="note"
+                class="textarea"
+                rows="3"
+                placeholder="Bambini, animali, esigenze alimentari: tutto ciò che è utile sapere."
+              ></textarea>
+            </label>
+          </div>
+
+          <div class="prenotazione__invio">
+            <button type="submit" class="btn btn--primary">Invia la richiesta</button>
+            <p class="text-[0.8rem] leading-relaxed text-stone-500">
+              Nessun pagamento, nessun impegno: è una richiesta di disponibilità. Oppure
+              chiama il{' '}
+              <a href={site.telefonoLink} class="underline decoration-wood-300 underline-offset-2">
+                {site.telefono}
+              </a>.
+            </p>
+          </div>
+
+          {/* Esito dell'invio: riempito dallo script, vuoto all'inizio. */}
+          <p
+            id={`${id}-esito`}
+            class="mt-4 hidden text-[0.95rem] font-medium"
+            role="status"
+            aria-live="polite"
+            tabindex="-1"
+          >
+          </p>
+
+          {
+            !chiaveConfigurata && (
+              <p class="mt-4 border-l-2 border-wood-500 bg-wood-100/50 px-3 py-2 text-[0.8rem] leading-relaxed text-stone-700">
+                <strong>Nota per chi sviluppa:</strong> la chiave di Web3Forms non è ancora
+                configurata, quindi l'invio non recapita email. Impostare la variabile{' '}
+                <code class="text-[0.85em]">PUBLIC_WEB3FORMS_KEY</code>.
+              </p>
+            )
+          }
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /*
+    La barra dei campi. Su schermo grande stanno su due righe: i quattro dati del
+    soggiorno in alto, i due dati di contatto sotto. Su telefono si impilano.
+  */
+  .prenotazione__campi {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .prenotazione__campi {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .prenotazione__campi {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .prenotazione__largo {
+      grid-column: span 2;
+    }
+  }
+
+  .prenotazione__tutto {
+    grid-column: 1 / -1;
+  }
+
+  .prenotazione__invio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.5rem;
+  }
+</style>
+
+<script>
+  import { attivaRichiestePrenotazione } from '../scripts/form-prenotazione';
+
+  // Lo script viene incluso solo nelle pagine che usano questo componente.
+  attivaRichiestePrenotazione();
+</script>

@@ -388,6 +388,47 @@ def empty_slot(path: Path, width: int, height: int, label: str) -> None:
     print(f"  {path.name}  {width}x{height}  {path.stat().st_size // 1024} KB  [riquadro vuoto]")
 
 
+def stamp_label(img: Image.Image, testo: str) -> None:
+    """
+    Scrive l'etichetta di segnaposto DENTRO il paesaggio disegnato.
+
+    Perché dentro l'immagine e non nella pagina: così sparisce da sola. Quando
+    la fotografa carica la fotografia vera con lo stesso nome, il file viene
+    sostituito e l'etichetta non c'è più. Un avviso scritto nel codice della
+    pagina, invece, resterebbe lì a dire il falso finché qualcuno non se ne
+    ricorda.
+
+    Posizione in basso a sinistra con margine ampio: nei riquadri delle schede
+    il ritaglio avviene in orizzontale, quindi il basso resta sempre visibile.
+    """
+    larghezza, altezza = img.size
+    draw = ImageDraw.Draw(img, "RGBA")
+
+    font = load_font(max(15, int(min(larghezza, altezza) * 0.022)))
+    bbox = draw.textbbox((0, 0), testo, font=font)
+    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+
+    margine = int(min(larghezza, altezza) * 0.055)
+    pad_x, pad_y = int(th * 0.9), int(th * 0.55)
+
+    x0 = margine
+    y1 = altezza - margine
+    y0 = y1 - th - pad_y * 2
+
+    # Piastra semitrasparente: il testo deve restare leggibile su qualunque
+    # paesaggio, chiaro o scuro.
+    draw.rectangle(
+        [x0, y0, x0 + tw + pad_x * 2, y1],
+        fill=(20, 20, 18, 165),
+    )
+    draw.text(
+        (x0 + pad_x - bbox[0], y0 + pad_y - bbox[1]),
+        testo,
+        fill=(245, 243, 238, 235),
+        font=font,
+    )
+
+
 def main() -> None:
     print(f"Generazione immagini segnaposto -> {OUT_DIR}")
     for name, w, h, seed, sky_cols, ridges, count, rough, sun_x, sun_col in SCENES:
@@ -407,6 +448,12 @@ def main() -> None:
         )
 
         img = finish(img, rng)
+
+        # Etichetta dichiarativa: dice che questa non è una fotografia e che
+        # va sostituita. Solo caratteri ASCII, il font predefinito di PIL non
+        # sa disegnare gli accenti.
+        stamp_label(img, "FOTO IN ARRIVO - segnaposto, non una foto reale")
+
         path = OUT_DIR / f"{name}.jpg"
         path.parent.mkdir(parents=True, exist_ok=True)
         img.save(path, "JPEG", quality=86, optimize=True, progressive=True)

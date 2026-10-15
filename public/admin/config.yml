@@ -33,6 +33,29 @@ backend:
 media_folder: src/assets
 public_folder: /assets
 
+# --- Ottimizzazione delle immagini al caricamento ----------------------------
+# Sveltia ottimizza le immagini DENTRO IL BROWSER, prima di salvarle: converte
+# JPEG e PNG in WebP e le ridimensiona se superano il limite. Così la
+# proprietaria può caricare la fotografia così come esce dalla macchina
+# fotografica — anche 8 MB — senza doverla preparare, e il sito resta leggero.
+#
+# La larghezza massima è 2560 pixel perché la fotografia di apertura della home
+# viene mostrata a tutta larghezza: sotto quella misura si sgranerebbe.
+media_libraries:
+  # Limite al file caricabile: oltre, il pannello avvisa e rifiuta.
+  default:
+    config:
+      max_file_size: 8388608 # 8 MB
+  all:
+    transformations:
+      raster_image:
+        format: webp
+        quality: 85
+        width: 2560
+        height: 2560
+      svg:
+        optimize: true
+
 # --- Output ------------------------------------------------------------------
 output:
   # Fondamentale: se un campo opzionale resta vuoto, Sveltia non lo scrive nel
@@ -97,6 +120,7 @@ collections:
       - name: foto
         label: Fotografia della camera
         widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
         required: false
         hint: 'Facoltativa. Se manca, la camera compare senza foto.'
 
@@ -150,6 +174,7 @@ collections:
       - name: foto
         label: Fotografia del piatto
         widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
         required: false
         hint: 'Facoltativa. Se c''e, il piatto compare anche in galleria.'
 
@@ -203,11 +228,13 @@ collections:
       - name: foto
         label: Fotografia del piatto finito
         widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
         required: false
         hint: 'Facoltativa.'
       - name: fotoPreparazione
         label: Fotografia degli ingredienti
         widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
         required: false
         hint: 'Facoltativa.'
 
@@ -258,6 +285,7 @@ collections:
       - name: immagine
         label: Fotografia di copertina
         widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
         required: false
         hint: 'Facoltativa. Se manca, la scheda usa un segnaposto neutro.'
 
@@ -279,24 +307,29 @@ collections:
           - name: hero
             label: Apertura della home
             widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
             required: false
             hint: 'La fotografia grande della prima schermata. Serve almeno 2500 pixel di larghezza.'
           - name: panorama
             label: Panorama (chiusura della home e pagina Sentieri)
             widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
             required: false
             hint: 'Usata a tutta larghezza: serve una fotografia grande e orizzontale.'
           - name: locandaEsterno
             label: La locanda vista da fuori
             widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
             required: false
             hint: 'Compare nella home, in La Locanda, in Camere e in Ristorante.'
           - name: locandaCucina
             label: Il tavolo di cucina
             widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
             required: false
             hint: 'Ingredienti o preparazione. Compare in Camere e nella pagina degli gnocchi.'
           - name: montagne
             label: Le montagne (pagina Sentieri)
             widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
             required: false

@@ -179,21 +179,72 @@ il nome resta lo stesso, il sito la ritrova ovunque.
 > diversa dal campo corrispondente. Funziona, ma il vecchio file resta nella
 > libreria: è meno pulito.
 
+### Caricare una fotografia nuova
+
+1. Nel pannello apri la scheda dove deve comparire (per esempio **Camere e
+   tariffe** → una camera).
+2. Nel campo della fotografia premi **Scegli immagine**.
+3. Nella finestra che si apre, trascina il file oppure premi **Carica** e
+   scegliilo dal computer.
+4. Salva.
+
+La fotografia finisce nella libreria e resta disponibile per tutti gli altri
+campi: non va caricata due volte.
+
+### Eliminare una fotografia
+
+1. Apri la **libreria immagini** (l'icona con il quadro, in alto a sinistra).
+2. Passa il puntatore sulla fotografia e premi **Elimina**.
+3. Il sistema avvisa **in quanti punti del sito** quella fotografia è usata, e
+   sistema da solo i collegamenti: dove compariva, il campo resta vuoto invece di
+   puntare a un file che non c'è più.
+4. Conferma.
+
+> **Non puoi sbagliare**: ogni modifica è registrata, e si può sempre tornare
+> indietro. Se elimini una fotografia per errore, scrivi e la recuperiamo.
+
 ### Che caratteristiche devono avere
 
 | | |
 |---|---|
 | **Formato** | `.jpg` per le fotografie, `.png` solo se serve lo sfondo trasparente (il logo) |
 | **Orientamento** | orizzontale, tranne il logo |
-| **Larghezza minima** | 1600 pixel — **2500** per l'apertura della home |
-| **Peso** | fino a 5 MB va bene: il sito le alleggerisce da solo |
+| **Larghezza consigliata** | **almeno 1920 pixel** — **2500** per l'apertura della home |
+| **Peso** | fino a **8 MB**: il sistema le alleggerisce da solo |
 
-Non serve ridimensionarle o convertirle: **il sistema se ne occupa in fase di
-pubblicazione**, producendo il formato WebP e le versioni di dimensione adatta a
-telefoni, tablet e schermi grandi.
+**Le fotografie vengono ottimizzate automaticamente al caricamento.** Non devi
+prepararle: il pannello le converte in WebP e le ridimensiona a un massimo di
+2560 pixel di larghezza, dentro il browser, prima ancora di salvarle. Puoi
+caricare la fotografia così come esce dalla macchina fotografica.
+
+> ⚠️ **Una fotografia piccola non viene ingrandita.** Se carichi un'immagine di
+> 600 pixel di larghezza, resta di 600 pixel: il sito non può inventare i
+> dettagli che non ci sono, e ingrandirla la farebbe sembrare sfocata. Per
+> questo, quando possibile, usa lo scatto originale e non una copia ridotta.
 
 **Non** usare fotografie scaricate da internet: servono scatti vostri, o foto di
 cui avete i diritti.
+
+### 📷 Servono tre fotografie, e sono le più importanti
+
+Il sito oggi funziona, ma **le fotografie sono la cosa che fa la differenza** fra
+un sito che sembra vero e uno che sembra vuoto. Al momento le immagini mancanti
+sono riquadri dichiarati «FOTO IN ARRIVO»: si vede che sono provvisori.
+
+**Queste tre cambierebbero tutto, in quest'ordine:**
+
+| # | Fotografia | Dove va | Come deve essere |
+|---|---|---|---|
+| 1 | **Le Piccole Dolomiti, o un sentiero** | la prima schermata della home | almeno **2500 px** di larghezza |
+| 2 | **Le camere** | pagina Camere | almeno **1600 px**, orizzontale |
+| 3 | **La sala del ristorante** | pagina Ristorante | almeno **1600 px**, orizzontale |
+
+La numero 1 è la più importante di tutte: è **la prima cosa che si vede** aprendo
+il sito. Oggi lì c'è un disegno, non una fotografia delle vostre montagne.
+
+Bastano anche scatti fatti con il telefono, purché siano **orizzontali** e alla
+massima risoluzione. Le fotografie verticali dei telefoni vanno bene per le
+camere, non per l'apertura.
 
 ### Il logo
 

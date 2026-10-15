@@ -15,6 +15,39 @@ const { chromium } = require('playwright');
 
 const base = (process.argv[2] ?? 'http://127.0.0.1:4340').replace(/\/$/, '');
 
+/**
+ * Dice se un colore `rgb(r, g, b)` è chiaro, cioè leggibile sopra una
+ * fotografia scura.
+ *
+ * Si controlla la LUMINOSITÀ invece di confrontare valori esatti: la palette
+ * cambia, e un test che pretende `rgb(250, 249, 246)` fallisce appena si
+ * ritocca un tono — segnalando un problema che non esiste. Qui interessa una
+ * proprietà vera: il testo è chiaro o scuro?
+ */
+function luminanza(colore) {
+  const valori = String(colore).match(/\d+(\.\d+)?/g);
+  if (!valori || valori.length < 3) return null;
+
+  const [r, g, b] = valori.slice(0, 3).map((v) => {
+    const n = Number(v) / 255;
+    return n <= 0.04045 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+  });
+
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** Il colore è chiaro? (soglia 0,5 su 1) */
+const eChiaro = (colore) => {
+  const l = luminanza(colore);
+  return l !== null && l > 0.5;
+};
+
+/** Il colore è scuro? */
+const eScuro = (colore) => {
+  const l = luminanza(colore);
+  return l !== null && l < 0.2;
+};
+
 function trovaBrowser() {
   return [
     process.env.CHROME_PATH,
@@ -71,8 +104,7 @@ check(
 );
 check(
   'home: il wordmark è chiaro sopra la fotografia',
-  (s.stato?.coloreTitolo ?? '').startsWith('rgb(250, 249, 246)') ||
-    (s.stato?.coloreTitolo ?? '').startsWith('rgb(242, 240, 235)'),
+  eChiaro(s.stato?.coloreTitolo),
   s.stato?.coloreTitolo ?? '',
 );
 check('home: la classe di trasparenza è attiva', (s.stato?.classi ?? '').includes('site-header--trasparente'));
@@ -98,8 +130,7 @@ check(
 );
 check(
   'home dopo lo scroll: il wordmark torna scuro',
-  (s.stato?.coloreTitolo ?? '').startsWith('rgb(28, 27, 25)') ||
-    (s.stato?.coloreTitolo ?? '').startsWith('rgb(35, 34, 32)'),
+  eScuro(s.stato?.coloreTitolo),
   s.stato?.coloreTitolo ?? '',
 );
 
@@ -131,8 +162,7 @@ check(
 );
 check(
   'pagina interna: wordmark scuro',
-  (si.stato?.coloreTitolo ?? '').startsWith('rgb(28, 27, 25)') ||
-    (si.stato?.coloreTitolo ?? '').startsWith('rgb(35, 34, 32)'),
+  eScuro(si.stato?.coloreTitolo),
   si.stato?.coloreTitolo ?? '',
 );
 

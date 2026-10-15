@@ -113,7 +113,7 @@ const schema = {
   {
     specialita.length > 0 && (
       <section class="section-y bg-forest-900 text-stone-200" aria-labelledby="titolo-specialita">
-        <div class="shell">
+        <div class="shell" data-aos="fade-up">
           <div class="grid gap-8 md:grid-cols-12 md:items-end">
             <div class="md:col-span-7">
               <p class="eyebrow text-glow-300">Le specialità</p>
@@ -133,7 +133,7 @@ const schema = {
               della stessa larghezza così l'impaginazione resta allineata. */}
           <ul class="mt-12 grid gap-px overflow-hidden bg-stone-50/15 sm:grid-cols-2">
             {specialita.map((piatto, i) => (
-              <li class="bg-forest-900 p-7 md:p-9" data-aos="fade-up" data-aos-delay={i * 90}>
+              <li class="bg-forest-900 p-7 md:p-9">
                 <h3 class="font-[family-name:var(--font-display)] text-xl leading-snug text-stone-50 md:text-2xl">
                   {piatto.data.nome}
                 </h3>
@@ -159,7 +159,7 @@ const schema = {
             piattiConFoto.length > 0 && (
               <div class="mt-8 grid gap-8 sm:grid-cols-2">
                 {piattiConFoto.map(({ piatto, immagine }, i) => (
-                  <figure data-aos="fade-up" data-aos-delay={i * 90}>
+                  <figure class="foto-piatto">
                     <div class="media aspect-4/3 bg-forest-700/40">
                       <Image
                         src={immagine}
@@ -222,8 +222,6 @@ const schema = {
                 {categoria.piatti.map((piatto) => (
                   <li
                     class:list={['border-b border-stone-200 py-5 last:border-b-0 card-accento', `card-accento--${categoria.accento}`]}
-                    data-aos="fade-up"
-                    data-aos-delay="60"
                   >
                     <div class="piatto">
                       <h4 class="font-[family-name:var(--font-display)] text-lg leading-snug text-stone-900">
@@ -252,7 +250,7 @@ const schema = {
        Orari e prenotazioni
        ================================================================== -->
   <section class="section-y-tight bg-stone-50" aria-labelledby="titolo-orari">
-    <div class="shell grid gap-10 md:grid-cols-12">
+    <div class="shell grid gap-10 md:grid-cols-12" data-aos="fade-up">
       <div class="md:col-span-5">
         <h2 id="titolo-orari" class="display-2 text-stone-900">Orari e prenotazioni</h2>
         <p class="mt-5 max-w-[46ch] text-[0.95rem] leading-relaxed text-stone-600">
@@ -287,3 +285,38 @@ const schema = {
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  /*
+    Fotografie dei piatti — risposta al passaggio del mouse.
+
+    Un ingrandimento di appena il 3% in 250 ms: si percepisce che la fotografia
+    è viva senza che l'immagine sembri muoversi. Il contenitore ha già
+    l'`aspect-ratio` bloccato, quindi il riquadro non cambia dimensione e nulla
+    si sposta attorno.
+
+    Le figure non sono collegamenti e non mostrano il puntatore a mano: qui non
+    c'è niente da aprire, e far credere il contrario sarebbe scorretto.
+  */
+  .foto-piatto :global(.media) {
+    overflow: hidden;
+  }
+
+  .foto-piatto :global(img) {
+    transition: transform 250ms ease-out;
+  }
+
+  .foto-piatto:hover :global(img) {
+    transform: scale(1.03);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .foto-piatto :global(img) {
+      transition: none;
+    }
+
+    .foto-piatto:hover :global(img) {
+      transform: none;
+    }
+  }
+</style>

@@ -14,6 +14,15 @@
  * `sticky`, quindi occupa spazio nel flusso) grazie a un margine negativo. Lo
  * spazio per il testo è riservato dalla griglia, così su schermi bassi il
  * contenuto non finisce mai dietro la barra.
+ *
+ * Sulla scelta iniziale: chi arriva deve capire subito che qui si può sia
+ * dormire sia mangiare, e scegliere. I due accessi in fondo sono quindi una
+ * biforcazione — Dormire / Mangiare — non due pulsanti generici. Chi cerca i
+ * sentieri li trova nella sezione Territorio, poco sotto, con il proprio invito.
+ *
+ * Nessuna animazione di comparsa: è la prima schermata, e farla apparire a
+ * scatti ritarderebbe proprio la lettura del titolo. Le uniche transizioni sono
+ * le micro-interazioni al passaggio del mouse e al focus da tastiera.
  */
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -33,6 +42,22 @@ const {
 
 // Le date in cui il titolo cambia forma: evita di inventare un anno.
 const anno = site.annoFondazione;
+
+/** I due accessi: dormire e mangiare. */
+const accessi = [
+  {
+    href: '/camere',
+    eyebrow: 'Dormire',
+    titolo: 'Le camere',
+    nota: 'Camere semplici e curate, colazione presto, tariffe chiare.',
+  },
+  {
+    href: '/ristorante',
+    eyebrow: 'Mangiare',
+    titolo: 'Il ristorante',
+    nota: 'Cucina alto-vicentina e gli gnocchi con la fioreta De.Co.',
+  },
+];
 ---
 
 <section class="hero-apertura bg-stone-800">
@@ -63,30 +88,187 @@ const anno = site.annoFondazione;
   <div class="hero-apertura__sopra" aria-hidden="true"></div>
 
   <div class="hero-apertura__sotto shell w-full">
-    <p class="max-w-[34ch] text-[0.95rem] leading-relaxed text-stone-200/90" data-aos="fade-in">
-      {site.indirizzo.citta}, Valle dell’Agno — Provincia di Vicenza
-    </p>
-
-    <h1 class="display-1 mt-5 max-w-[19ch] text-stone-50 text-shadow-hero">
+    <h1 class="display-1 max-w-[19ch] text-stone-50 text-shadow-hero">
       {anno ? `Rifugio alpino dal ${anno}` : 'Rifugio alpino ai piedi delle Piccole Dolomiti'}
     </h1>
 
-    <p
-      class="mt-6 max-w-[46ch] text-[1.0625rem] leading-relaxed text-stone-200/95 md:text-[1.15rem]"
-      data-aos="fade-up"
-      data-aos-delay="100"
-    >
+    <p class="mt-6 max-w-[46ch] text-[1.0625rem] leading-relaxed text-stone-200/95 md:text-[1.15rem]">
       Camere, cucina tradizionale alto-vicentina e i sentieri che partono dal centro di
       Recoaro Terme. La montagna comincia fuori dalla porta.
     </p>
 
-    <div
-      class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4"
-      data-aos="fade-up"
-      data-aos-delay="180"
-    >
-      <a href="/camere" class="btn btn--onDark">Scopri le camere</a>
-      <a href="/sentieri" class="btn btn--onDark">Esplora i sentieri</a>
-    </div>
+    <!-- Biforcazione: da qui si sceglie se dormire o mangiare. -->
+    <nav class="mt-10 md:mt-12" aria-label="Cosa vuoi esplorare">
+      <ul class="grid border-t border-stone-50/25 sm:grid-cols-2">
+        {
+          accessi.map((accesso, i) => (
+            <li class:list={['border-b border-stone-50/25 sm:border-b-0', i === 0 && 'sm:border-r']}>
+              <a href={accesso.href} class="accesso">
+                <span class="accesso__eyebrow">{accesso.eyebrow}</span>
+                <span class="accesso__riga">
+                  <span class="accesso__titolo">{accesso.titolo}</span>
+                  <svg
+                    class="accesso__freccia"
+                    width="20"
+                    height="14"
+                    viewBox="0 0 20 14"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M1 7h17m0 0L12 1m6 6l-6 6"
+                      stroke="currentColor"
+                      stroke-width="1.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+                <span class="accesso__nota">{accesso.nota}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <!--
+        Terzo percorso, di peso minore: chi cerca i sentieri li trova senza
+        che l'apertura diventi una scelta fra tre cose uguali. È un link
+        testuale, non un terzo riquadro: la gerarchia resta leggibile.
+      -->
+      <p class="mt-7">
+        <a href="/sentieri" class="link-arrow accesso-sentieri">
+          Scopri i sentieri
+          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+            <path
+              d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+        </a>
+      </p>
+    </nav>
   </div>
 </section>
+
+<style>
+  /*
+    I due accessi. Il tratteggio di separazione è già nella griglia qui sopra:
+    qui si cura solo la risposta al passaggio del mouse e al focus da tastiera.
+
+    La transizione è di 250 ms con `ease-out`: dentro la finestra in cui un
+    movimento si legge come risposta e non come attesa.
+  */
+  .accesso {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.15rem 0 1.3rem;
+    color: var(--color-stone-200);
+    text-decoration: none;
+    transition: color 250ms ease-out;
+  }
+
+  @media (min-width: 640px) {
+    .accesso {
+      padding: 1.35rem 1.75rem 1.5rem 0;
+    }
+  }
+
+  .accesso__eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-stone-400);
+    transition: color 250ms ease-out;
+  }
+
+  .accesso__riga {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .accesso__titolo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--color-stone-50);
+  }
+
+  @media (min-width: 768px) {
+    .accesso__titolo {
+      font-size: 1.75rem;
+    }
+  }
+
+  .accesso__freccia {
+    flex: none;
+    transform: translateX(-0.35rem);
+    opacity: 0;
+    transition:
+      transform 250ms ease-out,
+      opacity 250ms ease-out;
+  }
+
+  .accesso__nota {
+    max-width: 34ch;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--color-stone-300);
+    transition: color 250ms ease-out;
+  }
+
+  /* Risposta al passaggio del mouse e al focus: la freccia entra, il testo
+     schiarisce. Nessun movimento dell'intero blocco, che sarebbe invadente. */
+  .accesso:hover .accesso__freccia,
+  .accesso:focus-visible .accesso__freccia {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .accesso:hover .accesso__eyebrow,
+  .accesso:focus-visible .accesso__eyebrow {
+    color: var(--color-glow-300);
+  }
+
+  .accesso:hover .accesso__nota,
+  .accesso:focus-visible .accesso__nota {
+    color: var(--color-stone-100);
+  }
+
+  .accesso:focus-visible {
+    outline: 2px solid var(--color-glow-300);
+    outline-offset: 3px;
+  }
+
+  /* Il terzo percorso: più leggero dei due riquadri, per non competere. */
+  .accesso-sentieri {
+    color: var(--color-stone-300);
+    transition: color 250ms ease-out;
+  }
+
+  .accesso-sentieri:hover,
+  .accesso-sentieri:focus-visible {
+    color: var(--color-stone-50);
+  }
+
+  /* Chi ha chiesto meno movimento non deve vedere lo scorrimento della freccia:
+     resta visibile, semplicemente ferma. */
+  @media (prefers-reduced-motion: reduce) {
+    .accesso,
+    .accesso__eyebrow,
+    .accesso__nota,
+    .accesso__freccia {
+      transition: none;
+    }
+
+    .accesso__freccia {
+      transform: none;
+      opacity: 1;
+    }
+  }
+</style>

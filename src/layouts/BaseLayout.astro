@@ -147,12 +147,12 @@ const fullSchema = [businessSchema, ...schemas];
       document.documentElement.classList.add('js-ready');
     </script>
 
-    <!-- --- Prestazioni: il serif dei titoli, e basta --- -->
+    <!-- --- Caratteri: il serif dei titoli e il sans del corpo --- -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400;500;600;700&display=swap"
     />
 
     <!-- --- Sitemap --- -->
@@ -195,7 +195,10 @@ const fullSchema = [businessSchema, ...schemas];
 
       if (!riduciMovimento && !schermoPiccolo) {
         AOS.init({
-          duration: 700,
+          // 250 ms: dentro la finestra 150-300 ms in cui una transizione si
+          // percepisce come risposta e non come attesa. Con 700 ms l'apertura
+          // di ogni sezione diventava un evento da guardare.
+          duration: 250,
           easing: 'ease-out-cubic',
           once: true,
           offset: 80,

@@ -3,8 +3,11 @@ import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
+import RichiestaPrenotazione from '../components/RichiestaPrenotazione.astro';
 import { site } from '../data/site';
 import { caricaFotoSito } from '../lib/foto-sito';
+import { risolviImmagine } from '../lib/immagini';
+
 const foto = await caricaFotoSito();
 
 const camere = (await getCollection('camere')).sort((a, b) => a.data.ordine - b.data.ordine);
@@ -66,75 +69,96 @@ const schema = {
 
   <!-- ==================================================================
        Le camere
+       ------------------------------------------------------------------
+       Ogni camera mostra la propria fotografia, se esiste. Se non esiste,
+       al suo posto c'è un riquadro che DICHIARA di essere un segnaposto e
+       dice quale fotografia manca.
+
+       Prima qui c'era la fotografia del tavolo di cucina: un'immagine
+       fuori contesto in una pagina di camere. Meglio un riquadro onesto
+       che una fotografia sbagliata, che confonde e fa sembrare il sito
+       approssimativo.
        ================================================================== -->
   <section class="section-y" aria-labelledby="titolo-camere">
-    <div class="shell grid gap-12 md:grid-cols-12 md:gap-10 lg:gap-16">
-      <div class="md:col-span-5" data-aos="fade-in">
-        <div class="media aspect-4/5">
-          <Image
-            src={foto.locandaCucina}
-            alt="Il tavolo di lavoro della cucina con gli ingredienti per gli gnocchi con la fioreta"
-            widths={[300, 420, 640]}
-            sizes="(min-width: 768px) 40vw, 92vw"
-            format="webp"
-            quality={82}
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-        <p class="mt-3 text-[0.8rem] text-stone-500">
-          In cucina: la fioreta, la farina e il burro di malga.
-        </p>
-      </div>
+    <div class="shell">
+      <h2 id="titolo-camere" class="display-2 max-w-[24ch] text-stone-900">
+        Due tipi di camera
+      </h2>
 
-      <div class="md:col-span-7">
-        <h2 id="titolo-camere" class="display-2 max-w-[24ch] text-stone-900">
-          Due tipi di camera
-        </h2>
+      <div class="mt-12 space-y-14">
+        {
+          camere.map((camera, i) => {
+            const immagine = risolviImmagine(camera.data.foto);
 
-        <div class="mt-10 space-y-12">
-          {
-            camere.map((camera, i) => (
+            return (
               <article
-                class={i > 0 ? 'border-t border-stone-300 pt-10' : ''}
-                data-aos="fade-up"
+                class:list={[
+                  'grid gap-8 md:grid-cols-12 md:gap-10 lg:gap-14',
+                  i > 0 && 'border-t border-stone-300 pt-14',
+                ]}
               >
-                <h3 class="font-[family-name:var(--font-display)] text-2xl leading-snug text-stone-900">
-                  {camera.data.titolo}
-                </h3>
+                <div class="md:col-span-5">
+                  {immagine ? (
+                    <div class="media aspect-4/3">
+                      <Image
+                        src={immagine}
+                        alt={`La ${camera.data.titolo.toLowerCase()} della Locanda Seggiovia`}
+                        widths={[420, 600, 900]}
+                        sizes="(min-width: 768px) 40vw, 92vw"
+                        format="webp"
+                        quality={84}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      class="segnaposto-foto aspect-4/3"
+                      role="img"
+                      aria-label={`Fotografia in arrivo: ${camera.data.titolo}`}
+                    >
+                      <span class="segnaposto-foto__titolo">Foto in arrivo</span>
+                      <span class="segnaposto-foto__soggetto">{camera.data.titolo}</span>
+                    </div>
+                  )}
+                </div>
 
-                {camera.data.occupanti && (
-                  <p class="eyebrow mt-2">{camera.data.occupanti}</p>
-                )}
+                <div class="md:col-span-7">
+                  <h3 class="font-[family-name:var(--font-display)] text-2xl leading-snug text-stone-900">
+                    {camera.data.titolo}
+                  </h3>
 
-                <p class="mt-4 max-w-[56ch] text-[1.0625rem] leading-relaxed text-stone-600">
-                  {camera.data.descrizione}
-                </p>
+                  {camera.data.occupanti && <p class="eyebrow mt-2">{camera.data.occupanti}</p>}
 
-                {camera.data.servizi.length > 0 && (
-                  <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[0.875rem] text-stone-600">
-                    {camera.data.servizi.map((servizio) => (
-                      <li class="flex items-center gap-2">
-                        <span
-                          class="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-forest-500"
-                          aria-hidden="true"
-                        />
-                        {servizio}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {camera === camere[0] && (
-                  <p class="mt-5 max-w-[52ch] text-[0.85rem] leading-relaxed text-stone-500">
-                    La colazione è compresa nella tariffa B&amp;B. La linea Wi-Fi è
-                    disponibile su richiesta negli spazi comuni.
+                  <p class="mt-4 max-w-[56ch] text-[1.0625rem] leading-relaxed text-stone-600">
+                    {camera.data.descrizione}
                   </p>
-                )}
+
+                  {camera.data.servizi.length > 0 && (
+                    <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[0.875rem] text-stone-600">
+                      {camera.data.servizi.map((servizio) => (
+                        <li class="flex items-center gap-2">
+                          <span
+                            class="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-forest-500"
+                            aria-hidden="true"
+                          />
+                          {servizio}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {i === 0 && (
+                    <p class="mt-5 max-w-[52ch] text-[0.85rem] leading-relaxed text-stone-500">
+                      La colazione è compresa nella tariffa B&amp;B. La linea Wi-Fi è disponibile su
+                      richiesta negli spazi comuni.
+                    </p>
+                  )}
+                </div>
               </article>
-            ))
-          }
-        </div>
+            );
+          })
+        }
       </div>
     </div>
   </section>
@@ -149,7 +173,7 @@ const schema = {
       </h2>
 
       <div class="mt-8 grid gap-4 sm:grid-cols-2">
-        <figure class="media aspect-4/3" data-aos="fade-in">
+        <figure class="media aspect-4/3">
           <Image
             src={foto.locandaEsterno}
             alt="La facciata della Locanda Seggiovia con i balconi in legno, nel centro di Recoaro Terme"
@@ -237,6 +261,18 @@ const schema = {
 
 
   <!-- ==================================================================
+       Richiesta di disponibilità
+       ------------------------------------------------------------------
+       Subito dopo le tariffe: è il momento in cui si decide. Prima hanno
+       visto le camere e i prezzi, adesso possono chiedere.
+       ================================================================== -->
+  <RichiestaPrenotazione
+    titolo="Verifica le date"
+    descrizione="Dicci quando vorresti venire e quante persone siete. Ti rispondiamo noi, di solito entro un giorno."
+    id="modulo-prenotazione-camere"
+  />
+
+  <!-- ==================================================================
        Politiche e servizi
        ================================================================== -->
   <section class="section-y" aria-labelledby="titolo-politiche">
@@ -272,7 +308,7 @@ const schema = {
        Chiusura
        ================================================================== -->
   <section class="section-y-tight bg-forest-900 text-stone-200">
-    <div class="shell flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
+    <div class="shell flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between" data-aos="fade-up">
       <div>
         <h2 class="display-2 max-w-[24ch] text-stone-50">Verifica le date</h2>
         <p class="mt-4 max-w-[48ch] text-[1rem] leading-relaxed text-forest-300">

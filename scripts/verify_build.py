@@ -353,7 +353,10 @@ def main() -> int:
     # non si pretendono.
     foto_obbligatorie = {
         "index.html": ["hero-piccole-dolomiti", "locanda-esterno", "piccole-dolomiti-large"],
-        "camere/index.html": ["locanda-preparazione", "locanda-esterno"],
+        # Nella pagina Camere resta solo la facciata, che appartiene alla sezione
+        # «La struttura». Il tavolo di cucina è stato rimosso: era fuori contesto
+        # in una pagina di camere, ed è sostituito da segnaposto dichiarati.
+        "camere/index.html": ["locanda-esterno"],
         "ristorante/index.html": ["locanda-esterno"],
         "gnocchi-con-la-fioreta/index.html": ["piatto-gnocchi-fioreta", "locanda-preparazione"],
         "la-locanda/index.html": ["locanda-esterno"],

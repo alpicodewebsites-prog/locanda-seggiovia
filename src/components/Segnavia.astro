@@ -1,0 +1,134 @@
+---
+/**
+ * Segnavia — il cartello CAI.
+ *
+ * È il gesto grafico che dà un carattere a questo sito: il tabellone dei
+ * sentieri disegnato come i cartelli che si trovano davvero sui percorsi.
+ *
+ * Come è fatto un segnavia del CAI:
+ *   - lastra rettangolare, fondo bianco
+ *   - bordo rosso
+ *   - il numero del sentiero in nero, grande
+ *   - la striscia rosso-bianco-rosso, il segno dipinto su rocce e alberi
+ *
+ * ATTENZIONE — questo è un elemento GRAFICO STILIZZATO, non la riproduzione di
+ * un cartello ufficiale. Per questo:
+ *
+ *   1. il numero compare SOLO se il contenuto lo riporta. Non si inventa un
+ *      numero di sentiero: un escursionista potrebbe seguirlo. Due dei sei
+ *      itinerari hanno un numero CAI, gli altri no, e restano senza.
+ *   2. nome, numero e difficoltà sono testo vero, non decorazione: chi usa un
+ *      lettore di schermo li legge. Solo le strisce sono `aria-hidden`.
+ */
+export interface Props {
+  /** Numero del sentiero, come riportato dal contenuto. Es. «133», «151/144». */
+  numero?: string;
+  /** Nome del sentiero o destinazione. */
+  nome: string;
+  /** Difficoltà CAI: T, E o EE. */
+  difficolta?: string;
+}
+
+const { numero, nome, difficolta } = Astro.props;
+---
+
+<div class="segnavia">
+  {/* Striscia rosso-bianco-rosso: il segno dipinto sui sentieri. */}
+  <span class="segnavia__striscia" aria-hidden="true">
+    <span class="segnavia__barra segnavia__barra--rossa"></span>
+    <span class="segnavia__barra segnavia__barra--bianca"></span>
+    <span class="segnavia__barra segnavia__barra--rossa"></span>
+  </span>
+
+  <span class="segnavia__corpo">
+    {numero && <span class="segnavia__numero">{numero}</span>}
+    <span class="segnavia__nome">{nome}</span>
+    {difficolta && <span class="segnavia__difficolta">Difficoltà {difficolta}</span>}
+  </span>
+</div>
+
+<style>
+  /*
+    I colori sono quelli veri della segnaletica: il rosso del CAI è un rosso
+    pieno, non un terracotta. Il fondo è bianco puro, perché il cartello vero è
+    bianco — e su una pagina color bianco d'osso si stacca da solo.
+  */
+  .segnavia {
+    display: inline-flex;
+    align-items: stretch;
+    overflow: hidden;
+    border: 2px solid var(--color-cai-rosso);
+    border-radius: 2px;
+    background-color: #ffffff;
+  }
+
+  .segnavia__striscia {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 0.5rem 0.55rem;
+    background-color: #ffffff;
+    border-right: 1px solid color-mix(in srgb, var(--color-cai-rosso) 35%, transparent);
+  }
+
+  .segnavia__barra {
+    display: block;
+    width: 0.85rem;
+    height: 0.28rem;
+    border-radius: 1px;
+  }
+
+  .segnavia__barra--rossa {
+    background-color: var(--color-cai-rosso);
+  }
+
+  .segnavia__barra--bianca {
+    background-color: #ffffff;
+    border: 1px solid color-mix(in srgb, var(--color-cai-rosso) 30%, transparent);
+  }
+
+  .segnavia__corpo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.1rem;
+    padding: 0.55rem 0.85rem 0.6rem;
+  }
+
+  .segnavia__numero {
+    font-family: var(--font-sans);
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: #111111;
+  }
+
+  .segnavia__nome {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #333333;
+  }
+
+  .segnavia__difficolta {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #555555;
+  }
+
+  /* Versione compatta, per gli elenchi. */
+  .segnavia--piccolo .segnavia__numero {
+    font-size: 1.125rem;
+  }
+
+  .segnavia--piccolo .segnavia__nome {
+    font-size: 0.68rem;
+  }
+</style>

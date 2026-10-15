@@ -12,6 +12,30 @@ applicativo, hosting gratuito.
 
 ---
 
+## ⚠️ Servono tre fotografie — è la cosa che manca davvero
+
+Il sito è completo e funzionante, ma **9 delle 14 immagini sono segnaposto
+grafici generati**, non fotografie. È il motivo principale per cui il sito
+appare anonimo: nessuna scelta di colore sostituisce una fotografia che non
+esiste.
+
+Oggi ogni segnaposto dichiara di esserlo (l'etichetta è scritta dentro
+l'immagine, quindi sparisce da sola quando il file viene sostituito).
+
+**Le tre prioritarie, in ordine di impatto:**
+
+| # | Fotografia | Dove va | Requisito | Perché |
+|---|---|---|---|---|
+| 1 | Piccole Dolomiti o un sentiero | apertura della home | ≥ **2500 px** di larghezza | è la prima cosa che si vede aprendo il sito |
+| 2 | Le camere | pagina Camere | ≥ 1600 px, orizzontale | oggi la pagina non ha nessuna foto di una camera |
+| 3 | La sala del ristorante | pagina Ristorante | ≥ 1600 px, orizzontale | la cucina è il secondo motivo per cui si viene |
+
+Vanno caricate dal pannello `/admin` → *Foto delle pagine*. Sostituendo il file
+con lo stesso nome, l'etichetta di segnaposto sparisce da sola. Dettagli nella
+[guida alla cliente](docs/GUIDA-CLIENTE.md).
+
+---
+
 ## 1. Avvio rapido
 
 Serve **Node.js 22.12 o superiore** (`node --version`).
