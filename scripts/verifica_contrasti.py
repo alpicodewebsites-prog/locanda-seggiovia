@@ -64,6 +64,13 @@ COPPIE = [
     # --- Elementi grafici --------------------------------------------------
     ("stone-500", "stone-100", SOGLIA_GRANDE, "linee di separazione"),
     ("cai-rosso", "stone-100", SOGLIA_GRANDE, "rosso CAI sui cartelli"),
+    # --- Fascia del tavolo (fondo legno scuro) ----------------------------
+    ("wood-100", "wood-700", SOGLIA_NORMALE, "testo chiaro sul legno scuro"),
+    ("wood-300", "wood-700", SOGLIA_NORMALE, "etichetta piccola sul legno scuro"),
+    ("stone-50", "wood-700", SOGLIA_NORMALE, "titolo sul legno scuro"),
+    ("wood-900", "wood-100", SOGLIA_NORMALE, "testo scuro sulla tessera chiara"),
+    ("wood-500", "wood-100", SOGLIA_NORMALE, "quantita' sulla tessera chiara"),
+
     # Il contorno del focus deve vedersi: è quello che dice a chi naviga da
     # tastiera dove si trova. Questo è un requisito, non un abbellimento.
     ("forest-700", "stone-100", SOGLIA_GRANDE, "contorno del focus da tastiera"),

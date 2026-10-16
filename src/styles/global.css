@@ -432,6 +432,161 @@
     outline-offset: 3px;
   }
 
+  /*
+    ==========================================================================
+    LA FASCIA DEL TAVOLO — gli ingredienti degli gnocchi
+    ==========================================================================
+
+    Prende il posto di una fascia vuota con un pulsante in mezzo. Ora ha il
+    fondo del legno e sopra ci stanno gli ingredienti, nell'ordine della ricetta.
+
+    Il legno è fatto con due gradienti sovrapposti, non con una fotografia:
+    una fotografia di tavolo costringerebbe a caricare un altro file pesante per
+    un elemento che sta dietro al testo, e con il testo sopra il contrasto non
+    sarebbe più garantito. Così il fondo è esattamente del colore che serve.
+
+    Le venature sono larghe e irregolari di proposito: righe tutte uguali
+    sembrano una griglia, non del legno.
+  */
+  .tavolo {
+    position: relative;
+    isolation: isolate;
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+    background-color: var(--color-wood-700);
+    background-image:
+      /* venature: righe chiare irregolari */
+      repeating-linear-gradient(
+        92deg,
+        color-mix(in srgb, var(--color-wood-900) 55%, transparent) 0 2px,
+        transparent 2px 11px
+      ),
+      /* assi: una linea netta ogni tanto */
+      repeating-linear-gradient(
+        88deg,
+        color-mix(in srgb, var(--color-wood-900) 80%, transparent) 0 1px,
+        transparent 1px 190px
+      ),
+      /* luce dall'alto: il piano non è piatto */
+      linear-gradient(
+        175deg,
+        color-mix(in srgb, var(--color-wood-500) 35%, transparent) 0%,
+        transparent 45%
+      );
+    color: var(--color-wood-100);
+  }
+
+  /*
+    ATTENZIONE alla specificità: `.eyebrow` è definita più avanti nel foglio e
+    vinceva su `.tavolo__etichetta`, riportando il testo al grigio scuro del
+    corpo — su fondo legno dava 1,3:1, praticamente invisibile. Con due classi
+    la regola passa davanti. Il difetto non si vedeva leggendo il codice: si
+    vedeva solo misurando il colore calcolato nel browser.
+  */
+  .tavolo .tavolo__etichetta {
+    color: var(--color-wood-300);
+  }
+
+  .tavolo__titolo {
+    margin-top: 1rem;
+    max-width: 22ch;
+    color: var(--color-stone-50);
+  }
+
+  .tavolo__nota {
+    margin-top: 1.25rem;
+    max-width: 56ch;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--color-wood-100) 88%, transparent);
+  }
+
+  /*
+    Gli ingredienti: una fila di tessere uguali.
+
+    La griglia si adatta da sola: cinque colonne sui schermi grandi, due sui
+    telefoni. Il numero di colonne non è scritto a mano — `auto-fit` con una
+    larghezza minima fa il conto, così se la ricetta passa da cinque a sei
+    ingredienti la fila resta ordinata senza toccare il foglio di stile.
+  */
+  .tavolo__elenco {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: 1rem;
+    margin-top: clamp(2rem, 5vw, 3rem);
+    padding: 0;
+    list-style: none;
+    counter-reset: ingrediente;
+  }
+
+  .ingrediente {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.15rem 1.1rem 1.25rem;
+    background-color: color-mix(in srgb, var(--color-wood-100) 94%, transparent);
+    border-radius: var(--raggio-media);
+    color: var(--color-wood-900);
+    /* Un filo di luce sul bordo alto: la tessera sembra posata sul tavolo. */
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, white 55%, transparent),
+      0 10px 22px -14px color-mix(in srgb, var(--color-wood-900) 80%, transparent);
+  }
+
+  .ingrediente__numero {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--color-wood-500);
+  }
+
+  /*
+    La fotografia dell'ingrediente, quando c'è.
+
+    `aspect-ratio` più `object-fit: cover` è la risposta a «tagliate a dovere»:
+    qualunque formato arrivi — quadrato, verticale, panoramico — viene ritagliato
+    ESATTAMENTE nello stesso riquadro, senza schiacciarlo e senza sbordare. La
+    fila resta uniforme anche se le fotografie sono state scattate in modo
+    diverso.
+  */
+  .ingrediente__foto {
+    display: block;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: calc(var(--raggio-media) * 0.6);
+    background-color: var(--color-wood-300);
+  }
+
+  .ingrediente__foto :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ingrediente__nome {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    line-height: 1.25;
+  }
+
+  .ingrediente__quantita {
+    margin-top: auto;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-wood-500);
+  }
+
+  .tavolo__invito {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2.25rem, 5vw, 3.25rem);
+  }
+
+  /* Il contorno del focus deve vedersi anche sul legno scuro. */
+  .tavolo :global(a:focus-visible) {
+    outline: 3px solid var(--color-wood-100);
+    outline-offset: 3px;
+  }
+
   @media (min-width: 768px) {
     .pulsante-gnocchi {
       padding: 1.3rem 3rem;

@@ -329,6 +329,22 @@ collections:
             required: false
             hint: Scatto orizzontale del piatto impiattato.
 
+          # Le fotografie dei singoli ingredienti: compaiono nella fascia
+          # «tavolo» della home, una per tessera.
+          - label: '3 - Gli ingredienti, uno per uno (quadrate)'
+            name: fotoIngredienti
+            label_singular: Ingrediente
+            widget: image
+            multiple: true
+            required: false
+            accept: image/jpeg,image/png,image/webp,image/avif
+            hint: >-
+              Facoltative. Le tessere della home seguono l'ordine della ricetta:
+              la prima foto e' la Fioreta, la seconda la Farina bianca, poi Burro,
+              Formaggio e Sale. Qualunque formato va bene: vengono ritagliate tutte
+              nello stesso riquadro quadrato. Vanno scattate dall'alto, sul legno,
+              con luce naturale.
+
   # ==========================================================================
   # 2. LE SCHEDE
   # ==========================================================================

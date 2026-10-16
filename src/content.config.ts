@@ -119,6 +119,14 @@ const gnocchi = defineCollection({
     // --- Fotografie (in foto.md) -----------------------------------------
     foto: immagine,
     fotoPreparazione: immagine,
+    /**
+     * Le fotografie dei singoli ingredienti, per la fascia «tavolo» della home.
+     *
+     * Si accoppiano alla ricetta PER POSIZIONE: la prima foto è il primo
+     * ingrediente della ricetta. Se ne mancano, quelle senza foto mostrano
+     * solo il nome.
+     */
+    fotoIngredienti: z.array(z.string()).optional(),
   }),
 });
 

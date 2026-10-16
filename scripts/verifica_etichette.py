@@ -134,7 +134,7 @@ def controlla_foto(testo: str) -> int:
         ]
 
     non_numerate = [f for f in foto if not re.match(r"^\d", f)]
-    senza_verso = [f for f in foto if not re.search(r"verticale|orizzontale", f, re.I)]
+    senza_verso = [f for f in foto if not re.search(r"verticale|orizzontale|quadrat", f, re.I)]
 
     for f in non_numerate:
         print(f"  [FAIL] fotografia senza numero d'ordine: «{f}»")
