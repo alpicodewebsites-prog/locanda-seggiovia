@@ -31,18 +31,28 @@
  * serve.
  */
 
-/** Tipo di animazione e ritardo, per tipo di elemento. */
+/**
+ * Tipo di animazione e ritardo, per tipo di elemento.
+ *
+ * I ritardi sono tarati sulla durata dell'animazione, che è 400 ms: il massimo
+ * è 200 ms, cioè metà. Con ritardi più lunghi l'ultimo elemento di una griglia
+ * arriverebbe quando i primi sono già fermi da un pezzo, e il movimento non si
+ * leggerebbe più come una cosa sola.
+ */
 const TIPI = {
-  titolo: { anim: 'fade-up', delay: 100 },
-  paragrafo: { anim: 'fade-up', delay: 150 },
-  immagine: { anim: 'zoom-in', delay: 200 },
-  elenco: { anim: 'fade-in', delay: 100 },
-  tabella: { anim: 'fade-in', delay: 100 },
-  scheda: { anim: 'fade-up', delay: 100 },
+  titolo: { anim: 'fade-up', delay: 60 },
+  paragrafo: { anim: 'fade-up', delay: 100 },
+  immagine: { anim: 'zoom-in', delay: 140 },
+  elenco: { anim: 'fade-in', delay: 60 },
+  tabella: { anim: 'fade-in', delay: 60 },
+  scheda: { anim: 'fade-up', delay: 60 },
 } as const;
 
+/** Passo del ritardo fra schede consecutive. */
+const PASSO_SCHEDE = 70;
+
 /** Ritardo massimo. Oltre, l'utente aspetta invece di vedere. */
-const RITARDO_MASSIMO = 400;
+const RITARDO_MASSIMO = 200;
 
 export function preparaAnimazioni(): void {
   const contenuto = document.querySelector('main');
@@ -97,7 +107,7 @@ export function preparaAnimazioni(): void {
     .forEach((el) => {
       const fratelli = el.parentElement ? Array.from(el.parentElement.children) : [];
       const posizione = fratelli.indexOf(el);
-      const ritardo = TIPI.scheda.delay + (posizione > 0 ? (posizione % 3) * 100 : 0);
+      const ritardo = TIPI.scheda.delay + (posizione > 0 ? (posizione % 3) * PASSO_SCHEDE : 0);
       assegna(el, TIPI.scheda.anim, ritardo);
     });
 

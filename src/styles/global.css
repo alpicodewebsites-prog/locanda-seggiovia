@@ -997,7 +997,9 @@
 [data-aos] {
   opacity: 1;
   transition-property: opacity, transform;
-  transition-duration: 700ms;
+  /* 400 ms. Erano 700, ed erano lente: il contenuto arrivava quando si era già
+     passati oltre. Deve restare allineata a `duration` in BaseLayout.astro. */
+  transition-duration: 400ms;
   /* Curva morbida: parte decisa e si posa, senza rimbalzi. */
   transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1027,21 +1029,26 @@ html.aos-ready [data-aos='zoom-in']:not(.aos-animate) {
 
 /* --- I ritardi -----------------------------------------------------------
    Dichiarati anche qui, oltre che dalla libreria: così il ritardo è scritto
-   nel foglio di stile ed è verificabile leggendo il CSS. */
+   nel foglio di stile ed è verificabile leggendo il CSS.
+
+   Sono stati ridotti insieme alla durata. Con l'animazione a 400 ms, ritardi
+   da 400 ms facevano aspettare l'ultimo elemento della pagina quasi un secondo
+   dall'inizio: la coda del movimento si perdeva. Ora il ritardo massimo è 200
+   ms, cioè metà della durata. */
+[data-aos-delay='60'] {
+  transition-delay: 60ms;
+}
 [data-aos-delay='100'] {
   transition-delay: 100ms;
 }
-[data-aos-delay='150'] {
-  transition-delay: 150ms;
+[data-aos-delay='130'] {
+  transition-delay: 130ms;
+}
+[data-aos-delay='140'] {
+  transition-delay: 140ms;
 }
 [data-aos-delay='200'] {
   transition-delay: 200ms;
-}
-[data-aos-delay='300'] {
-  transition-delay: 300ms;
-}
-[data-aos-delay='400'] {
-  transition-delay: 400ms;
 }
 
 /* Rispetto della preferenza di sistema: nessuna animazione, tutto visibile. */

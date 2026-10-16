@@ -10,7 +10,7 @@
  *   2. l'apertura della home NON sia animata;
  *   3. un elemento fuori schermo parta con opacità 0 e spostato;
  *   4. dopo lo scorrimento arrivi a opacità 1 e senza spostamento;
- *   5. la durata sia 700 ms e la curva quella prevista;
+ *   5. la durata sia 400 ms e la curva quella prevista;
  *   6. con «meno movimento» tutto resti visibile e senza transizioni;
  *   7. sotto i 768 px le animazioni non vengano assegnate;
  *   8. senza JavaScript il contenuto resti leggibile.
@@ -99,7 +99,7 @@ async function main() {
     );
 
     const durata = durataMs(await stile(bersaglio, 'transitionDuration'));
-    check('durata 700 ms', durata === 700, `${durata} ms`);
+    check('durata 400 ms', durata === 400, `${durata} ms`);
 
     const curva = await stile(bersaglio, 'transitionTimingFunction');
     check(
@@ -109,7 +109,7 @@ async function main() {
     );
 
     const ritardo = durataMs(await stile(bersaglio, 'transitionDelay'));
-    check('ritardo entro i 400 ms', ritardo <= 400, `${ritardo} ms`);
+    check('ritardo entro i 200 ms', ritardo <= 200, `${ritardo} ms`);
 
     // Scorrimento: l'elemento deve arrivare a posto.
     await bersaglio.scrollIntoViewIfNeeded();

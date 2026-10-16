@@ -200,10 +200,12 @@ const fullSchema = [businessSchema, ...schemas];
         preparaAnimazioni();
 
         AOS.init({
-          // 700 ms: dentro la finestra 600-800 in cui il movimento si percepisce
-          // senza diventare attesa. Sotto i 400 non si vede, sopra gli 800
-          // rallenta la lettura.
-          duration: 700,
+          // 400 ms. Erano 700, ed erano lente da guardare: il contenuto
+          // arrivava quando si era già passati oltre. A 400 il movimento si
+          // percepisce ancora ma non si aspetta, ed è vicino alla durata delle
+          // micro-interazioni del sito (250-300 ms): tutto si muove allo
+          // stesso passo invece di avere due velocità diverse.
+          duration: 400,
           // L'animazione parte quando l'elemento è entrato di circa il 15-20%
           // dal fondo dello schermo: si vede arrivare, non si vede già arrivato.
           offset: 150,
