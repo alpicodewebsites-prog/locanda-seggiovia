@@ -4,10 +4,8 @@ import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
-import { caricaFotoSito } from '../lib/foto-sito';
 import { risolviImmagine } from '../lib/immagini';
 
-const foto = await caricaFotoSito();
 const piatti = await getCollection('menu');
 
 /**

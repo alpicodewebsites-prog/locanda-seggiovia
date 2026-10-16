@@ -26,13 +26,20 @@
  */
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { site } from '../data/site';
 
 export interface Props {
   /** Fotografia di apertura. Se manca, resta il fondo scuro. */
   immagine?: ImageMetadata | null;
   /** Descrizione della fotografia, per chi usa un lettore di schermo. */
   alt?: string;
+  /** Titolo principale. Arriva dal pannello, voce «Home Page». */
+  titolo?: string;
+  /** Testo sotto il titolo. */
+  sottotitolo?: string;
+  /** I due accessi: dormire e mangiare. */
+  accessi?: { etichetta: string; titolo: string; nota: string; collegamento: string }[];
+  /** L'invito secondario ai sentieri. */
+  invitoSentieri?: string;
 }
 
 const {
@@ -44,26 +51,33 @@ const {
   // riga. Quando arriva la fotografia vera, va aggiornata descrivendo il
   // paesaggio reale.
   alt = 'Disegno di montagne con boschi di conifere: segnaposto in attesa della fotografia delle Piccole Dolomiti',
+  titolo = 'Rifugio alpino ai piedi delle Piccole Dolomiti',
+  sottotitolo = 'Camere, cucina tradizionale alto-vicentina e i sentieri che partono dal centro di Recoaro Terme. La montagna comincia fuori dalla porta.',
+  accessi = [],
+  invitoSentieri = 'Scopri i sentieri',
 } = Astro.props;
 
-// Le date in cui il titolo cambia forma: evita di inventare un anno.
-const anno = site.annoFondazione;
-
-/** I due accessi: dormire e mangiare. */
-const accessi = [
-  {
-    href: '/camere',
-    eyebrow: 'Dormire',
-    titolo: 'Le camere',
-    nota: 'Camere semplici e curate, colazione presto, tariffe chiare.',
-  },
-  {
-    href: '/ristorante',
-    eyebrow: 'Mangiare',
-    titolo: 'Il ristorante',
-    nota: 'Cucina alto-vicentina e gli gnocchi con la fioreta De.Co.',
-  },
-];
+/*
+  Se il pannello non ha ancora compilato i due accessi, si usano questi. Servono
+  a non lasciare l'apertura senza la scelta fra dormire e mangiare, che è il
+  punto di quella schermata.
+*/
+const accessiMostrati = accessi.length
+  ? accessi
+  : [
+      {
+        etichetta: 'Dormire',
+        titolo: 'Le camere',
+        nota: 'Camere semplici e curate, colazione presto, tariffe chiare.',
+        collegamento: '/camere',
+      },
+      {
+        etichetta: 'Mangiare',
+        titolo: 'Il ristorante',
+        nota: 'Cucina alto-vicentina e gli gnocchi con la fioreta De.Co.',
+        collegamento: '/ristorante',
+      },
+    ];
 ---
 
 <section class="hero-apertura bg-stone-800">
@@ -95,12 +109,11 @@ const accessi = [
 
   <div class="hero-apertura__sotto shell w-full">
     <h1 class="display-1 max-w-[19ch] text-stone-50 text-shadow-hero">
-      {anno ? `Rifugio alpino dal ${anno}` : 'Rifugio alpino ai piedi delle Piccole Dolomiti'}
+      {titolo}
     </h1>
 
     <p class="mt-6 max-w-[46ch] text-[1.0625rem] leading-relaxed text-stone-200/95 md:text-[1.15rem]">
-      Camere, cucina tradizionale alto-vicentina e i sentieri che partono dal centro di
-      Recoaro Terme. La montagna comincia fuori dalla porta.
+      {sottotitolo}
     </p>
 
     <!-- Biforcazione: da qui si sceglie se dormire o mangiare.
@@ -109,10 +122,10 @@ const accessi = [
     <nav class="mt-10 md:mt-12" aria-label="Cosa vuoi esplorare">
       <ul class="grid gap-x-14 gap-y-1 sm:grid-cols-2">
         {
-          accessi.map((accesso) => (
+          accessiMostrati.map((accesso) => (
             <li>
-              <a href={accesso.href} class="accesso">
-                <span class="accesso__eyebrow">{accesso.eyebrow}</span>
+              <a href={accesso.collegamento} class="accesso">
+                <span class="accesso__eyebrow">{accesso.etichetta}</span>
                 <span class="accesso__riga">
                   <span class="accesso__titolo">{accesso.titolo}</span>
                   <svg
@@ -146,7 +159,7 @@ const accessi = [
       -->
       <p class="mt-7">
         <a href="/sentieri" class="link-arrow accesso-sentieri">
-          Scopri i sentieri
+          {invitoSentieri}
           <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
             <path
               d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"

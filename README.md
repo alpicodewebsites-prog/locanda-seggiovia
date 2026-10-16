@@ -30,8 +30,9 @@ l'immagine, quindi sparisce da sola quando il file viene sostituito).
 | 2 | Le camere | pagina Camere | ≥ 1600 px, orizzontale | oggi la pagina non ha nessuna foto di una camera |
 | 3 | La sala del ristorante | pagina Ristorante | ≥ 1600 px, orizzontale | la cucina è il secondo motivo per cui si viene |
 
-Vanno caricate dal pannello `/admin` → *Foto delle pagine*. Sostituendo il file
-con lo stesso nome, l'etichetta di segnaposto sparisce da sola. Dettagli nella
+Vanno caricate dal pannello `/admin`, ognuna nella sezione della sua pagina
+(*Home Page*, *Pagina La Locanda*, *Camere (elenco)*…). Caricando un file con lo
+stesso nome, l'etichetta di segnaposto sparisce da sola. Dettagli nella
 [guida alla cliente](docs/GUIDA-CLIENTE.md).
 
 ---
@@ -280,17 +281,38 @@ screenshot ed è stato volutamente **non** usato: va confermato dalla cliente.
 
 ### Immagini
 
-Il sito usa **fotografie reali dell'attività**, fornite dalla cliente e importate
-con `scripts/importa_foto.py`:
+Le fotografie stanno in `src/assets/`, **divise per sezione**: ognuna nella
+cartella della pagina a cui appartiene. Astro le ottimizza da lì (WebP e versioni
+ridimensionate), quindi il sito resta leggero.
 
-| File in `src/assets/` | Sorgente in `foto sito locanda/` | Dove appare |
+| Cartella | Contenuto | Sezione del pannello |
 |---|---|---|
-| `locanda-esterno.jpg` | `seggiovia esterno.jpeg` | home, La Locanda, Camere, Ristorante |
-| `territorio-montagne.jpg` | `seggiovia 1.jpeg` | pagina Sentieri, in piccolo ( 400297: a tutta larghezza si sgrana) |
-| `locanda-preparazione.jpg` | `seggiovia 2.jpg` | pagina Gnocchi, pagina Camere |
-| `piatto-gnocchi-fioreta.jpg` | `gnocchi alla fioreta.jpeg` | pagina Gnocchi, Ristorante |
-| `piatto-bacala-vicentina.jpg` | `gnocchi alla vicentina.jpeg` | pagina Ristorante |
-| `locanda-logo.png` | `locanda logo.gif` | footer (sfondo reso trasparente) |
+| `home/` | apertura, panorama, montagne, facciata | Home Page |
+| `la-locanda/` | facciata, tavolo di cucina | Pagina La Locanda |
+| `camere/` | fotografie delle camere | Camere (elenco) |
+| `ristorante/piatti/` | piatti del menù | Menù del ristorante |
+| `sentieri/` | copertine dei sentieri, montagne, panorama | Sentieri (elenco), Pagina Sentieri |
+| `gnocchi/` | piatto finito, preparazione | Gnocchi con la Fioreta |
+| *(radice)* | `locanda-logo.png`, usato ovunque | — |
+
+**Perché per cartella.** La libreria del pannello mostra, per ogni campo, i file
+della cartella della sua sezione. Con tutti i file in una cartella sola, la
+libreria di una sezione appare vuota e la fotografia già presente non può più
+essere né ritrovata né sostituita.
+
+**Perché `immagini.ts` usa un glob ricorsivo.** Il modulo indicizza
+`../assets/**/*.{jpg,…}`: con un solo `*` le immagini nelle sottocartelle non
+verrebbero nemmeno viste. La ricerca accetta sia il percorso completo
+(`/assets/sentieri/gino-solda.jpg`) sia il solo nome file, così i contenuti
+scritti prima della riorganizzazione continuano a funzionare.
+
+**Sulle fotografie condivise fra due pagine.** La facciata compare sulla home e
+su La Locanda, la preparazione su La Locanda e su Gnocchi: in quei casi il file
+è **duplicato**, così ogni sezione è indipendente e si possono avere due scatti
+diversi. Attenzione: le copie hanno contenuto identico, quindi Astro le
+ottimizza in un unico file e lo intitola a una delle due. La pagina mostra
+l'immagine giusta, ma il nome del file costruito può essere quello dell'altra —
+`scripts/verify_build.py` lo tiene presente e accetta entrambi i nomi.
 
 Una sola immagine  **generata proceduralmente** perch serve a tutta larghezza e
 le foto fornite non bastano: `piccole-dolomiti-large.jpg` (25601440), usata

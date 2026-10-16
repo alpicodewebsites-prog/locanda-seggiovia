@@ -130,27 +130,83 @@ const sentieri = defineCollection({
 });
 
 /* -------------------------------------------------------------------------- */
-/* Impostazioni generali — contenuto singolo                                   */
+/* Home page — contenuto singolo                                               */
 /*                                                                             */
-/* Le fotografie che non appartengono a una scheda ma a una pagina intera:     */
-/* l'apertura della home, la facciata, il panorama. Stanno tutte qui perché la */
-/* proprietaria abbia UN posto solo dove cambiarle.                            */
+/* Testi E fotografie della prima pagina. Prima i testi erano scritti nel      */
+/* codice e si potevano cambiare solo lì; ora sono qui e si cambiano dal       */
+/* pannello.                                                                   */
 /* -------------------------------------------------------------------------- */
 
-const impostazioni = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/impostazioni' }),
+const home = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/home' }),
   schema: z.object({
-    /** Fotografia di apertura della home. */
+    // --- Testi -----------------------------------------------------------
+    titolo: z.string(),
+    sottotitolo: z.string(),
+    /** Descrizione per i motori di ricerca: non si vede in pagina. */
+    descrizione: z.string(),
+    /** I due accessi dell'apertura: Dormire e Mangiare. */
+    accessi: z
+      .array(
+        z.object({
+          etichetta: z.string(),
+          titolo: z.string(),
+          nota: z.string(),
+          collegamento: z.string(),
+        }),
+      )
+      .default([]),
+    invitoSentieri: z.string(),
+    pulsanteGnocchi: z.string(),
+    locandaEtichetta: z.string(),
+    locandaTitolo: z.string(),
+    locandaParagrafi: z.array(z.string()).default([]),
+    locandaCollegamento: z.string(),
+    territorioEtichetta: z.string(),
+    territorioTitolo: z.string(),
+    territorioTesto: z.string(),
+    // --- Fotografie ------------------------------------------------------
     hero: immagine,
-    /** Facciata della locanda: home, La Locanda, Camere, Ristorante. */
-    locandaEsterno: immagine,
-    /** Tavolo di cucina con gli ingredienti: pagina Camere e Gnocchi. */
-    locandaCucina: immagine,
-    /** Panorama ampio: chiusura della home e pagina Sentieri. */
     panorama: immagine,
-    /** Fotografia delle montagne: pagina Sentieri. */
     montagne: immagine,
+    facciata: immagine,
   }),
 });
 
-export const collections = { camere, menu, gnocchi, sentieri, impostazioni };
+/* -------------------------------------------------------------------------- */
+/* Pagina La Locanda — contenuto singolo                                       */
+/* -------------------------------------------------------------------------- */
+
+const paginaLocanda = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/la-locanda' }),
+  schema: z.object({
+    titolo: z.string(),
+    sottotitolo: z.string(),
+    facciata: immagine,
+    cucina: immagine,
+  }),
+});
+
+/* -------------------------------------------------------------------------- */
+/* Pagina Sentieri — contenuto singolo                                         */
+/* -------------------------------------------------------------------------- */
+
+const paginaSentieri = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/sentieri-pagina' }),
+  schema: z.object({
+    titolo: z.string(),
+    sottotitolo: z.string(),
+    montagne: immagine,
+    panorama: immagine,
+  }),
+});
+
+export const collections = {
+  camere,
+  menu,
+  gnocchi,
+  sentieri,
+  home,
+  paginaLocanda,
+  paginaSentieri,
+};

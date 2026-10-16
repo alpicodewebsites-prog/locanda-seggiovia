@@ -345,25 +345,39 @@ def main() -> int:
     # camera, e un controllo sul conteggio fallirebbe a ogni modifica legittima.
     #
     # Astro nomina i file ottimizzati anteponendo il nome originale
-    # (es. `locanda-esterno.QGmMnSRb.webp`), quindi si può riconoscere la
-    # fotografia di partenza.
+    # (es. `hero.Bci5b8Jw.webp`), quindi si può riconoscere la fotografia di
+    # partenza.
+    #
+    # I nomi sono quelli NUOVI, dopo la riorganizzazione per sezione: le
+    # fotografie non stanno più tutte insieme in src/assets, ma ognuna nella
+    # cartella della sua pagina. Se un giorno si rinominano ancora, questo
+    # elenco va aggiornato insieme.
     #
     # Sono le fotografie che lo sviluppatore controlla: quelle delle pagine.
     # Le foto di piatti, camere e sentieri le gestisce la proprietaria, quindi
     # non si pretendono.
+    # Ogni voce è un elenco di ALTERNATIVE: basta che ce ne sia una.
+    #
+    # Perché le alternative: le fotografie condivise fra due pagine sono state
+    # duplicate, così ogni sezione è indipendente. Le copie hanno però contenuto
+    # identico, e Astro riconosce i file uguali dal contenuto: ne ottimizza UNO
+    # solo e lo intitola a una delle due copie. La pagina mostra quindi
+    # l'immagine giusta, ma il nome del file costruito può essere quello
+    # dell'altra. Pretendere un nome preciso darebbe un falso allarme.
     foto_obbligatorie = {
         # La fascia scura di chiusura con il panorama è stata rimossa: la home
         # chiude sul fondo della pagina, senza il blocco scuro a metà.
-        "index.html": ["hero-piccole-dolomiti", "locanda-esterno"],
+        "index.html": [["hero"], ["facciata"]],
         # Camere e Ristorante non hanno più nessuna fotografia obbligatoria:
         # le immagini fuori contesto sono state sostituite da segnaposto
         # dichiarati, che spariscono quando arrivano gli scatti veri.
         # Restano controllate solo per il logo del footer, più sotto.
-        "gnocchi-con-la-fioreta/index.html": ["piatto-gnocchi-fioreta", "locanda-preparazione"],
+        "gnocchi-con-la-fioreta/index.html": [["piatto"], ["preparazione", "cucina"]],
         # La facciata si è spostata qui, nella sezione «La casa»; il tavolo di
-        # cucina accompagna il racconto della famiglia.
-        "la-locanda/index.html": ["locanda-esterno", "locanda-preparazione"],
-        "sentieri/index.html": ["piccole-dolomiti-large", "territorio-montagne"],
+        # cucina accompagna il racconto della famiglia. Sono copie proprie di
+        # questa pagina, non le stesse della home.
+        "la-locanda/index.html": [["facciata"], ["cucina", "preparazione"]],
+        "sentieri/index.html": [["panorama"], ["montagne"]],
     }
     for rel, attese in foto_obbligatorie.items():
         percorso = DIST / rel
@@ -371,7 +385,11 @@ def main() -> int:
             continue
         html = leggi(percorso)
         trovate = set(re.findall(r'src="/_astro/([^."]+)\.', html))
-        mancanti = [nome for nome in attese if nome not in trovate]
+        mancanti = [
+            " oppure ".join(alternative)
+            for alternative in attese
+            if not any(nome in trovate for nome in alternative)
+        ]
         check(
             f"{rel}: fotografie di pagina presenti",
             not mancanti,

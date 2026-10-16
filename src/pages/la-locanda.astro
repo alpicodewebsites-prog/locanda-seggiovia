@@ -11,8 +11,10 @@ import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site, mappaLinkUrl } from '../data/site';
-import { caricaFotoSito } from '../lib/foto-sito';
-const foto = await caricaFotoSito();
+import { caricaLocanda } from '../lib/pagine';
+// Testi e fotografie della pagina, modificabili dal pannello.
+const pagina = await caricaLocanda();
+const foto = pagina.foto;
 import imgLogo from '../assets/locanda-logo.png';
 
 const description =
@@ -67,7 +69,7 @@ const schema = {
       <div class="md:col-span-5 md:order-2">
         <div class="media aspect-3/4">
           <Image
-            src={foto.locandaCucina}
+            src={foto.cucina}
             alt="Il tavolo di lavoro della cucina con la fioreta, la farina e il burro di malga"
             widths={[300, 420, 640]}
             sizes="(min-width: 768px) 40vw, 92vw"
@@ -138,7 +140,7 @@ const schema = {
     <div class="shell grid gap-10 md:grid-cols-12 md:gap-12 md:items-center">
       <figure class="media aspect-4/3 md:col-span-6">
         <Image
-          src={foto.locandaEsterno}
+          src={foto.facciata}
           alt="La facciata della Locanda Seggiovia con i balconi in legno, nel centro di Recoaro Terme"
           widths={[420, 600, 900]}
           sizes="(min-width: 768px) 48vw, 92vw"

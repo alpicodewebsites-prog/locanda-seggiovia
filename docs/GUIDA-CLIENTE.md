@@ -139,25 +139,52 @@ campi quella fotografia viene usata.
 
 ### Dove appare ogni fotografia
 
-Le fotografie delle **pagine** si cambiano dalla sezione **«Foto delle pagine»**,
-dove ogni campo dice già a cosa serve:
+Il pannello è diviso in due gruppi. Le **pagine** stanno in alto, le **schede**
+(elenchi) in basso.
 
-| Campo nella sezione | Dove si vede |
-|---|---|
-| Apertura della home | la prima schermata del sito |
-| Panorama | la fascia finale della home e la pagina Sentieri |
-| La locanda vista da fuori | home, La Locanda, Camere, Ristorante |
-| Il tavolo di cucina | pagina Camere e pagina degli Gnocchi |
-| Le montagne | pagina Sentieri |
+Nelle pagine, ogni campo dice già a cosa serve:
+
+| Voce del pannello | Campo | Dove si vede |
+|---|---|---|
+| **Home Page** | Fotografia 1 — Apertura | la prima schermata del sito |
+| **Home Page** | Fotografia 2 — Fascia panoramica | la fascia a tutta larghezza della home |
+| **Home Page** | Fotografia 3 — Le montagne | la sezione Territorio della home |
+| **Home Page** | Fotografia 4 — La locanda vista da fuori | la sezione «La locanda» della home |
+| **Pagina La Locanda** | La locanda vista da fuori | la pagina La Locanda |
+| **Pagina La Locanda** | Il tavolo di cucina | la pagina La Locanda |
+| **Pagina Sentieri** | Le montagne, Panorama | la pagina con l'elenco dei sentieri |
+
+> **La facciata compare in due posti diversi, e sono due campi separati.** Puoi
+> mettere la stessa fotografia in entrambi, oppure due scatti diversi — per
+> esempio uno d'estate sulla home e uno d'inverno nella pagina La Locanda.
+> Cambiando uno **non** cambia l'altro: è voluto, così decidi tu.
 
 Le altre si cambiano **dentro la scheda a cui appartengono**:
 
 | Dove | Cosa cambia |
 |---|---|
-| Camere e tariffe → una camera | la foto di quella camera |
+| Camere (elenco) → una camera | la foto di quella camera |
 | Menù del ristorante → un piatto | la foto di quel piatto |
 | Gnocchi con la Fioreta | la foto del piatto finito e quella degli ingredienti |
-| Sentieri → un sentiero | la foto di copertina di quel percorso |
+| Sentieri (elenco) → un sentiero | la foto di copertina di quel percorso |
+
+### Dove finiscono le fotografie che carichi
+
+Ogni sezione ha la **sua cartella**. Caricando una fotografia mentre sei dentro
+una sezione, finisce lì e non si mescola con le altre:
+
+| Sezione | Cartella |
+|---|---|
+| Home Page | `src/assets/home/` |
+| Pagina La Locanda | `src/assets/la-locanda/` |
+| Pagina Sentieri e Sentieri (elenco) | `src/assets/sentieri/` |
+| Gnocchi con la Fioreta | `src/assets/gnocchi/` |
+| Camere (elenco) | `src/assets/camere/` |
+| Menù del ristorante | `src/assets/ristorante/piatti/` |
+
+Aprendo il selettore di un campo vedi **prima** i file di quella sezione. Se ti
+serve riusare una foto già caricata altrove, la trovi nelle altre schede del
+selettore.
 
 ### Come sostituire una fotografia
 
@@ -165,10 +192,10 @@ Non c'è un pulsante «sostituisci»: si fa **caricando un file con lo stesso no
 nello stesso formato** di quello da cambiare.
 
 1. Guarda il nome e il formato della fotografia da cambiare: per esempio
-   `hero-piccole-dolomiti.jpg` è un **.jpg**.
+   `hero.jpg` è un **.jpg**.
 2. Prepara la fotografia nuova e **rinominala esattamente come quella vecchia**,
-   **mantenendo lo stesso formato** (`hero-piccole-dolomiti.jpg`).
-3. Nel pannello apri la **libreria immagini** e premi **Carica**.
+   **mantenendo lo stesso formato** (`hero.jpg`).
+3. Nel pannello apri il **campo della fotografia** e premi **Carica**.
 4. Scegli il file. Il sistema avverte che esiste già un file con quel nome:
    **conferma**.
 5. Il vecchio viene sostituito, e **tutti i punti del sito dove compariva si
@@ -214,9 +241,31 @@ Oppure, se preferisci non convertire niente:
 La fotografia finisce nella libreria e resta disponibile per tutti gli altri
 campi: non va caricata due volte.
 
-### Eliminare una fotografia
+### Togliere una fotografia (senza perdere il campo)
 
-1. Apri la **libreria immagini** (l'icona con il quadro, in alto a sinistra).
+Il campo **non sparisce mai**: resta lì, vuoto, pronto a ricevere una fotografia
+nuova. È il modo giusto di togliere una foto da una pagina.
+
+1. Apri la pagina (per esempio **Home Page**).
+2. Vai al campo della fotografia che vuoi togliere.
+3. Passa il puntatore sull'anteprima della foto e premi la **×** per toglierla.
+4. Salva.
+
+Da quel momento la pagina **non mostra più quella fotografia**, e al suo posto
+non compare un riquadro rotto: la sezione si riordina da sola.
+
+Per rimetterne una, riapri lo stesso campo e carica il file. **Il campo è ancora
+lì, nello stesso punto**: non devi ricreare niente.
+
+> **Se il campo fosse vuoto perché hai svuotato la pagina sbagliata**, non
+> succede nulla di irreparabile: le fotografie restano nella cartella della
+> sezione e le ritrovi nel selettore.
+
+### Eliminare una fotografia dal disco
+
+Diverso dal punto sopra: qui il file viene **cancellato davvero**.
+
+1. Apri il campo di una fotografia e apri il selettore.
 2. Passa il puntatore sulla fotografia e premi **Elimina**.
 3. Il sistema avvisa **in quanti punti del sito** quella fotografia è usata, e
    sistema da solo i collegamenti: dove compariva, il campo resta vuoto invece di
@@ -225,6 +274,12 @@ campi: non va caricata due volte.
 
 > **Non puoi sbagliare**: ogni modifica è registrata, e si può sempre tornare
 > indietro. Se elimini una fotografia per errore, scrivi e la recuperiamo.
+
+> **Attenzione a una sola cosa.** Se elimini il file **e** il campo continua a
+> contenere il suo percorso, il campo punta a un file che non esiste più: la
+> pagina resta senza fotografia finché non ne carichi una nuova. Il pannello
+> avvisa in quanti punti è usata proprio per questo. Nel dubbio, usa il metodo
+> qui sopra (svuotare il campo), che è sempre sicuro.
 
 ### Che caratteristiche devono avere
 

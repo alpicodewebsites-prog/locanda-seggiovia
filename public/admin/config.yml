@@ -1,11 +1,60 @@
+# ============================================================================
 # Sveltia CMS — configurazione della Locanda Seggiovia
+# ============================================================================
 #
-# Ogni collezione qui sotto corrisponde a una collezione di Astro definita in
-# src/content.config.ts. I nomi dei campi devono restare allineati: se si
-# rinomina un campo da una parte sola, il sito smette di compilare.
+# COME È ORGANIZZATO QUESTO PANNELLO
 #
-# NON modificare `repo` a mano se non dopo aver creato il repository GitHub.
-# Il valore va scritto nella forma  utente/nome-repository
+# Due gruppi, nell'ordine in cui si usano:
+#
+#   1. LE PAGINE — una voce per ogni pagina del sito. Dentro ci sono i TESTI e
+#      le FOTOGRAFIE di quella pagina, e nient'altro. Chi vuole cambiare il
+#      titolo della home apre «Home Page» e lo trova lì.
+#
+#   2. LE SCHEDE — gli elenchi: sentieri, camere, piatti del menù. Qui si
+#      aggiungono e si tolgono voci.
+#
+# ----------------------------------------------------------------------------
+# LE IMMAGINI NON FINISCONO TUTTE INSIEME
+#
+# Ogni sezione ha la sua cartella, dichiarata con `media_folder`:
+#
+#     Home Page            -> src/assets/home/
+#     Pagina La Locanda    -> src/assets/la-locanda/
+#     Pagina Sentieri      -> src/assets/sentieri/
+#     Gnocchi con la Fioreta -> src/assets/gnocchi/
+#     Sentieri (elenco)    -> src/assets/sentieri/
+#     Camere (elenco)      -> src/assets/camere/
+#     Menù (elenco)        -> src/assets/ristorante/piatti/
+#
+# Aprendo il selettore di un campo si vedono PRIMA i file di quella sezione.
+# Restano raggiungibili anche le altre schede del selettore, compresa quella
+# generale: servono per riusare una foto già caricata altrove.
+#
+# ATTENZIONE — `media_folder` di collezione e di file DEVE iniziare con la barra
+# (`/src/assets/...`): senza, Sveltia lo interpreta come percorso relativo alla
+# cartella dei contenuti e i file finiscono nel posto sbagliato.
+#
+# ATTENZIONE — spostare un'immagine di cartella a mano significa anche
+# aggiornare il percorso scritto nel file di contenuto. Se il percorso non
+# corrisponde a un file vero, la pagina resta senza fotografia.
+#
+# ----------------------------------------------------------------------------
+# PERCHÉ LA CONVERSIONE IN WEBP È DISATTIVATA — leggere prima di riattivarla.
+#
+# Sveltia sa convertire le immagini in WebP dentro il browser al caricamento
+# (opzione `media_libraries.all.transformations.raster_image`). Sembrava un
+# miglioramento, e invece rende IMPOSSIBILE sostituire una fotografia:
+#
+#   1. si carica un JPEG per sostituire `hero.jpg`;
+#   2. Sveltia lo converte in WebP prima di salvarlo;
+#   3. a quel punto prova a sostituire un file JPEG con un file WebP;
+#   4. rifiuta, perché la sostituzione richiede lo stesso formato:
+#      «Questo file non può sostituire … perché è in un formato diverso».
+#
+# Non esiste un'opzione documentata per disattivare il controllo di formato
+# sulla sostituzione. Quindi la conversione resta spenta. Non si perde niente:
+# Astro converte comunque in WebP in fase di compilazione.
+# ============================================================================
 
 backend:
   name: github
@@ -16,249 +65,273 @@ backend:
   # sta autorizzando l'accesso e rifiuta la richiesta.
   site_domain: locanda-seggiovia.netlify.app
   # Si accede SOLO con token. Il pulsante «Accedi con GitHub» (OAuth via Netlify)
-  # non funziona su questo progetto: mostrarlo confonderebbe la proprietaria, che
-  # non saprebbe perché quel percorso non porta da nessuna parte.
-  # Se un domani si sistema l'OAuth, basta rimettere: [oauth, token]
+  # non funziona su questo progetto: mostrarlo confonderebbe la proprietaria.
   auth_methods: [token]
 
-# --- Cartelle dei file multimediali -----------------------------------------
-# Le immagini stanno TUTTE in src/assets: da lì Astro le ottimizza (WebP e
-# versioni ridimensionate), quindi il sito resta leggero.
-# Il pannello deve puntare a quella stessa cartella, altrimenti la libreria
-# appare vuota e la proprietaria non può sostituire nessuna fotografia.
-#
-# `public_folder` non è un indirizzo raggiungibile: serve solo a comporre il
-# valore salvato nei file di contenuto. Le pagine ne estraggono il nome del
-# file e risolvono l'immagine da src/assets.
+# --- Cartella generale ------------------------------------------------------
+# Vale come ripiego per i campi che non dichiarano una cartella propria. Le
+# sezioni qui sotto la scavalcano ciascuna con la propria.
 media_folder: src/assets
 public_folder: /assets
 
-# --- Immagini caricate ------------------------------------------------------
-#
-# PERCHÉ LA CONVERSIONE IN WEBP È DISATTIVATA — leggere prima di riattivarla.
-#
-# Sveltia sa convertire le immagini in WebP dentro il browser al caricamento
-# (opzione `media_libraries.all.transformations.raster_image`). Sembrava un
-# miglioramento, e invece rende IMPOSSIBILE sostituire una fotografia:
-#
-#   1. la proprietaria carica un JPEG per sostituire `hero-piccole-dolomiti.jpg`;
-#   2. Sveltia lo converte in WebP prima di salvarlo;
-#   3. a quel punto prova a sostituire un file JPEG con un file WebP;
-#   4. rifiuta, perché la sostituzione richiede lo stesso formato:
-#      «Questo file non può sostituire … perché è in un formato diverso».
-#
-# In pratica: attivando la conversione, nessuna fotografia può più essere
-# sostituita. Il pannello si blocca proprio nel gesto che serve alla cliente.
-#
-# Non esiste un'opzione documentata per disattivare il controllo di formato
-# sulla sostituzione (verificato nella documentazione ufficiale, sezione
-# «File field» e «Internal Media Storage»). Quindi si tiene la conversione
-# spenta.
-#
-# Non si perde niente: **Astro converte comunque in WebP in fase di build**,
-# quindi il sito pubblicato resta leggero. L'unico costo è che il repository
-# conserva i file nel formato originale, un po' più pesanti.
 media_libraries:
-  # Limite al file caricabile: oltre, il pannello avvisa e rifiuta.
-  # Questo non interferisce con la sostituzione e resta utile.
   default:
     config:
-      max_file_size: 8388608 # 8 MB
+      max_file_size: 8388608 # 8 MB: oltre, il pannello avvisa e rifiuta
       svg:
         optimize: true
 
-# --- Output ------------------------------------------------------------------
 output:
-  # Fondamentale: se un campo opzionale resta vuoto, Sveltia non lo scrive nel
-  # file. Senza questa riga scriverebbe una stringa vuota, che lo schema Zod
-  # di Astro rifiuterebbe, facendo fallire la compilazione.
+  # Se un campo opzionale resta vuoto, Sveltia non lo scrive nel file. Senza
+  # questa riga scriverebbe una stringa vuota, che lo schema di Astro
+  # rifiuterebbe, facendo fallire la compilazione del sito.
   omit_empty_optional_fields: true
 
-# --- Interfaccia -------------------------------------------------------------
-# NON aggiungere `locale: it`: Sveltia non supporta quell'opzione (è un residuo
-# di Decap CMS) e la sua presenza fa fallire la lettura dell'intera
-# configurazione, autenticazione compresa. L'interfaccia di Sveltia è già
-# multilingua e segue la lingua del browser.
+# NON aggiungere `locale: it`: Sveltia non supporta quell'opzione e la sua
+# presenza fa fallire la lettura dell'intera configurazione, autenticazione
+# compresa. L'interfaccia segue già la lingua del browser.
 
+# ============================================================================
 collections:
   # ==========================================================================
-  # CAMERE E TARIFFE
+  # 1. LE PAGINE
   # ==========================================================================
-  - name: camere
-    label: Camere e tariffe
-    label_singular: Camera
+
+  # --------------------------------------------------------------------------
+  # HOME PAGE
+  # --------------------------------------------------------------------------
+  - name: home
+    label: Home Page
     description: >-
-      Tipi di camera e relative tariffe. Le tariffe sono per persona, per giorno.
-    folder: src/content/camere
-    extension: md
-    format: frontmatter
-    create: true
-    slug: '{{slug}}'
-    preview_path: camere
-    sortable_fields: [ordine, titolo]
-    summary: '{{titolo}} — B&B {{tariffe.bnb}} €'
-    fields:
-      - { name: titolo, label: Nome della camera, widget: string }
-      - name: ordine
-        label: Ordine di comparsa
-        widget: number
-        default: 1
-        hint: Numero più basso = compare prima nella pagina.
-        value_type: int
-        min: 0
-      - name: descrizione
-        label: Descrizione
-        widget: text
-        hint: Due o tre righe. Descrive la camera, non la vende.
-      - name: occupanti
-        label: Numero di ospiti
-        widget: string
-        required: false
-        hint: 'Esempio: 2 persone'
-      - name: tariffe
-        label: Tariffe (€ per persona, per giorno)
-        widget: object
+      I testi e le quattro fotografie della prima pagina del sito.
+    files:
+      - name: pagina
+        label: Testi e fotografie
+        file: src/content/home/pagina.md
+        media_folder: /src/assets/home
+        public_folder: /assets/home
         fields:
-          - { name: bnb, label: 'Solo pernottamento e colazione', widget: number, value_type: float }
-          - { name: mezzaPensione, label: 'Mezza pensione', widget: number, value_type: float }
-          - { name: pensioneCompleta, label: 'Pensione completa', widget: number, value_type: float }
-      - name: servizi
-        label: Servizi in camera
-        label_singular: Servizio
-        widget: list
-        required: false
-        hint: 'Un servizio per riga. Il Wi-Fi è negli spazi comuni, non in camera: non va elencato qui.'
-      - name: foto
-        label: Fotografia della camera
-        widget: image
-        accept: image/jpeg,image/png,image/webp,image/avif
-        required: false
-        hint: 'Facoltativa. Se manca, la camera compare senza foto.'
+          - label: Titolo principale
+            name: titolo
+            widget: string
+            hint: 'La frase grande della prima schermata. Il titolo è testo vero, non un''immagine: resta leggibile e indicizzabile.'
 
-  # ==========================================================================
-  # MENÙ DEL RISTORANTE
-  # ==========================================================================
-  - name: menu
-    label: Menù del ristorante
-    label_singular: Piatto
-    description: >-
-      I piatti del ristorante. Il prezzo si può lasciare vuoto: in quel caso il
-      piatto compare senza cifra.
-    folder: src/content/menu
-    extension: md
-    format: frontmatter
-    create: true
-    slug: '{{slug}}'
-    preview_path: ristorante
-    sortable_fields: [categoria, ordine, nome]
-    summary: '{{nome}} — {{categoria}}'
-    fields:
-      - { name: nome, label: Nome del piatto, widget: string }
-      - name: categoria
-        label: Categoria
-        widget: select
-        options:
-          - { value: antipasti, label: Antipasti }
-          - { value: primi, label: Primi }
-          - { value: secondi, label: Secondi }
-          - { value: dolci, label: Dolci }
-      - name: ordine
-        label: Ordine dentro la categoria
-        widget: number
-        default: 1
-        value_type: int
-        min: 0
-      - name: descrizione
-        label: Descrizione
-        widget: text
-      - name: prezzo
-        label: Prezzo (€)
-        widget: number
-        required: false
-        value_type: float
-        hint: Lasciare vuoto se il prezzo non è ancora definito.
-      - name: specialita
-        label: È una specialità della casa
-        widget: boolean
-        default: false
-        hint: Le specialità vengono messe in evidenza nella pagina.
-      - name: foto
-        label: Fotografia del piatto
-        widget: image
-        accept: image/jpeg,image/png,image/webp,image/avif
-        required: false
-        hint: 'Facoltativa. Se c''e, il piatto compare anche in galleria.'
+          - label: Testo sotto il titolo
+            name: sottotitolo
+            widget: text
+            hint: Due righe. Dice cosa si trova qui e a chi serve.
 
-  # ==========================================================================
-  # GNOCCHI CON LA FIORETA (contenuto singolo)
-  # ==========================================================================
+          - label: Descrizione per i motori di ricerca
+            name: descrizione
+            widget: text
+            required: false
+            hint: 'Non si vede in pagina: compare su Google e quando il sito viene condiviso in un messaggio.'
+
+          - label: I due accessi dell''apertura
+            name: accessi
+            label_singular: Accesso
+            widget: list
+            required: false
+            hint: 'Le due scelte in fondo alla prima schermata. Se svuoti questa lista, tornano quelle predefinite (Dormire e Mangiare).'
+            fields:
+              - { label: Parola piccola sopra, name: etichetta, widget: string }
+              - { label: Titolo, name: titolo, widget: string }
+              - { label: Riga di spiegazione, name: nota, widget: string }
+              - label: Dove porta
+                name: collegamento
+                widget: select
+                options:
+                  - { label: Camere, value: /camere }
+                  - { label: Ristorante, value: /ristorante }
+                  - { label: Gnocchi con la Fioreta, value: /gnocchi-con-la-fioreta }
+                  - { label: Sentieri, value: /sentieri }
+                  - { label: La Locanda, value: /la-locanda }
+                  - { label: Contatti, value: /contatti }
+
+          - label: Invito ai sentieri
+            name: invitoSentieri
+            widget: string
+            hint: 'Il collegamento piccolo sotto i due accessi.'
+
+          - label: Testo del pulsante degli gnocchi
+            name: pulsanteGnocchi
+            widget: string
+            hint: 'La scritta dentro il pulsante giallo a pillola.'
+
+          - label: Sezione «La locanda» — etichetta piccola
+            name: locandaEtichetta
+            widget: string
+          - label: Sezione «La locanda» — titolo
+            name: locandaTitolo
+            widget: string
+          - label: Sezione «La locanda» — paragrafi
+            name: locandaParagrafi
+            label_singular: Paragrafo
+            widget: list
+            required: false
+            hint: 'Un paragrafo per voce. Vanno a capo da soli.'
+          - label: Sezione «La locanda» — testo del collegamento
+            name: locandaCollegamento
+            widget: string
+
+          - label: Sezione «Territorio» — etichetta piccola
+            name: territorioEtichetta
+            widget: string
+          - label: Sezione «Territorio» — titolo
+            name: territorioTitolo
+            widget: string
+          - label: Sezione «Territorio» — introduzione
+            name: territorioTesto
+            widget: text
+
+          # --- Le quattro fotografie, ognuna con il suo posto ---------------
+          - label: 'Fotografia 1 — Apertura (prima schermata)'
+            name: hero
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+            hint: 'La fotografia grande in cima, con il titolo sopra. Serve almeno 2500 pixel di larghezza. Se la togli, resta il fondo scuro.'
+
+          - label: 'Fotografia 2 — Fascia panoramica'
+            name: panorama
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+            hint: 'Usata a tutta larghezza, verso la fine della pagina. Serve una fotografia grande e orizzontale.'
+
+          - label: 'Fotografia 3 — Le montagne'
+            name: montagne
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+            hint: 'Nella sezione Territorio, accanto ai sentieri.'
+
+          - label: 'Fotografia 4 — La locanda vista da fuori'
+            name: facciata
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+            hint: 'Nella sezione «La locanda» della home. La pagina La Locanda ha una sua fotografia, separata: puoi metterne due diverse.'
+
+  # --------------------------------------------------------------------------
+  # PAGINA LA LOCANDA
+  # --------------------------------------------------------------------------
+  - name: pagina-locanda
+    label: Pagina La Locanda
+    description: Testi e fotografie della pagina «La locanda e la famiglia».
+    files:
+      - name: pagina
+        label: Testi e fotografie
+        file: src/content/la-locanda/pagina.md
+        media_folder: /src/assets/la-locanda
+        public_folder: /assets/la-locanda
+        fields:
+          - { label: Titolo, name: titolo, widget: string }
+          - { label: Testo introduttivo, name: sottotitolo, widget: text, required: false }
+          - label: 'Fotografia — La locanda vista da fuori'
+            name: facciata
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+          - label: 'Fotografia — Il tavolo di cucina'
+            name: cucina
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+
+  # --------------------------------------------------------------------------
+  # PAGINA SENTIERI
+  # --------------------------------------------------------------------------
+  - name: pagina-sentieri
+    label: Pagina Sentieri
+    description: Testi e fotografie dell'elenco dei sentieri.
+    files:
+      - name: pagina
+        label: Testi e fotografie
+        file: src/content/sentieri-pagina/pagina.md
+        media_folder: /src/assets/sentieri
+        public_folder: /assets/sentieri
+        fields:
+          - { label: Titolo, name: titolo, widget: string }
+          - { label: Testo introduttivo, name: sottotitolo, widget: text, required: false }
+          - label: 'Fotografia — Le montagne'
+            name: montagne
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+          - label: 'Fotografia — Panorama'
+            name: panorama
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+
+  # --------------------------------------------------------------------------
+  # GNOCCHI CON LA FIORETA
+  # --------------------------------------------------------------------------
   - name: gnocchi
     label: Gnocchi con la Fioreta
-    label_singular: Gnocchi con la Fioreta
     description: >-
       La pagina del piatto bandiera. È un contenuto unico: non se ne creano altri.
-    folder: src/content/gnocchi
-    extension: md
-    format: frontmatter
-    create: false
-    slug: '{{slug}}'
-    preview_path: gnocchi-con-la-fioreta
-    fields:
-      - { name: titolo, label: Titolo, widget: string }
-      - name: sottotitolo
-        label: Sottotitolo
-        widget: string
-        required: false
-      - name: storia
-        label: Storia del piatto
-        widget: text
-        hint: Da dove viene la fioreta e perché è legata a Recoaro.
-      - name: ricetta
-        label: Ricetta De.Co.
-        label_singular: Ingrediente
-        widget: list
+    files:
+      - name: fioreta
+        label: Testi e fotografie
+        file: src/content/gnocchi/fioreta.md
+        media_folder: /src/assets/gnocchi
+        public_folder: /assets/gnocchi
         fields:
-          - { name: ingrediente, label: Ingrediente, widget: string }
-          - { name: quantita, label: Quantità, widget: string }
-      - name: lavorazione
-        label: Lavorazione
-        label_singular: Fase
-        widget: list
-        fields:
-          - { name: titolo, label: Titolo della fase, widget: string }
-          - { name: testo, label: Descrizione, widget: text }
-      - name: condimento
-        label: Condimento
-        widget: text
-      - name: riconoscimenti
-        label: Riconoscimenti
-        label_singular: Riconoscimento
-        widget: list
-        required: false
-        default: ['Denominazione Comunale di Origine — Comune di Recoaro Terme']
-      - name: foto
-        label: Fotografia del piatto finito
-        widget: image
-        accept: image/jpeg,image/png,image/webp,image/avif
-        required: false
-        hint: 'Facoltativa.'
-      - name: fotoPreparazione
-        label: Fotografia degli ingredienti
-        widget: image
-        accept: image/jpeg,image/png,image/webp,image/avif
-        required: false
-        hint: 'Facoltativa.'
+          - { label: Titolo, name: titolo, widget: string }
+          - { label: Sottotitolo, name: sottotitolo, widget: string, required: false }
+          - label: Storia del piatto
+            name: storia
+            widget: text
+            hint: Da dove viene la fioreta e perché è legata a Recoaro.
+          - label: Ricetta De.Co.
+            name: ricetta
+            label_singular: Ingrediente
+            widget: list
+            fields:
+              - { label: Ingrediente, name: ingrediente, widget: string }
+              - { label: Quantità, name: quantita, widget: string }
+          - label: Lavorazione
+            name: lavorazione
+            label_singular: Fase
+            widget: list
+            fields:
+              - { label: Titolo della fase, name: titolo, widget: string }
+              - { label: Descrizione, name: testo, widget: text }
+          - { label: Condimento, name: condimento, widget: text }
+          - label: Riconoscimenti
+            name: riconoscimenti
+            label_singular: Riconoscimento
+            widget: list
+            required: false
+          - label: 'Fotografia — Il piatto finito'
+            name: foto
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+          - label: 'Fotografia — Gli ingredienti'
+            name: fotoPreparazione
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
 
   # ==========================================================================
-  # SENTIERI  (i contenuti arrivano nella settimana 3)
+  # 2. LE SCHEDE
   # ==========================================================================
+
+  # --------------------------------------------------------------------------
+  # SENTIERI
+  # --------------------------------------------------------------------------
   - name: sentieri
-    label: Sentieri
+    label: Sentieri (elenco)
     label_singular: Sentiero
     description: >-
       Gli itinerari escursionistici. Compilare solo i dati tecnici che si
       conoscono: i campi vuoti non compaiono nel sito.
     folder: src/content/sentieri
+    media_folder: /src/assets/sentieri
+    public_folder: /assets/sentieri
     extension: md
     format: frontmatter
     create: true
@@ -267,80 +340,143 @@ collections:
     sortable_fields: [ordine, nome]
     summary: '{{nome}} — {{difficolta}}'
     fields:
-      - { name: nome, label: Nome del sentiero, widget: string }
-      - name: ordine
-        label: Ordine di comparsa
+      - { label: Nome del sentiero, name: nome, widget: string }
+      - label: Ordine di comparsa
+        name: ordine
         widget: number
         default: 1
         value_type: int
         min: 0
-      - name: sommario
-        label: Sommario
+      - label: Sommario
+        name: sommario
         widget: text
         hint: Una o due righe, per gli elenchi.
-      - name: descrizione
-        label: Descrizione del percorso
-        widget: text
-      - name: difficolta
-        label: Difficoltà CAI
+      - { label: Descrizione del percorso, name: descrizione, widget: text }
+      - label: Difficoltà CAI
+        name: difficolta
         widget: select
         options:
-          - { value: T, label: 'T — Turistico' }
-          - { value: E, label: 'E — Escursionistico' }
-          - { value: EE, label: 'EE — Escursionisti esperti' }
-      - { name: distanza, label: Distanza, widget: string, required: false, hint: 'Esempio: 12 km (solo andata)' }
-      - { name: dislivello, label: Dislivello, widget: string, required: false, hint: 'Esempio: 400-550 m' }
-      - { name: durata, label: Durata, widget: string, required: false, hint: 'Esempio: 4 ore' }
-      - { name: partenza, label: Punto di partenza, widget: string, required: false }
-      - { name: segnavia, label: Segnaletica CAI, widget: string, required: false, hint: 'Esempio: CAI 151/144' }
-      - name: immagine
-        label: Fotografia di copertina
+          - { label: 'T — Turistico', value: T }
+          - { label: 'E — Escursionistico', value: E }
+          - { label: 'EE — Escursionisti esperti', value: EE }
+      - { label: Distanza, name: distanza, widget: string, required: false, hint: 'Esempio: 12 km (solo andata)' }
+      - { label: Dislivello, name: dislivello, widget: string, required: false, hint: 'Esempio: 400-550 m' }
+      - { label: Durata, name: durata, widget: string, required: false, hint: 'Esempio: 4 ore' }
+      - { label: Punto di partenza, name: partenza, widget: string, required: false }
+      - { label: Segnaletica CAI, name: segnavia, widget: string, required: false, hint: 'Esempio: CAI 151/144' }
+      - label: Fotografia di copertina
+        name: immagine
         widget: image
         accept: image/jpeg,image/png,image/webp,image/avif
         required: false
-        hint: 'Facoltativa. Se manca, la scheda usa un segnaposto neutro.'
+        hint: 'Se manca, la scheda usa un segnaposto neutro.'
 
-  # ==========================================================================
-  # FOTO DELLE PAGINE
-  # Le fotografie che non appartengono a una scheda ma a una pagina intera.
-  # Sono tutte qui perche' la proprietaria abbia un posto solo dove cambiarle.
-  # ==========================================================================
-  - name: impostazioni
-    label: Foto delle pagine
+  # --------------------------------------------------------------------------
+  # CAMERE
+  # --------------------------------------------------------------------------
+  - name: camere
+    label: Camere (elenco)
+    label_singular: Camera
     description: >-
-      Le fotografie di apertura e di sfondo delle pagine. Sostituendone una qui,
-      cambia in tutto il sito dove compare.
-    files:
-      - name: sito
-        label: Fotografie generali
-        file: src/content/impostazioni/sito.md
+      Tipi di camera e relative tariffe. Le tariffe sono per persona, per giorno.
+    folder: src/content/camere
+    media_folder: /src/assets/camere
+    public_folder: /assets/camere
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: camere
+    sortable_fields: [ordine, titolo]
+    summary: '{{titolo}} — B&B {{tariffe.bnb}} €'
+    fields:
+      - { label: Nome della camera, name: titolo, widget: string }
+      - label: Ordine di comparsa
+        name: ordine
+        widget: number
+        default: 1
+        hint: Numero più basso = compare prima nella pagina.
+        value_type: int
+        min: 0
+      - label: Descrizione
+        name: descrizione
+        widget: text
+        hint: Due o tre righe. Descrive la camera, non la vende.
+      - label: Numero di ospiti
+        name: occupanti
+        widget: string
+        required: false
+        hint: 'Esempio: 2 persone'
+      - label: Tariffe (€ per persona, per giorno)
+        name: tariffe
+        widget: object
         fields:
-          - name: hero
-            label: Apertura della home
-            widget: image
-            accept: image/jpeg,image/png,image/webp,image/avif
-            required: false
-            hint: 'La fotografia grande della prima schermata. Serve almeno 2500 pixel di larghezza.'
-          - name: panorama
-            label: Panorama (chiusura della home e pagina Sentieri)
-            widget: image
-            accept: image/jpeg,image/png,image/webp,image/avif
-            required: false
-            hint: 'Usata a tutta larghezza: serve una fotografia grande e orizzontale.'
-          - name: locandaEsterno
-            label: La locanda vista da fuori
-            widget: image
-            accept: image/jpeg,image/png,image/webp,image/avif
-            required: false
-            hint: 'Compare nella home, in La Locanda, in Camere e in Ristorante.'
-          - name: locandaCucina
-            label: Il tavolo di cucina
-            widget: image
-            accept: image/jpeg,image/png,image/webp,image/avif
-            required: false
-            hint: 'Ingredienti o preparazione. Compare in Camere e nella pagina degli gnocchi.'
-          - name: montagne
-            label: Le montagne (pagina Sentieri)
-            widget: image
-            accept: image/jpeg,image/png,image/webp,image/avif
-            required: false
+          - { label: 'Solo pernottamento e colazione', name: bnb, widget: number, value_type: float }
+          - { label: 'Mezza pensione', name: mezzaPensione, widget: number, value_type: float }
+          - { label: 'Pensione completa', name: pensioneCompleta, widget: number, value_type: float }
+      - label: Servizi in camera
+        name: servizi
+        label_singular: Servizio
+        widget: list
+        required: false
+        hint: 'Un servizio per riga. Il Wi-Fi è negli spazi comuni, non in camera: non va elencato qui.'
+      - label: Fotografia della camera
+        name: foto
+        widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
+        required: false
+        hint: 'Facoltativa. Se manca, la camera compare senza foto.'
+
+  # --------------------------------------------------------------------------
+  # MENÙ DEL RISTORANTE
+  # --------------------------------------------------------------------------
+  - name: menu
+    label: Menù del ristorante
+    label_singular: Piatto
+    description: >-
+      I piatti del ristorante. Il prezzo si può lasciare vuoto: in quel caso il
+      piatto compare senza cifra.
+    folder: src/content/menu
+    media_folder: /src/assets/ristorante/piatti
+    public_folder: /assets/ristorante/piatti
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: ristorante
+    sortable_fields: [categoria, ordine, nome]
+    summary: '{{nome}} — {{categoria}}'
+    fields:
+      - { label: Nome del piatto, name: nome, widget: string }
+      - label: Categoria
+        name: categoria
+        widget: select
+        options:
+          - { label: Antipasti, value: antipasti }
+          - { label: Primi, value: primi }
+          - { label: Secondi, value: secondi }
+          - { label: Dolci, value: dolci }
+      - label: Ordine dentro la categoria
+        name: ordine
+        widget: number
+        default: 1
+        value_type: int
+        min: 0
+      - { label: Descrizione, name: descrizione, widget: text }
+      - label: Prezzo (€)
+        name: prezzo
+        widget: number
+        required: false
+        value_type: float
+        hint: Lasciare vuoto se il prezzo non è ancora definito.
+      - label: È una specialità della casa
+        name: specialita
+        widget: boolean
+        default: false
+        hint: Le specialità vengono messe in evidenza nella pagina.
+      - label: Fotografia del piatto
+        name: foto
+        widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
+        required: false
+        hint: 'Facoltativa. Se c''è, il piatto compare anche in galleria.'

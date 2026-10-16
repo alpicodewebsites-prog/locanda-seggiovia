@@ -15,5 +15,5 @@ distanza: circa 10 km
 dislivello: 300 m
 durata: 4 ore
 partenza: Passo Pian delle Fugazze
-immagine: /assets/sentieri-campogrosso.jpg
+immagine: /assets/sentieri/campogrosso.jpg
 ---

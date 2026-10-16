@@ -11,5 +11,5 @@ descrizione: >-
   minuti dall'Ossario del Pasubio. Non è accessibile con neve o vento forte.
 difficolta: E
 partenza: Anello del Sengio Alto
-immagine: /assets/sentieri-ponte-tibetano.jpg
+immagine: /assets/sentieri/ponte-tibetano.jpg
 ---

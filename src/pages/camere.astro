@@ -5,10 +5,8 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RichiestaPrenotazione from '../components/RichiestaPrenotazione.astro';
 import { site } from '../data/site';
-import { caricaFotoSito } from '../lib/foto-sito';
 import { risolviImmagine } from '../lib/immagini';
 
-const foto = await caricaFotoSito();
 
 const camere = (await getCollection('camere')).sort((a, b) => a.data.ordine - b.data.ordine);
 

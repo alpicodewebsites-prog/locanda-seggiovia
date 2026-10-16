@@ -5,8 +5,10 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Segnavia from '../../components/Segnavia.astro';
 import { site, SITE_URL } from '../../data/site';
-import { caricaFotoSito } from '../../lib/foto-sito';
-const foto = await caricaFotoSito();
+import { caricaSentieri } from '../../lib/pagine';
+// Testi e fotografie della pagina, modificabili dal pannello.
+const pagina = await caricaSentieri();
+const foto = pagina.foto;
 
 const sentieri = (await getCollection('sentieri')).sort((a, b) => a.data.ordine - b.data.ordine);
 

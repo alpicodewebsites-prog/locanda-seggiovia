@@ -7,12 +7,19 @@ import Hero from '../components/Hero.astro';
 import Segnavia from '../components/Segnavia.astro';
 import RichiestaPrenotazione from '../components/RichiestaPrenotazione.astro';
 import { site } from '../data/site';
-import { caricaFotoSito } from '../lib/foto-sito';
+import { caricaHome } from '../lib/pagine';
 
-/** Fotografie generali, modificabili dal pannello. */
-const foto = await caricaFotoSito();
+/**
+ * Testi e fotografie della home, modificabili dal pannello.
+ *
+ * Arrivano da `src/content/home/pagina.md`: cambiarli lì cambia questa pagina.
+ * La voce si chiama «Home Page» nel pannello.
+ */
+const home = await caricaHome();
+const foto = home.foto;
+const testi = home.testi;
 
-const imgLocanda = foto.locandaEsterno;
+const imgLocanda = foto.facciata;
 
 /**
  * Le specialità della casa, lette dalla collezione del menù.
@@ -43,8 +50,8 @@ const specialita = menu
  * la riga sottile di separazione, che dà il ritmo.
  */
 
-const description =
-  'Camere e ristorante nel centro di Recoaro Terme, ai piedi delle Piccole Dolomiti e del Pasubio. Cucina alto-vicentina e Gnocchi con la Fioreta De.Co.';
+/** Descrizione per i motori di ricerca: si modifica dal pannello. */
+const description = testi.descrizione;
 
 const webPageSchema = {
   '@context': 'https://schema.org',
@@ -93,7 +100,13 @@ const sentieri = (await getCollection('sentieri'))
       dichiara che l'immagine è un disegno, non uno scatto reale. Non va
       sovrascritto con una descrizione del paesaggio finché la fotografia vera
       non c'è. */}
-  <Hero immagine={foto.hero} />
+  <Hero
+    immagine={foto.hero}
+    titolo={testi.titolo}
+    sottotitolo={testi.sottotitolo}
+    accessi={testi.accessi}
+    invitoSentieri={testi.invitoSentieri}
+  />
 
   <!-- ==================================================================
        Invito alla pagina degli gnocchi
@@ -114,7 +127,7 @@ const sentieri = (await getCollection('sentieri'))
   <section class="py-14 md:py-20">
     <div class="shell flex justify-center">
       <a href="/gnocchi-con-la-fioreta" class="pulsante-gnocchi">
-        Scopri la nostra produzione di gnocchi con la Fioreta
+        {testi.pulsanteGnocchi}
         <span class="pulsante-gnocchi__freccia" aria-hidden="true">→</span>
       </a>
     </div>
@@ -146,30 +159,23 @@ const sentieri = (await getCollection('sentieri'))
       </div>
 
       <div class="md:col-span-7 md:order-1">
-        <p class="eyebrow text-forest-500">La locanda</p>
+        <p class="eyebrow text-forest-500">{testi.locandaEtichetta}</p>
         <h2 id="titolo-locanda" class="display-2 mt-4 max-w-[22ch] text-stone-900">
-          Un rifugio, non un albergo
+          {testi.locandaTitolo}
         </h2>
         <span class="filo-accento" aria-hidden="true"></span>
 
         <div class="prose-body mt-7 max-w-[62ch] space-y-0 text-[1.0625rem] text-stone-600">
-          <p>
-            La Locanda Seggiovia sta in piazza, a Recoaro Terme, dove le Piccole Dolomiti
-            finiscono di essere montagna e ricominciano a essere paese. È una casa di pietra e
-            legno tenuta dalla famiglia {site.gestione.replace('Famiglia ', '')}: si entra
-            dalla porta, si lascia lo zaino, e da quel momento la montagna è a un passo.
-          </p>
-          <p>
-            Chi sale per camminare ci trova un appoggio serio: camere semplici e curate,
-            colazione presto, consigli sui sentieri dati da chi li percorre. Chi sale per
-            mangiare trova una cucina che non insegue mode, ma ripete quello che in queste
-            valli si cucina da sempre.
-          </p>
+          {
+            testi.locandaParagrafi.map((paragrafo) => (
+              <p>{paragrafo}</p>
+            ))
+          }
         </div>
 
         <p class="mt-8">
           <a href="/la-locanda" class="link-arrow">
-            La locanda e la famiglia
+            {testi.locandaCollegamento}
             <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
               <path
                 d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
@@ -196,17 +202,14 @@ const sentieri = (await getCollection('sentieri'))
     <div class="shell">
       <div class="grid gap-8 md:grid-cols-12 md:items-end">
         <div class="md:col-span-7">
-          <p class="eyebrow text-wood-500">Territorio</p>
+          <p class="eyebrow text-wood-500">{testi.territorioEtichetta}</p>
           <h2 id="titolo-territorio" class="display-2 mt-4 max-w-[24ch] text-stone-900">
-            I sentieri cominciano dal centro del paese
+            {testi.territorioTitolo}
           </h2>
           <span class="filo-accento filo-accento--legno" aria-hidden="true"></span>
         </div>
         <div class="md:col-span-5">
-          <p class="lede text-[1rem]">
-            Sei itinerari fra Piccole Dolomiti, Gruppo del Carega e Pasubio. Difficoltà dal
-            turistico all’escursionistico esposto, tutti documentati con dati tecnici reali.
-          </p>
+          <p class="lede text-[1rem]">{testi.territorioTesto}</p>
         </div>
       </div>
 
