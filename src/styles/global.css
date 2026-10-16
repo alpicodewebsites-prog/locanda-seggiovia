@@ -6,26 +6,32 @@
    ========================================================================== */
 
 @theme {
-  /* --- Pietra alpina: grigi caldi, il colore del calcare in ombra --------
-     Il fondo della pagina è un grigio caldo. La richiesta indicava #E5E5E5 o
-     #EAEAEA: quei due hanno rosso, verde e blu uguali, quindi sono NEUTRI —
-     cioè freddi — e il secondo è perfino più chiaro di quello che c'era prima.
-     Il grigio caldo qui sotto ha la stessa intenzione (più scuro, più tenue)
-     ma conserva la punta di calore della palette alpina.
+  /* --- Pietra alpina ------------------------------------------------------
+     Il fondo della pagina è il grigio #C4C4C4 richiesto dal committente.
 
-     ATTENZIONE — questi valori sono concatenati fra loro. Il fondo è stato
-     scurito di circa l'8%, e per non perdere leggibilità sono stati scuriti
-     anche i due toni usati per note ed etichette. Non cambiarne uno solo:
-     vanno verificati con `python scripts/verifica_contrasti.py`.
+     ATTENZIONE — è un fondo MEDIO, non chiaro, e ha obbligato a ricalcolare
+     tutta la scala. Su un grigio così, i toni che prima funzionavano come
+     «testo secondario» scendevano sotto la soglia di leggibilità:
 
-     stone-50 è più CHIARO di stone-100: serve per i pannelli che devono
-     staccarsi dal fondo della pagina. */
-  --color-stone-50: #f5f3ef; /* pannelli, superfici in rilievo */
-  --color-stone-100: #e2ded5; /* fondo della pagina: grigio caldo */
-  --color-stone-200: #d3cfc6; /* bordi sottili */
-  --color-stone-300: #c4beb3; /* linee divisorie */
-  --color-stone-400: #8f8a7e;
-  --color-stone-500: #605d56; /* note e didascalie: 4,89:1 sul fondo */
+         stone-500 #605d56 su #c4c4c4  ->  3,77:1   (serve 4,5)
+         wood-500  #78542b su #c4c4c4  ->  3,88:1   (serve 4,5)
+
+     Quindi sono stati scuriti, e con loro i bordi: su questo fondo un bordo
+     deve essere PIÙ SCURO del fondo, non più chiaro, altrimenti sparisce.
+
+     Nota sul colore: #C4C4C4 ha rosso, verde e blu uguali, quindi è un grigio
+     NEUTRO, non caldo. Il committente aveva chiesto un grigio caldo; qui
+     prevale l'indicazione più recente ed esplicita. Un equivalente caldo alla
+     stessa intensità sarebbe #c6c2ba, se si volesse tornare al calore.
+
+     I valori sono verificati da scripts/verifica_contrasti.py — non cambiarne
+     uno solo. */
+  --color-stone-50: #e9e7e2; /* pannelli, superfici in rilievo */
+  --color-stone-100: #c4c4c4; /* fondo della pagina */
+  --color-stone-200: #aeaba3; /* bordi: PIÙ SCURI del fondo */
+  --color-stone-300: #9f9c94; /* linee divisorie */
+  --color-stone-400: #87837b;
+  --color-stone-500: #4e4b45; /* note e didascalie: 4,98:1 sul fondo */
   --color-stone-600: #4f4c46;
   --color-stone-700: #37352f;
   --color-stone-800: #232220;
@@ -34,7 +40,7 @@
   /* --- Legno: larice e noce delle baite -------------------------------- */
   --color-wood-100: #ecdfcc;
   --color-wood-300: #c5a276;
-  --color-wood-500: #78542b; /* etichette sopra i titoli: 5,04:1 sul fondo */
+  --color-wood-500: #63421f; /* etichette sopra i titoli: 5,17:1 sul fondo */
   --color-wood-700: #3f2f21;
   --color-wood-900: #2e2218;
 
@@ -78,7 +84,7 @@
 
      I contrasti sono verificati da scripts/verifica_contrasti.py: con questo
      fondo il testo secondario sta a 4,64:1, sopra la soglia di 4,5. */
-  --color-camere-fondo: #d5dacd;
+  --color-camere-fondo: #ced3c6;
 
   /* --- Accenti grafici -------------------------------------------------
      Rampa satura usata SOLO per linee, bordi e fili decorativi: i toni
