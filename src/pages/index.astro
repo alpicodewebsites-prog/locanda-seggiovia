@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -44,27 +44,17 @@ const specialita = menu
   }));
 
 /**
- * Gli ingredienti degli gnocchi, per la fascia «tavolo».
+ * I tre dettagli fotografici degli ingredienti, per la fascia della home.
  *
- * Si leggono dalla ricetta vera, non sono riscritti qui: la ricetta sta nella
- * pagina degli gnocchi, e averla in due posti significherebbe vederli divergere
- * alla prima modifica.
+ * Sono ritagli di una fotografia vera della locanda. Stanno in
+ * `src/assets/gnocchi/dettagli/` e si sostituiscono rigenerandoli con
+ * `python scripts/ritaglia_ingredienti.py`.
  */
-const gnocchiTesti = await getEntry('gnocchi', 'testi');
-const gnocchiFoto = await getEntry('gnocchi', 'foto');
-
-const ingredienti = gnocchiTesti?.data.ricetta ?? [];
-
-/**
- * Le fotografie degli ingredienti, se ci sono.
- *
- * Si accoppiano alla ricetta per POSIZIONE: la prima foto è il primo
- * ingrediente. Se le foto sono meno degli ingredienti, quelli senza foto
- * mostrano semplicemente il nome — non un riquadro vuoto.
- */
-const fotoIngredienti = (gnocchiFoto?.data.fotoIngredienti ?? []).map((valore) =>
-  risolviImmagine(valore),
-);
+const dettagliIngredienti = [
+  (await import('../assets/gnocchi/dettagli/1-gnocchi.jpg')).default,
+  (await import('../assets/gnocchi/dettagli/2-fioreta.jpg')).default,
+  (await import('../assets/gnocchi/dettagli/3-farina-burro-formaggio.jpg')).default,
+];
 
 /**
  * Home — pagina di apertura.
@@ -149,64 +139,44 @@ const sentieri = (await getCollection('sentieri'))
        collegamento dice già dove porta.
        ================================================================== -->
   <!-- ==================================================================
-       Il tavolo degli gnocchi
+       La fascia degli gnocchi
        ------------------------------------------------------------------
-       Prima qui c'era solo il pulsante, in mezzo a una fascia vuota: nella
-       pagina si vedeva un rettangolo grigio con una scritta dentro.
+       Prima qui c'erano solo il pulsante e una fascia grigia vuota: il
+       pulsante sembrava appoggiato li' per caso.
 
-       Ora la fascia ha il fondo del legno e sopra ci stanno gli ingredienti,
-       nell'ordine in cui si usano. Gli ingredienti NON sono scritti qui: si
-       leggono dalla ricetta nella pagina degli gnocchi. Se la proprietaria
-       cambia una quantità dal pannello, questa fascia si aggiorna da sola —
-       e non può succedere che la home dica una cosa e la ricetta un'altra.
+       Ora il fondo e' il legno del tavolo e sopra ci stanno tre dettagli
+       fotografici degli ingredienti. NIENTE TESTI: nessun titolo, nessun
+       valore, nessun elenco. Le immagini fanno da sfondo alla fascia e il
+       pulsante ci sta sopra come l'azione di quella parte della pagina.
 
-       Le fotografie degli ingredienti sono facoltative: quando ci sono, la
-       tessera mostra l'immagine; finché non ci sono, resta il nome con la
-       quantità, che è comunque l'informazione utile.
+       I tre dettagli sono ritagli di una fotografia VERA della locanda — il
+       tavolo con la fioreta, la farina, il burro e il formaggio — non immagini
+       d'archivio. Sono tutti dello stesso formato, cosi' la fila resta ordinata.
+
+       Le immagini sono decorative: non aggiungono informazione che la pagina
+       non dia gia', quindi vanno con `alt` vuoto. La sezione ha comunque un
+       nome, per chi naviga con un lettore di schermo.
        ================================================================== -->
-  <section class="tavolo" aria-labelledby="titolo-ingredienti">
+  <section class="tavolo" aria-label="Gli gnocchi con la Fioreta">
     <div class="shell">
-      <p class="eyebrow tavolo__etichetta">La ricetta</p>
-      <h2 id="titolo-ingredienti" class="display-2 tavolo__titolo">
-        Gli ingredienti, uno per uno
-      </h2>
-      <p class="tavolo__nota">
-        Cinque ingredienti, nell'ordine in cui si usano. Sono quelli della ricetta De.Co.:
-        niente uova, niente patate.
-      </p>
-
-      <ol class="tavolo__elenco">
+      <ul class="tavolo__dettagli">
         {
-          ingredienti.map((voce, posizione) => {
-            const immagine = fotoIngredienti[posizione];
-            return (
-              <li class="ingrediente">
-                <span class="ingrediente__numero" aria-hidden="true">
-                  {String(posizione + 1).padStart(2, '0')}
-                </span>
-
-                {immagine && (
-                  <span class="ingrediente__foto">
-                    <Image
-                      src={immagine}
-                      alt=""
-                      widths={[220, 320, 440]}
-                      sizes="(min-width: 768px) 15vw, 40vw"
-                      format="webp"
-                      quality={82}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </span>
-                )}
-
-                <span class="ingrediente__nome">{voce.ingrediente}</span>
-                <span class="ingrediente__quantita">{voce.quantita}</span>
-              </li>
-            );
-          })
+          dettagliIngredienti.map((dettaglio) => (
+            <li class="dettaglio">
+              <Image
+                src={dettaglio}
+                alt=""
+                widths={[144, 216, 288, 432]}
+                sizes="(min-width: 768px) 15vw, 30vw"
+                format="webp"
+                quality={82}
+                loading="lazy"
+                decoding="async"
+              />
+            </li>
+          ))
         }
-      </ol>
+      </ul>
 
       <div class="tavolo__invito">
         <a href="/gnocchi-con-la-fioreta" class="pulsante-gnocchi">
