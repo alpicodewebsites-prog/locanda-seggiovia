@@ -975,95 +975,19 @@
 }
 
 /* ==========================================================================
-   AOS — Animate On Scroll
+   Meno movimento, se l'utente lo chiede
    --------------------------------------------------------------------------
-   Le animazioni sono definite QUI, non importate da `aos/dist/aos.css`.
+   Le animazioni allo scorrimento sono state rimosse su richiesta del
+   committente. Qui resta la rete di sicurezza per tutto il resto.
 
-   Perché: il foglio di stile della libreria non è mai stato incluso, quindi
-   fino a ora gli elementi marcati `data-aos` non facevano altro che comparire
-   in dissolvenza — nessuno spostamento, nessun ingrandimento. Ecco perché le
-   animazioni «non si percepivano»: non c'erano.
-
-   Definendole qui si controlla tutto: la durata, la curva, di quanto si sposta
-   un elemento. E si evita di importare un foglio che porta con sé durate e
-   curve sue, da sovrascrivere una per una.
-
-   Robustezza: `[data-aos]` è VISIBILE per impostazione predefinita. Diventa
-   invisibile solo sotto `html.aos-ready`, classe che lo script aggiunge dopo
-   aver inizializzato la libreria. Se il JavaScript non parte, la pagina si
-   legge tutta.
+   Serve ancora: le micro-interazioni al passaggio del mouse e alla tastiera
+   ci sono, e chi ha chiesto meno movimento dal sistema non deve vederle
+   muoversi. La regola e' volutamente generale — vale anche per qualunque
+   animazione venga aggiunta in futuro, senza doversene ricordare.
    ========================================================================== */
-
-[data-aos] {
-  opacity: 1;
-  transition-property: opacity, transform;
-  /* 400 ms. Erano 700, ed erano lente: il contenuto arrivava quando si era già
-     passati oltre. Deve restare allineata a `duration` in BaseLayout.astro. */
-  transition-duration: 400ms;
-  /* Curva morbida: parte decisa e si posa, senza rimbalzi. */
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* --- Gli stati di partenza, prima dell'animazione ------------------------- */
-
-html.aos-ready [data-aos]:not(.aos-animate) {
-  opacity: 0;
-}
-
-/* Dal basso verso l'alto: il movimento più leggibile e il più discreto. */
-html.aos-ready [data-aos='fade-up']:not(.aos-animate) {
-  transform: translate3d(0, 1.75rem, 0);
-}
-
-/* Solo dissolvenza, per gli elementi lunghi: spostare una tabella intera
-   sarebbe pesante da guardare. */
-html.aos-ready [data-aos='fade-in']:not(.aos-animate) {
-  transform: none;
-}
-
-/* Ingrandimento appena accennato: dal 95% al 100%. Serve alle immagini, che
-   così «si aprono» invece di apparire. */
-html.aos-ready [data-aos='zoom-in']:not(.aos-animate) {
-  transform: scale(0.95);
-}
-
-/* --- I ritardi -----------------------------------------------------------
-   Dichiarati anche qui, oltre che dalla libreria: così il ritardo è scritto
-   nel foglio di stile ed è verificabile leggendo il CSS.
-
-   Sono stati ridotti insieme alla durata. Con l'animazione a 400 ms, ritardi
-   da 400 ms facevano aspettare l'ultimo elemento della pagina quasi un secondo
-   dall'inizio: la coda del movimento si perdeva. Ora il ritardo massimo è 200
-   ms, cioè metà della durata. */
-[data-aos-delay='60'] {
-  transition-delay: 60ms;
-}
-[data-aos-delay='100'] {
-  transition-delay: 100ms;
-}
-[data-aos-delay='130'] {
-  transition-delay: 130ms;
-}
-[data-aos-delay='140'] {
-  transition-delay: 140ms;
-}
-[data-aos-delay='200'] {
-  transition-delay: 200ms;
-}
-
-/* Rispetto della preferenza di sistema: nessuna animazione, tutto visibile. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  [data-aos] {
-    transition: none;
-  }
-
-  html.aos-ready [data-aos]:not(.aos-animate) {
-    opacity: 1;
-    transform: none;
   }
 
   *,

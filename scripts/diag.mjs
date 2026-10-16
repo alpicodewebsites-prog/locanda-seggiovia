@@ -71,14 +71,7 @@ const dati = await page.evaluate(() => {
   // 5. Il background body ha il token giusto?
   out.body = { background: getComputedStyle(document.body).backgroundColor };
 
-  // 6. AOS attivo?
-  out.aos = {
-    classi: document.documentElement.className,
-    elementi: document.querySelectorAll('[data-aos]').length,
-    animati: document.querySelectorAll('[data-aos].aos-animate').length,
-  };
-
-  // 7. Quali fogli di stile hanno caricato davvero.
+  // 6. Quali fogli di stile hanno caricato davvero.
   out.fogli = [...document.styleSheets].map((s) => {
     try {
       return { href: s.href ? s.href.split('/').pop() : 'inline', regole: s.cssRules.length };

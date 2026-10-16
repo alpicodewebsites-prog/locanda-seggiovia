@@ -70,7 +70,8 @@ for (const vp of viewports) {
   });
   log(`${vp.name}: immagini pronte`);
 
-  // Le animazioni AOS si sono già attivate durante lo scroll; attesa di assestamento.
+  // Attesa di assestamento: i caratteri tipografici e le immagini appena
+  // caricate possono ancora spostare l'impaginazione di qualche pixel.
   await page.waitForTimeout(400);
   log(`${vp.name}: assestato`);
 

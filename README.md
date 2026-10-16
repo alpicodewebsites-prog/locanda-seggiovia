@@ -78,11 +78,13 @@ lo sviluppo:
   posizione di scroll subito dopo averla impostata, ma con `scroll-behavior:
   smooth` lo scorrimento è animato. Ora attende che si assesti.
 
-`check_visibility.mjs` merita una nota: verifica che nessun elemento con
-`data-aos` resti invisibile in quattro situazioni — JavaScript attivo su desktop,
-su mobile, con `prefers-reduced-motion`, e **con JavaScript disattivato del
-tutto**. È il controllo che impedisce il difetto classico dei siti con
-animazioni al scroll: pagina bianca se lo script non parte.
+`check_visibility.mjs` merita una nota: verifica che **nessun elemento con
+contenuto resti invisibile** — testo o figura che sia — in quattro situazioni:
+JavaScript attivo su desktop, su mobile, con `prefers-reduced-motion`, e **con
+JavaScript disattivato del tutto**. Nasce per le animazioni allo scorrimento,
+che sono state rimosse, ma il controllo è stato reso generale e resta: un
+contenuto nascosto per sbaglio non si vede guardando la pagina, si vede solo
+quando manca.
 
 ---
 
@@ -116,7 +118,7 @@ locanda-seggiovia/
 │   │   ├── Footer.astro           # recapiti, dati societari, link legali
 │   │   └── Hero.astro             # apertura della home
 │   ├── layouts/
-│   │   └── BaseLayout.astro       # <head>, SEO, JSON-LD, AOS
+│   │   └── BaseLayout.astro       # <head>, SEO, JSON-LD
 │   ├── scripts/
 │   │   ├── form-contatti.ts       # invio del modulo via JavaScript
 │   │   └── mappa.ts               # caricamento differito della mappa Google
@@ -224,17 +226,23 @@ informazione.
 
 ### Movimento
 
-AOS (Animate On Scroll) è integrato come richiesto, con due limitazioni deliberate:
+**Non ci sono animazioni allo scorrimento.** Erano state implementate con AOS
+(Animate On Scroll) e sono state rimosse su richiesta del committente.
 
-- **Disattivato su schermi sotto i 768 px e con `prefers-reduced-motion`.**
-  Un'animazione in meno è una pagina che si apre prima, e l'escursionista in
-  montagna ha spesso rete debole.
-- **Gli elementi non vengono mai nascosti in modo definitivo**: la classe
-  `aos-ready` viene aggiunta solo dopo l'inizializzazione di AOS, quindi un
-  errore JavaScript non può far sparire il contenuto.
+La scelta regge anche sul piano tecnico: le rivelazioni che partono scorrendo
+sono fra i pattern sconsigliati dalle linee guida di accessibilità, perché il
+contenuto compare in un momento imprevedibile, spesso non viene visto, e senza
+JavaScript non comparirebbe affatto. Ora il contenuto è semplicemente presente,
+subito.
 
-Le animazioni usano `data-aos="fade-up"` / `fade-in` con `data-aos-delay`
-progressivi, come da specifica.
+Resta il **movimento che parte da un'azione dell'utente**, tutto fra 250 e 300
+ms: il passaggio del mouse sui pulsanti, la freccia che scorre accanto al testo,
+le schede che si sollevano, il contorno del focus da tastiera.
+
+Resta anche la **rete di sicurezza per chi ha chiesto meno movimento dal
+sistema**: `@media (prefers-reduced-motion: reduce)` azzera durate e
+trasformazioni. La regola è volutamente generale, così vale anche per qualunque
+movimento venga aggiunto in futuro senza doversene ricordare.
 
 ---
 
@@ -573,7 +581,7 @@ Dopo il push, aggiornare `repo:` in `public/admin/config.yml` con
 | Font di sistema per il corpo | nessuna richiesta di rete, leggibilità immediata |
 | Menu mobile in `<details>` | funziona anche senza JavaScript |
 | Modulo contatti senza JavaScript | POST classica con redirect: funziona sempre, JS solo come miglioramento |
-| AOS disattivato su mobile | come da specifica, ma senza penalizzare chi ha rete debole |
+| Nessuna animazione allo scorrimento | il contenuto è presente subito, non appare in un momento imprevedibile; resta il movimento che parte da un'azione dell'utente |
 | Nessun analytics di default | nessun cookie di terze parti, nessun banner necessario |
 | JSON-LD `Restaurant` + `LodgingBusiness` | una struttura con cucina e camere è entrambe le cose |
 | `Menu` e `OfferCatalog` sulle pagine nuove | menù e tariffe diventano leggibili anche dai motori di ricerca |

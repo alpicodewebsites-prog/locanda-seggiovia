@@ -2,8 +2,8 @@
 /**
  * BaseLayout — guscio comune a tutte le pagine.
  *
- * Contiene: <head> completo e ottimizzato per la SEO, skip-link, header,
- * footer, e l'inizializzazione di AOS.
+ * Contiene: <head> completo e ottimizzato per la SEO, skip-link, header e
+ * footer.
  */
 import '../styles/global.css';
 
@@ -180,44 +180,19 @@ const fullSchema = [businessSchema, ...schemas];
 
     <Footer />
 
-    <script>
-      import AOS from 'aos';
-      import { preparaAnimazioni } from '../scripts/animazioni';
+    <!--
+      Qui c'era AOS, la libreria delle animazioni allo scorrimento.
 
-      // AOS è costruito per essere incluso: senza di esso gli elementi
-      // marcati [data-aos] verrebbero nascosti dal CSS della libreria.
-      // global.css tiene comunque tutto visibile finché non aggiungiamo
-      // la classe `aos-ready`, così un errore JS non fa sparire la pagina.
-      const riduciMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      È stata tolta su richiesta del committente, e la scelta regge anche sul
+      piano tecnico: le rivelazioni che partono scorrendo sono fra i pattern
+      sconsigliati dalle linee guida di accessibilità, perché il contenuto
+      appare in un momento imprevedibile, spesso non viene visto, e senza
+      JavaScript non comparirebbe affatto.
 
-      // Sotto i 768 px le animazioni distraggono e rallentano la lettura, e
-      // l'escursionista in montagna ha spesso una rete debole.
-      const schermoPiccolo = window.matchMedia('(max-width: 767px)').matches;
-
-      if (!riduciMovimento && !schermoPiccolo) {
-        // Gli attributi si assegnano PRIMA di inizializzare: AOS li cerca in
-        // pagina quando parte. Vedi src/scripts/animazioni.ts.
-        preparaAnimazioni();
-
-        AOS.init({
-          // 400 ms. Erano 700, ed erano lente da guardare: il contenuto
-          // arrivava quando si era già passati oltre. A 400 il movimento si
-          // percepisce ancora ma non si aspetta, ed è vicino alla durata delle
-          // micro-interazioni del sito (250-300 ms): tutto si muove allo
-          // stesso passo invece di avere due velocità diverse.
-          duration: 400,
-          // L'animazione parte quando l'elemento è entrato di circa il 15-20%
-          // dal fondo dello schermo: si vede arrivare, non si vede già arrivato.
-          offset: 150,
-          // Una volta sola per caricamento: ricaricando la pagina si ripete.
-          once: true,
-          disable: 'phone',
-        });
-
-        document.documentElement.classList.add('aos-ready');
-        AOS.refresh();
-      }
-    </script>
+      Il contenuto ora è semplicemente presente, subito. Le micro-interazioni
+      al passaggio del mouse e alla tastiera (pulsanti, frecce, schede) restano:
+      sono un'altra cosa, partono da un'azione dell'utente e durano 250-300 ms.
+    -->
   </body>
 </html>
 
