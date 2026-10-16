@@ -106,7 +106,7 @@ collections:
       I testi e le quattro fotografie della prima pagina del sito.
     files:
       - name: pagina
-        label: Testi e fotografie
+        label: Testi, paragrafi e foto
         file: src/content/home/pagina.md
         media_folder: /src/assets/home
         public_folder: /assets/home
@@ -127,7 +127,7 @@ collections:
             required: false
             hint: 'Non si vede in pagina: compare su Google e quando il sito viene condiviso in un messaggio.'
 
-          - label: I due accessi dell''apertura
+          - label: "I due accessi dell'apertura"
             name: accessi
             label_singular: Accesso
             widget: list
@@ -185,33 +185,35 @@ collections:
             widget: text
 
           # --- Le quattro fotografie, ognuna con il suo posto ---------------
-          - label: 'Fotografia 1 — Apertura (prima schermata)'
+          # Sono tutte ORIZZONTALI, ed è l'ordine in cui compaiono scorrendo
+          # la pagina dall'alto in basso.
+          - label: 'Fotografia 1 — Apertura, prima schermata (orizzontale)'
             name: hero
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
             hint: 'La fotografia grande in cima, con il titolo sopra. Serve almeno 2500 pixel di larghezza. Se la togli, resta il fondo scuro.'
 
-          - label: 'Fotografia 2 — Fascia panoramica'
-            name: panorama
+          - label: 'Fotografia 2 — La locanda vista da fuori (orizzontale)'
+            name: facciata
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Usata a tutta larghezza, verso la fine della pagina. Serve una fotografia grande e orizzontale.'
+            hint: 'Nella sezione «La locanda» della home. La pagina La Locanda ha una sua fotografia, separata: puoi metterne due diverse.'
 
-          - label: 'Fotografia 3 — Le montagne'
+          - label: 'Fotografia 3 — Le montagne (orizzontale)'
             name: montagne
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
             hint: 'Nella sezione Territorio, accanto ai sentieri.'
 
-          - label: 'Fotografia 4 — La locanda vista da fuori'
-            name: facciata
+          - label: 'Fotografia 4 — Fascia panoramica (orizzontale)'
+            name: panorama
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Nella sezione «La locanda» della home. La pagina La Locanda ha una sua fotografia, separata: puoi metterne due diverse.'
+            hint: 'Usata a tutta larghezza, verso la fine della pagina. Serve una fotografia grande e orizzontale.'
 
   # --------------------------------------------------------------------------
   # PAGINA LA LOCANDA
@@ -221,23 +223,27 @@ collections:
     description: Testi e fotografie della pagina «La locanda e la famiglia».
     files:
       - name: pagina
-        label: Testi e fotografie
+        label: Testi, paragrafi e foto
         file: src/content/la-locanda/pagina.md
         media_folder: /src/assets/la-locanda
         public_folder: /assets/la-locanda
         fields:
           - { label: Titolo, name: titolo, widget: string }
           - { label: Testo introduttivo, name: sottotitolo, widget: text, required: false }
-          - label: 'Fotografia — La locanda vista da fuori'
-            name: facciata
-            widget: image
-            accept: image/jpeg,image/png,image/webp,image/avif
-            required: false
-          - label: 'Fotografia — Il tavolo di cucina'
+          # Le due fotografie sono ordinate dal VERTICALE all'ORIZZONTALE, che è
+          # l'ordine in cui compaiono impaginate nella pagina.
+          - label: 'Fotografia 1 — Il tavolo di cucina (verticale)'
             name: cucina
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
+            hint: 'Scatto verticale. Sta accanto al racconto della famiglia.'
+          - label: 'Fotografia 2 — La locanda vista da fuori (orizzontale)'
+            name: facciata
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+            hint: 'Scatto orizzontale. È distinta da quella della home: puoi metterne una diversa.'
 
   # --------------------------------------------------------------------------
   # PAGINA SENTIERI
@@ -247,19 +253,23 @@ collections:
     description: Testi e fotografie dell'elenco dei sentieri.
     files:
       - name: pagina
-        label: Testi e fotografie
+        label: Testi, paragrafi e foto
         file: src/content/sentieri-pagina/pagina.md
-        media_folder: /src/assets/sentieri
-        public_folder: /assets/sentieri
+        media_folder: /src/assets/sentieri-pagina
+        public_folder: /assets/sentieri-pagina
         fields:
           - { label: Titolo, name: titolo, widget: string }
           - { label: Testo introduttivo, name: sottotitolo, widget: text, required: false }
-          - label: 'Fotografia — Le montagne'
+          # La cartella è `sentieri-pagina/`, separata da `sentieri/` che
+          # contiene le copertine dei singoli itinerari: aprendo questi campi si
+          # vedono solo le due fotografie della pagina, non tutte e otto.
+          - label: 'Fotografia 1 — Le montagne (orizzontale)'
             name: montagne
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-          - label: 'Fotografia — Panorama'
+            hint: 'Sta nella cartella `sentieri-pagina`, non in quella dei sentieri.'
+          - label: 'Fotografia 2 — Panorama (orizzontale)'
             name: panorama
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
@@ -274,7 +284,7 @@ collections:
       La pagina del piatto bandiera. È un contenuto unico: non se ne creano altri.
     files:
       - name: fioreta
-        label: Testi e fotografie
+        label: Testi, ricetta e foto
         file: src/content/gnocchi/fioreta.md
         media_folder: /src/assets/gnocchi
         public_folder: /assets/gnocchi
@@ -305,16 +315,19 @@ collections:
             label_singular: Riconoscimento
             widget: list
             required: false
-          - label: 'Fotografia — Il piatto finito'
-            name: foto
-            widget: image
-            accept: image/jpeg,image/png,image/webp,image/avif
-            required: false
-          - label: 'Fotografia — Gli ingredienti'
+          # Le due fotografie sono ordinate dal VERTICALE all'ORIZZONTALE.
+          - label: 'Fotografia 1 — Gli ingredienti (verticale)'
             name: fotoPreparazione
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
+            hint: 'Scatto verticale del tavolo di cucina.'
+          - label: 'Fotografia 2 — Il piatto finito (orizzontale)'
+            name: foto
+            widget: image
+            accept: image/jpeg,image/png,image/webp,image/avif
+            required: false
+            hint: 'Scatto orizzontale del piatto impiattato.'
 
   # ==========================================================================
   # 2. LE SCHEDE

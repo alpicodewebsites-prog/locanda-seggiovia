@@ -12,6 +12,6 @@ sottotitolo: >-
   Sei itinerari che partono dal centro di Recoaro Terme. Difficoltà dal
   turistico all'escursionistico esposto, con i dati tecnici reali.
 
-montagne: /assets/sentieri/montagne.jpg
-panorama: /assets/sentieri/panorama.jpg
+montagne: /assets/sentieri-pagina/montagne.jpg
+panorama: /assets/sentieri-pagina/panorama.jpg
 ---
