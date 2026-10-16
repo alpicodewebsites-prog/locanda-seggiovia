@@ -364,20 +364,14 @@ def main() -> int:
     # solo e lo intitola a una delle due copie. La pagina mostra quindi
     # l'immagine giusta, ma il nome del file costruito può essere quello
     # dell'altra. Pretendere un nome preciso darebbe un falso allarme.
+    #
+    # I nomi hanno un numero davanti: serve a ordinare i file nella libreria
+    # del pannello secondo l'ordine in cui compaiono nel sito.
     foto_obbligatorie = {
-        # La fascia scura di chiusura con il panorama è stata rimossa: la home
-        # chiude sul fondo della pagina, senza il blocco scuro a metà.
-        "index.html": [["hero"], ["facciata"]],
-        # Camere e Ristorante non hanno più nessuna fotografia obbligatoria:
-        # le immagini fuori contesto sono state sostituite da segnaposto
-        # dichiarati, che spariscono quando arrivano gli scatti veri.
-        # Restano controllate solo per il logo del footer, più sotto.
-        "gnocchi-con-la-fioreta/index.html": [["piatto"], ["preparazione", "cucina"]],
-        # La facciata si è spostata qui, nella sezione «La casa»; il tavolo di
-        # cucina accompagna il racconto della famiglia. Sono copie proprie di
-        # questa pagina, non le stesse della home.
-        "la-locanda/index.html": [["facciata"], ["cucina", "preparazione"]],
-        "sentieri/index.html": [["panorama"], ["montagne"]],
+        "index.html": [["01-apertura"], ["02-locanda-esterno"]],
+        "gnocchi-con-la-fioreta/index.html": [["02-piatto-finito"], ["01-ingredienti", "01-tavolo-di-cucina"]],
+        "la-locanda/index.html": [["02-locanda-esterno"], ["01-tavolo-di-cucina", "01-ingredienti"]],
+        "sentieri/index.html": [["02-panorama"], ["01-montagne"]],
     }
     for rel, attese in foto_obbligatorie.items():
         percorso = DIST / rel

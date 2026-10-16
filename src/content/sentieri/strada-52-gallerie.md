@@ -13,5 +13,5 @@ difficolta: EE
 distanza: 6,6 km
 dislivello: 1002 m
 partenza: Bocchetta Campiglia
-immagine: /assets/sentieri/52-gallerie.jpg
+immagine: /assets/sentieri/06-strada-52-gallerie.jpg
 ---

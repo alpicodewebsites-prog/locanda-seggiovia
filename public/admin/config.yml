@@ -6,71 +6,73 @@
 #
 # Due gruppi, nell'ordine in cui si usano:
 #
-#   1. LE PAGINE — una voce per ogni pagina del sito. Dentro ci sono i TESTI e
-#      le FOTOGRAFIE di quella pagina, e nient'altro. Chi vuole cambiare il
-#      titolo della home apre «Home Page» e lo trova lì.
+#   1. LE PAGINE — una voce per ogni pagina del sito.
+#   2. LE SCHEDE — gli elenchi: sentieri, camere, piatti del menù.
 #
-#   2. LE SCHEDE — gli elenchi: sentieri, camere, piatti del menù. Qui si
-#      aggiungono e si tolgono voci.
+# ----------------------------------------------------------------------------
+# PERCHÉ OGNI PAGINA HA DUE VOCI: «Testi e paragrafi» E «Fotografie»
+#
+# Sveltia chiama le cartelle della libreria immagini con il nome della voce:
+# «Home Page › …». Con una voce sola, quella parola finiva anche nella libreria,
+# dove si gestiscono SOLO fotografie, e si leggeva «Testi, paragrafi e foto».
+# Fuorviante.
+#
+# Ora i testi e le fotografie stanno in due file distinti, e la libreria mostra
+# «Home Page › Fotografie», che è quello che serve.
 #
 # ----------------------------------------------------------------------------
 # LE IMMAGINI NON FINISCONO TUTTE INSIEME
 #
 # Ogni sezione ha la sua cartella, dichiarata con `media_folder`:
 #
-#     Home Page            -> src/assets/home/
-#     Pagina La Locanda    -> src/assets/la-locanda/
-#     Pagina Sentieri      -> src/assets/sentieri/
+#     Home Page              -> src/assets/home/
+#     Pagina La Locanda      -> src/assets/la-locanda/
+#     Pagina Sentieri        -> src/assets/sentieri-pagina/
 #     Gnocchi con la Fioreta -> src/assets/gnocchi/
-#     Sentieri (elenco)    -> src/assets/sentieri/
-#     Camere (elenco)      -> src/assets/camere/
-#     Menù (elenco)        -> src/assets/ristorante/piatti/
+#     Sentieri (elenco)      -> src/assets/sentieri/
+#     Camere (elenco)        -> src/assets/camere/
+#     Menù del ristorante    -> src/assets/ristorante/piatti/
 #
-# Aprendo il selettore di un campo si vedono PRIMA i file di quella sezione.
-# Restano raggiungibili anche le altre schede del selettore, compresa quella
-# generale: servono per riusare una foto già caricata altrove.
+# ----------------------------------------------------------------------------
+# PERCHÉ I NOMI DEI FILE COMINCIANO CON UN NUMERO
 #
-# ATTENZIONE — `media_folder` di collezione e di file DEVE iniziare con la barra
+# La libreria ordina i file PER NOME. Senza numeri, `facciata.jpg` veniva prima
+# di `hero.jpg`: l'ordine non aveva niente a che vedere con quello della pagina.
+# Il numero davanti fa sì che l'ordine nella libreria sia quello in cui le
+# fotografie compaiono scorrendo il sito.
+#
+# Se si rinomina una fotografia, va aggiornato anche il percorso scritto nel
+# file della voce «Fotografie»: se non corrisponde, la pagina resta senza foto.
+#
+# ATTENZIONE — `media_folder` di collezione e di voce DEVE iniziare con la barra
 # (`/src/assets/...`): senza, Sveltia lo interpreta come percorso relativo alla
 # cartella dei contenuti e i file finiscono nel posto sbagliato.
-#
-# ATTENZIONE — spostare un'immagine di cartella a mano significa anche
-# aggiornare il percorso scritto nel file di contenuto. Se il percorso non
-# corrisponde a un file vero, la pagina resta senza fotografia.
 #
 # ----------------------------------------------------------------------------
 # PERCHÉ LA CONVERSIONE IN WEBP È DISATTIVATA — leggere prima di riattivarla.
 #
 # Sveltia sa convertire le immagini in WebP dentro il browser al caricamento
-# (opzione `media_libraries.all.transformations.raster_image`). Sembrava un
-# miglioramento, e invece rende IMPOSSIBILE sostituire una fotografia:
+# (`media_libraries.all.transformations.raster_image`). Rende però IMPOSSIBILE
+# sostituire una fotografia: si carica un JPEG per sostituire un JPEG, Sveltia
+# lo converte in WebP, e a quel punto rifiuta la sostituzione perché il formato
+# è diverso — «Questo file non può sostituire … perché è in un formato diverso».
+# Non esiste un'opzione documentata per disattivare quel controllo.
 #
-#   1. si carica un JPEG per sostituire `hero.jpg`;
-#   2. Sveltia lo converte in WebP prima di salvarlo;
-#   3. a quel punto prova a sostituire un file JPEG con un file WebP;
-#   4. rifiuta, perché la sostituzione richiede lo stesso formato:
-#      «Questo file non può sostituire … perché è in un formato diverso».
-#
-# Non esiste un'opzione documentata per disattivare il controllo di formato
-# sulla sostituzione. Quindi la conversione resta spenta. Non si perde niente:
-# Astro converte comunque in WebP in fase di compilazione.
+# Non si perde niente: Astro converte comunque in WebP in fase di compilazione.
 # ============================================================================
 
 backend:
   name: github
   repo: alpicodewebsites-prog/locanda-seggiovia
   branch: main
-  # Il pannello è servito da Vercel, ma il login passa da Netlify. Netlify
-  # riconosce il sito dal dominio: senza questa riga non capisce per quale sito
-  # sta autorizzando l'accesso e rifiuta la richiesta.
+  # Il pannello è servito da Vercel, ma il login passa da Netlify.
   site_domain: locanda-seggiovia.netlify.app
-  # Si accede SOLO con token. Il pulsante «Accedi con GitHub» (OAuth via Netlify)
-  # non funziona su questo progetto: mostrarlo confonderebbe la proprietaria.
+  # Si accede SOLO con token: il pulsante «Accedi con GitHub» non funziona su
+  # questo progetto, e mostrarlo confonderebbe la proprietaria.
   auth_methods: [token]
 
 # --- Cartella generale ------------------------------------------------------
-# Vale come ripiego per i campi che non dichiarano una cartella propria. Le
-# sezioni qui sotto la scavalcano ciascuna con la propria.
+# Vale come ripiego per i campi che non dichiarano una cartella propria.
 media_folder: src/assets
 public_folder: /assets
 
@@ -102,19 +104,17 @@ collections:
   # --------------------------------------------------------------------------
   - name: home
     label: Home Page
-    description: >-
-      I testi e le quattro fotografie della prima pagina del sito.
+    description: I testi e le quattro fotografie della prima pagina del sito.
     files:
-      - name: pagina
-        label: Testi, paragrafi e foto
-        file: src/content/home/pagina.md
-        media_folder: /src/assets/home
-        public_folder: /assets/home
+      # --- I testi ---------------------------------------------------------
+      - name: testi
+        label: Testi e paragrafi
+        file: src/content/home/testi.md
         fields:
           - label: Titolo principale
             name: titolo
             widget: string
-            hint: 'La frase grande della prima schermata. Il titolo è testo vero, non un''immagine: resta leggibile e indicizzabile.'
+            hint: 'La frase grande della prima schermata. È testo vero, non un''immagine: resta leggibile e indicizzabile.'
 
           - label: Testo sotto il titolo
             name: sottotitolo
@@ -127,12 +127,12 @@ collections:
             required: false
             hint: 'Non si vede in pagina: compare su Google e quando il sito viene condiviso in un messaggio.'
 
-          - label: "I due accessi dell'apertura"
+          - label: I due accessi dell'apertura
             name: accessi
             label_singular: Accesso
             widget: list
             required: false
-            hint: 'Le due scelte in fondo alla prima schermata. Se svuoti questa lista, tornano quelle predefinite (Dormire e Mangiare).'
+            hint: 'Le due scelte in fondo alla prima schermata. Se la lista è vuota, tornano quelle predefinite (Dormire e Mangiare).'
             fields:
               - { label: Parola piccola sopra, name: etichetta, widget: string }
               - { label: Titolo, name: titolo, widget: string }
@@ -151,69 +151,59 @@ collections:
           - label: Invito ai sentieri
             name: invitoSentieri
             widget: string
-            hint: 'Il collegamento piccolo sotto i due accessi.'
+            hint: Il collegamento piccolo sotto i due accessi.
 
           - label: Testo del pulsante degli gnocchi
             name: pulsanteGnocchi
             widget: string
-            hint: 'La scritta dentro il pulsante giallo a pillola.'
+            hint: La scritta dentro il pulsante giallo a pillola.
 
-          - label: Sezione «La locanda» — etichetta piccola
-            name: locandaEtichetta
-            widget: string
-          - label: Sezione «La locanda» — titolo
-            name: locandaTitolo
-            widget: string
-          - label: Sezione «La locanda» — paragrafi
+          - { label: 'Sezione «La locanda» — etichetta piccola', name: locandaEtichetta, widget: string }
+          - { label: 'Sezione «La locanda» — titolo', name: locandaTitolo, widget: string }
+          - label: 'Sezione «La locanda» — paragrafi'
             name: locandaParagrafi
             label_singular: Paragrafo
             widget: list
             required: false
-            hint: 'Un paragrafo per voce. Vanno a capo da soli.'
-          - label: Sezione «La locanda» — testo del collegamento
-            name: locandaCollegamento
-            widget: string
+            hint: Un paragrafo per voce. Vanno a capo da soli.
+          - { label: 'Sezione «La locanda» — testo del collegamento', name: locandaCollegamento, widget: string }
+          - { label: 'Sezione «Territorio» — etichetta piccola', name: territorioEtichetta, widget: string }
+          - { label: 'Sezione «Territorio» — titolo', name: territorioTitolo, widget: string }
+          - { label: 'Sezione «Territorio» — introduzione', name: territorioTesto, widget: text }
 
-          - label: Sezione «Territorio» — etichetta piccola
-            name: territorioEtichetta
-            widget: string
-          - label: Sezione «Territorio» — titolo
-            name: territorioTitolo
-            widget: string
-          - label: Sezione «Territorio» — introduzione
-            name: territorioTesto
-            widget: text
-
-          # --- Le quattro fotografie, ognuna con il suo posto ---------------
-          # Sono tutte ORIZZONTALI, ed è l'ordine in cui compaiono scorrendo
-          # la pagina dall'alto in basso.
-          - label: 'Fotografia 1 — Apertura, prima schermata (orizzontale)'
+      # --- Le fotografie ---------------------------------------------------
+      - name: foto
+        label: Fotografie
+        file: src/content/home/foto.md
+        media_folder: /src/assets/home
+        public_folder: /assets/home
+        fields:
+          # L'ordine di questi campi è quello in cui le fotografie compaiono
+          # scorrendo la pagina, e i numeri dei file seguono lo stesso ordine.
+          - label: '1 — Apertura, prima schermata (orizzontale)'
             name: hero
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
             hint: 'La fotografia grande in cima, con il titolo sopra. Serve almeno 2500 pixel di larghezza. Se la togli, resta il fondo scuro.'
-
-          - label: 'Fotografia 2 — La locanda vista da fuori (orizzontale)'
+          - label: '2 — La locanda vista da fuori (orizzontale)'
             name: facciata
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Nella sezione «La locanda» della home. La pagina La Locanda ha una sua fotografia, separata: puoi metterne due diverse.'
-
-          - label: 'Fotografia 3 — Le montagne (orizzontale)'
+            hint: 'Nella sezione «La locanda» della home. La pagina La Locanda ha una sua fotografia, separata.'
+          - label: '3 — Le montagne (orizzontale)'
             name: montagne
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Nella sezione Territorio, accanto ai sentieri.'
-
-          - label: 'Fotografia 4 — Fascia panoramica (orizzontale)'
+            hint: Nella sezione Territorio, accanto ai sentieri.
+          - label: '4 — Fascia panoramica (orizzontale)'
             name: panorama
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Usata a tutta larghezza, verso la fine della pagina. Serve una fotografia grande e orizzontale.'
+            hint: Usata a tutta larghezza, verso la fine della pagina.
 
   # --------------------------------------------------------------------------
   # PAGINA LA LOCANDA
@@ -222,28 +212,31 @@ collections:
     label: Pagina La Locanda
     description: Testi e fotografie della pagina «La locanda e la famiglia».
     files:
-      - name: pagina
-        label: Testi, paragrafi e foto
-        file: src/content/la-locanda/pagina.md
-        media_folder: /src/assets/la-locanda
-        public_folder: /assets/la-locanda
+      - name: testi
+        label: Testi e paragrafi
+        file: src/content/la-locanda/testi.md
         fields:
           - { label: Titolo, name: titolo, widget: string }
           - { label: Testo introduttivo, name: sottotitolo, widget: text, required: false }
-          # Le due fotografie sono ordinate dal VERTICALE all'ORIZZONTALE, che è
-          # l'ordine in cui compaiono impaginate nella pagina.
-          - label: 'Fotografia 1 — Il tavolo di cucina (verticale)'
+
+      - name: foto
+        label: Fotografie
+        file: src/content/la-locanda/foto.md
+        media_folder: /src/assets/la-locanda
+        public_folder: /assets/la-locanda
+        fields:
+          - label: '1 — Il tavolo di cucina (verticale)'
             name: cucina
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Scatto verticale. Sta accanto al racconto della famiglia.'
-          - label: 'Fotografia 2 — La locanda vista da fuori (orizzontale)'
+            hint: Scatto verticale, accanto al racconto della famiglia.
+          - label: '2 — La locanda vista da fuori (orizzontale)'
             name: facciata
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Scatto orizzontale. È distinta da quella della home: puoi metterne una diversa.'
+            hint: 'Distinta da quella della home: puoi metterne una diversa.'
 
   # --------------------------------------------------------------------------
   # PAGINA SENTIERI
@@ -252,24 +245,28 @@ collections:
     label: Pagina Sentieri
     description: Testi e fotografie dell'elenco dei sentieri.
     files:
-      - name: pagina
-        label: Testi, paragrafi e foto
-        file: src/content/sentieri-pagina/pagina.md
-        media_folder: /src/assets/sentieri-pagina
-        public_folder: /assets/sentieri-pagina
+      - name: testi
+        label: Testi e paragrafi
+        file: src/content/sentieri-pagina/testi.md
         fields:
           - { label: Titolo, name: titolo, widget: string }
           - { label: Testo introduttivo, name: sottotitolo, widget: text, required: false }
-          # La cartella è `sentieri-pagina/`, separata da `sentieri/` che
-          # contiene le copertine dei singoli itinerari: aprendo questi campi si
-          # vedono solo le due fotografie della pagina, non tutte e otto.
-          - label: 'Fotografia 1 — Le montagne (orizzontale)'
+
+      - name: foto
+        label: Fotografie
+        file: src/content/sentieri-pagina/foto.md
+        media_folder: /src/assets/sentieri-pagina
+        public_folder: /assets/sentieri-pagina
+        fields:
+          # La cartella è `sentieri-pagina`, separata da `sentieri` che contiene
+          # le copertine dei singoli itinerari: aprendo questi campi si vedono
+          # solo le fotografie della pagina, non tutte quelle dei sentieri.
+          - label: '1 — Le montagne (orizzontale)'
             name: montagne
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Sta nella cartella `sentieri-pagina`, non in quella dei sentieri.'
-          - label: 'Fotografia 2 — Panorama (orizzontale)'
+          - label: '2 — Panorama (orizzontale)'
             name: panorama
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
@@ -280,14 +277,11 @@ collections:
   # --------------------------------------------------------------------------
   - name: gnocchi
     label: Gnocchi con la Fioreta
-    description: >-
-      La pagina del piatto bandiera. È un contenuto unico: non se ne creano altri.
+    description: La pagina del piatto bandiera. È un contenuto unico.
     files:
-      - name: fioreta
-        label: Testi, ricetta e foto
-        file: src/content/gnocchi/fioreta.md
-        media_folder: /src/assets/gnocchi
-        public_folder: /assets/gnocchi
+      - name: testi
+        label: Testi e ricetta
+        file: src/content/gnocchi/testi.md
         fields:
           - { label: Titolo, name: titolo, widget: string }
           - { label: Sottotitolo, name: sottotitolo, widget: string, required: false }
@@ -315,19 +309,25 @@ collections:
             label_singular: Riconoscimento
             widget: list
             required: false
-          # Le due fotografie sono ordinate dal VERTICALE all'ORIZZONTALE.
-          - label: 'Fotografia 1 — Gli ingredienti (verticale)'
+
+      - name: foto
+        label: Fotografie
+        file: src/content/gnocchi/foto.md
+        media_folder: /src/assets/gnocchi
+        public_folder: /assets/gnocchi
+        fields:
+          - label: '1 — Gli ingredienti (verticale)'
             name: fotoPreparazione
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Scatto verticale del tavolo di cucina.'
-          - label: 'Fotografia 2 — Il piatto finito (orizzontale)'
+            hint: Scatto verticale del tavolo di cucina.
+          - label: '2 — Il piatto finito (orizzontale)'
             name: foto
             widget: image
             accept: image/jpeg,image/png,image/webp,image/avif
             required: false
-            hint: 'Scatto orizzontale del piatto impiattato.'
+            hint: Scatto orizzontale del piatto impiattato.
 
   # ==========================================================================
   # 2. LE SCHEDE

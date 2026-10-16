@@ -6,28 +6,22 @@
  * prodotto bandiera De.Co. e ha una storia che sta in piedi da sola.
  * I contenuti si gestiscono dal pannello /admin (collezione `gnocchi`).
  */
-import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_URL } from '../data/site';
-import { risolviImmagine } from '../lib/immagini';
+import { caricaGnocchi } from '../lib/pagine';
 
-const voci = await getCollection('gnocchi');
-const gnocchi = voci[0];
+/*
+  Testi e fotografie arrivano da due voci distinte del pannello: «Testi e
+  ricetta» e «Fotografie». Sono separate perché la libreria immagini chiama le
+  cartelle con il nome della voce, e lì la parola «testi» non ha senso.
+*/
+const { testi: d, foto } = await caricaGnocchi();
 
-if (!gnocchi) {
-  throw new Error(
-    'Collezione "gnocchi" vuota: manca src/content/gnocchi/fioreta.md. ' +
-      'Senza quel contenuto la pagina non ha nulla da mostrare.',
-  );
-}
-
-const d = gnocchi.data;
-
-/** Le due fotografie arrivano dal contenuto, quindi dal pannello. */
-const fotoFioreta = risolviImmagine(d.foto);
-const fotoPreparazione = risolviImmagine(d.fotoPreparazione);
+/** Le due fotografie, già risolte in immagini pronte per `Image`. */
+const fotoFioreta = foto.piatto;
+const fotoPreparazione = foto.preparazione;
 
 const schema = {
   '@context': 'https://schema.org',

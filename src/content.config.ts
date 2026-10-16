@@ -1,29 +1,129 @@
 /**
  * Content collections — schema dei contenuti gestiti dal CMS.
  *
- * In Astro 7 le collezioni si definiscono qui (non più in src/content/config.ts)
- * e i file si caricano con il loader `glob()`. Ogni campo dichiarato qui
- * corrisponde a un campo modificabile in /admin.
+ * In Astro 7 le collezioni si definiscono qui e i file si caricano con il loader
+ * `glob()`. Ogni campo dichiarato qui corrisponde a un campo modificabile in
+ * /admin.
+ *
+ * ----------------------------------------------------------------------------
+ * PERCHÉ I CAMPI DELLE PAGINE SONO (QUASI) TUTTI OPZIONALI
+ *
+ * Ogni pagina ha DUE file: `testi.md` e `foto.md`. Il loader `glob()` applica
+ * però UN SOLO schema a tutti i file della cartella, quindi `testi.md` viene
+ * validato contro lo stesso schema di `foto.md`.
+ *
+ * Se `titolo` fosse obbligatorio, `foto.md` — che non lo contiene — farebbe
+ * fallire la compilazione. Da qui la scelta: nella collezione di una pagina i
+ * campi sono opzionali, e i valori di riserva stanno in `src/lib/pagine.ts`, che
+ * li applica SOLO se il file manca davvero.
+ *
+ * Le collezioni a elenco (camere, menu, sentieri) hanno invece i campi
+ * obbligatori: lì ogni file è una scheda completa.
+ * ----------------------------------------------------------------------------
  *
  * ATTENZIONE: i campi opzionali sono davvero opzionali. Se un'informazione non
  * esiste, va lasciata vuota: non va inventata. Il CMS è configurato con
  * `omit_empty_optional_fields`, quindi un campo vuoto non viene scritto nel file
  * e il sito semplicemente non lo mostra.
- *
- * SULLE IMMAGINI: le fotografie stanno tutte in `src/assets` e i campi immagine
- * contengono il percorso che il pannello salva, del tipo
- * `/assets/nome-file.jpg`. La risoluzione avviene con `src/lib/immagini.ts`,
- * che accetta anche il vecchio formato a sigla (`sentieri-mole`).
  */
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-/** Campo immagine riutilizzabile: percorso in src/assets. */
+/** Campo immagine riutilizzabile: percorso dentro src/assets. */
 const immagine = z.string().optional();
 
 /* -------------------------------------------------------------------------- */
-/* Camere e tariffe                                                            */
+/* Pagine singole — testi e fotografie in due file separati                    */
+/*                                                                             */
+/* La divisione non è un capriccio: Sveltia chiama le cartelle della libreria  */
+/* «Collezione › etichetta della voce». Con una voce sola, nella libreria —    */
+/* dove si gestiscono SOLO fotografie — si leggeva «Testi, paragrafi e foto».  */
+/* -------------------------------------------------------------------------- */
+
+/** Home page. */
+const home = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/home' }),
+  schema: z.object({
+    // --- Testi (in testi.md) ---------------------------------------------
+    titolo: z.string().optional(),
+    sottotitolo: z.string().optional(),
+    /** Descrizione per i motori di ricerca: non si vede in pagina. */
+    descrizione: z.string().optional(),
+    accessi: z
+      .array(
+        z.object({
+          etichetta: z.string(),
+          titolo: z.string(),
+          nota: z.string(),
+          collegamento: z.string(),
+        }),
+      )
+      .optional(),
+    invitoSentieri: z.string().optional(),
+    pulsanteGnocchi: z.string().optional(),
+    locandaEtichetta: z.string().optional(),
+    locandaTitolo: z.string().optional(),
+    locandaParagrafi: z.array(z.string()).optional(),
+    locandaCollegamento: z.string().optional(),
+    territorioEtichetta: z.string().optional(),
+    territorioTitolo: z.string().optional(),
+    territorioTesto: z.string().optional(),
+    // --- Fotografie (in foto.md) -----------------------------------------
+    hero: immagine,
+    panorama: immagine,
+    montagne: immagine,
+    facciata: immagine,
+  }),
+});
+
+/** Pagina La Locanda. */
+const paginaLocanda = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/la-locanda' }),
+  schema: z.object({
+    titolo: z.string().optional(),
+    sottotitolo: z.string().optional(),
+    facciata: immagine,
+    cucina: immagine,
+  }),
+});
+
+/** Pagina Sentieri (l'elenco). */
+const paginaSentieri = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/sentieri-pagina' }),
+  schema: z.object({
+    titolo: z.string().optional(),
+    sottotitolo: z.string().optional(),
+    montagne: immagine,
+    panorama: immagine,
+  }),
+});
+
+/** Gnocchi con la Fioreta. */
+const gnocchi = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/gnocchi' }),
+  schema: z.object({
+    // --- Testi (in testi.md) ---------------------------------------------
+    titolo: z.string().optional(),
+    sottotitolo: z.string().optional(),
+    storia: z.string().optional(),
+    /** Composizione del piatto secondo la ricetta De.Co. */
+    ricetta: z
+      .array(z.object({ ingrediente: z.string(), quantita: z.string() }))
+      .optional(),
+    lavorazione: z
+      .array(z.object({ titolo: z.string(), testo: z.string() }))
+      .optional(),
+    condimento: z.string().optional(),
+    riconoscimenti: z.array(z.string()).optional(),
+    // --- Fotografie (in foto.md) -----------------------------------------
+    foto: immagine,
+    fotoPreparazione: immagine,
+  }),
+});
+
+/* -------------------------------------------------------------------------- */
+/* Collezioni a elenco — una scheda per file                                   */
 /* -------------------------------------------------------------------------- */
 
 const camere = defineCollection({
@@ -34,13 +134,12 @@ const camere = defineCollection({
     ordine: z.number().default(0),
     descrizione: z.string(),
     occupanti: z.string().optional(),
-    /** Tariffe per persona, per giorno. `null` = servizio non previsto. */
+    /** Tariffe per persona, per giorno. */
     tariffe: z.object({
       bnb: z.number(),
       mezzaPensione: z.number(),
       pensioneCompleta: z.number(),
     }),
-    /** Supplemento doppia uso singola, per giorno. */
     supplementoDus: z.number().optional(),
     /** Dotazione della camera. */
     servizi: z.array(z.string()).default([]),
@@ -48,10 +147,6 @@ const camere = defineCollection({
     foto: immagine,
   }),
 });
-
-/* -------------------------------------------------------------------------- */
-/* Menù del ristorante                                                         */
-/* -------------------------------------------------------------------------- */
 
 const menu = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/menu' }),
@@ -68,43 +163,6 @@ const menu = defineCollection({
     foto: immagine,
   }),
 });
-
-/* -------------------------------------------------------------------------- */
-/* Gnocchi con la Fioreta — contenuto singolo                                  */
-/* -------------------------------------------------------------------------- */
-
-const gnocchi = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/gnocchi' }),
-  schema: z.object({
-    titolo: z.string(),
-    sottotitolo: z.string().optional(),
-    storia: z.string(),
-    /** Composizione del piatto secondo la ricetta De.Co. */
-    ricetta: z.array(
-      z.object({
-        ingrediente: z.string(),
-        quantita: z.string(),
-      }),
-    ),
-    lavorazione: z.array(
-      z.object({
-        titolo: z.string(),
-        testo: z.string(),
-      }),
-    ),
-    condimento: z.string(),
-    /** Riconoscimenti: al momento la De.Co. di Recoaro Terme. */
-    riconoscimenti: z.array(z.string()).default([]),
-    /** Fotografia del piatto finito. */
-    foto: immagine,
-    /** Fotografia degli ingredienti o della preparazione. */
-    fotoPreparazione: immagine,
-  }),
-});
-
-/* -------------------------------------------------------------------------- */
-/* Sentieri                                                                    */
-/* -------------------------------------------------------------------------- */
 
 const sentieri = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/sentieri' }),
@@ -129,84 +187,12 @@ const sentieri = defineCollection({
   }),
 });
 
-/* -------------------------------------------------------------------------- */
-/* Home page — contenuto singolo                                               */
-/*                                                                             */
-/* Testi E fotografie della prima pagina. Prima i testi erano scritti nel      */
-/* codice e si potevano cambiare solo lì; ora sono qui e si cambiano dal       */
-/* pannello.                                                                   */
-/* -------------------------------------------------------------------------- */
-
-const home = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/home' }),
-  schema: z.object({
-    // --- Testi -----------------------------------------------------------
-    titolo: z.string(),
-    sottotitolo: z.string(),
-    /** Descrizione per i motori di ricerca: non si vede in pagina. */
-    descrizione: z.string(),
-    /** I due accessi dell'apertura: Dormire e Mangiare. */
-    accessi: z
-      .array(
-        z.object({
-          etichetta: z.string(),
-          titolo: z.string(),
-          nota: z.string(),
-          collegamento: z.string(),
-        }),
-      )
-      .default([]),
-    invitoSentieri: z.string(),
-    pulsanteGnocchi: z.string(),
-    locandaEtichetta: z.string(),
-    locandaTitolo: z.string(),
-    locandaParagrafi: z.array(z.string()).default([]),
-    locandaCollegamento: z.string(),
-    territorioEtichetta: z.string(),
-    territorioTitolo: z.string(),
-    territorioTesto: z.string(),
-    // --- Fotografie ------------------------------------------------------
-    hero: immagine,
-    panorama: immagine,
-    montagne: immagine,
-    facciata: immagine,
-  }),
-});
-
-/* -------------------------------------------------------------------------- */
-/* Pagina La Locanda — contenuto singolo                                       */
-/* -------------------------------------------------------------------------- */
-
-const paginaLocanda = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/la-locanda' }),
-  schema: z.object({
-    titolo: z.string(),
-    sottotitolo: z.string(),
-    facciata: immagine,
-    cucina: immagine,
-  }),
-});
-
-/* -------------------------------------------------------------------------- */
-/* Pagina Sentieri — contenuto singolo                                         */
-/* -------------------------------------------------------------------------- */
-
-const paginaSentieri = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/sentieri-pagina' }),
-  schema: z.object({
-    titolo: z.string(),
-    sottotitolo: z.string(),
-    montagne: immagine,
-    panorama: immagine,
-  }),
-});
-
 export const collections = {
   camere,
   menu,
-  gnocchi,
   sentieri,
   home,
   paginaLocanda,
   paginaSentieri,
+  gnocchi,
 };

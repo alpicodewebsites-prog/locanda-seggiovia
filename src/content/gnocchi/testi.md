@@ -23,6 +23,4 @@ lavorazione:
 condimento: 300 g di burro di malga rosolato fino a color nocciola, con formaggio stagionato di malga o ricotta affumicata.
 riconoscimenti:
   - Denominazione Comunale di Origine — Comune di Recoaro Terme
-foto: /assets/gnocchi/piatto.jpg
-fotoPreparazione: /assets/gnocchi/preparazione.jpg
 ---
