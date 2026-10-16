@@ -7,23 +7,25 @@
 
 @theme {
   /* --- Pietra alpina: grigi caldi, il colore del calcare in ombra --------
-     Il fondo della pagina è un grigio caldo, non un bianco d'osso. Il bianco
-     pieno faceva sembrare la pagina vuota: mancava di corpo. Questo è più
-     scuro di qualche punto, resta chiaro, e conserva una punta di calore.
+     Il fondo della pagina è un grigio caldo. La richiesta indicava #E5E5E5 o
+     #EAEAEA: quei due hanno rosso, verde e blu uguali, quindi sono NEUTRI —
+     cioè freddi — e il secondo è perfino più chiaro di quello che c'era prima.
+     Il grigio caldo qui sotto ha la stessa intenzione (più scuro, più tenue)
+     ma conserva la punta di calore della palette alpina.
 
-     I testi secondari sono stati scuriti di conseguenza: su un fondo più scuro
-     gli stessi grigi perdevano contrasto e scendevano sotto la soglia di
-     leggibilità. I valori qui sotto sono verificati da
-     scripts/verifica_contrasti.py — non cambiarli a occhio.
+     ATTENZIONE — questi valori sono concatenati fra loro. Il fondo è stato
+     scurito di circa l'8%, e per non perdere leggibilità sono stati scuriti
+     anche i due toni usati per note ed etichette. Non cambiarne uno solo:
+     vanno verificati con `python scripts/verifica_contrasti.py`.
 
      stone-50 è più CHIARO di stone-100: serve per i pannelli che devono
      staccarsi dal fondo della pagina. */
   --color-stone-50: #f5f3ef; /* pannelli, superfici in rilievo */
-  --color-stone-100: #ebe9e4; /* fondo della pagina */
-  --color-stone-200: #dfdcd5;
-  --color-stone-300: #cbc6bc;
+  --color-stone-100: #e2ded5; /* fondo della pagina: grigio caldo */
+  --color-stone-200: #d3cfc6; /* bordi sottili */
+  --color-stone-300: #c4beb3; /* linee divisorie */
   --color-stone-400: #8f8a7e;
-  --color-stone-500: #67635b; /* note e didascalie: 4,93:1 sul fondo */
+  --color-stone-500: #605d56; /* note e didascalie: 4,89:1 sul fondo */
   --color-stone-600: #4f4c46;
   --color-stone-700: #37352f;
   --color-stone-800: #232220;
@@ -32,7 +34,7 @@
   /* --- Legno: larice e noce delle baite -------------------------------- */
   --color-wood-100: #ecdfcc;
   --color-wood-300: #c5a276;
-  --color-wood-500: #825c31;
+  --color-wood-500: #78542b; /* etichette sopra i titoli: 5,04:1 sul fondo */
   --color-wood-700: #3f2f21;
   --color-wood-900: #2e2218;
 
@@ -76,7 +78,7 @@
 
      I contrasti sono verificati da scripts/verifica_contrasti.py: con questo
      fondo il testo secondario sta a 4,64:1, sopra la soglia di 4,5. */
-  --color-camere-fondo: #e2e4dc;
+  --color-camere-fondo: #d5dacd;
 
   /* --- Accenti grafici -------------------------------------------------
      Rampa satura usata SOLO per linee, bordi e fili decorativi: i toni
@@ -348,12 +350,11 @@
   }
 
   /*
-    Fascia degli gnocchi — da bordo a bordo.
+    Pulsante degli gnocchi — a pillola, largo quanto il suo testo.
 
-    È un collegamento, non un pulsante: occupa tutta la larghezza dello schermo
-    e non ha margini laterali, quindi è la fascia stessa. Per questo sta fuori
-    dalla griglia del testo (`shell`), ed è l'unico elemento della home che lo
-    fa: l'eccezione si nota, ed è quello che serve.
+    Non occupa tutta la pagina: si dimensiona sul contenuto e sta al centro.
+    La forma tonda lo distingue dagli altri comandi del sito, che sono
+    rettangolari — è l'unico elemento a pillola, quindi si riconosce.
 
     L'accento è quello del sito — `--color-accento`, la stessa ocra dei
     pulsanti — non un oro nuovo: un secondo tono quasi uguale si vedrebbe come
@@ -363,20 +364,27 @@
     animerebbe anche cose che non devono muoversi e costa di più; l'effetto
     percepito è identico.
   */
-  .fascia-gnocchi {
-    display: flex;
-    width: 100%;
+  .pulsante-gnocchi {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    /* 2rem = 32 px di respiro sopra e sotto: la fascia è alta e si vede. */
-    padding: 2rem 1.25rem;
+    gap: 0.6rem;
+    /* Larghezza dal contenuto, non dal contenitore. */
+    width: fit-content;
+    max-width: 100%;
+    /* Forma a pillola: il raggio supera la metà dell'altezza, quindi i lati
+       restano tondi a prescindere da quanto è alto il pulsante. */
+    border-radius: 9999px;
+    /* Orizzontale generoso: è quello che dà l'aria da pillola. */
+    padding: 1.15rem 2.25rem;
     background-color: var(--color-accento);
     color: var(--color-accento-testo);
-    font-size: clamp(1.05rem, 2.4vw, 1.6rem);
+    font-size: clamp(1rem, 2vw, 1.25rem);
     font-weight: 600;
-    line-height: 1.3;
-    letter-spacing: -0.005em;
+    line-height: 1.35;
     text-align: center;
+    /* Va a capo se serve, ma le righe restano lunghe uguali. */
+    text-wrap: balance;
     text-decoration: none;
     transition:
       background-color 300ms ease,
@@ -385,84 +393,59 @@
       box-shadow 300ms ease;
   }
 
-  /*
-    Testo e freccia.
-
-    La freccia sta DENTRO il testo, non accanto: è un elemento in linea che
-    segue l'ultima parola. Il motivo è che su un telefono il testo va su due
-    righe, e un blocco dimensionato dal flex resta largo quanto lo spazio
-    disponibile — la freccia finirebbe al bordo opposto, staccata dalle parole
-    che dovrebbe accompagnare. In linea, invece, resta sempre attaccata
-    all'ultima lettera, su una riga come su due.
-
-    Lo spazio prima della freccia è un spazio unificatore (`\u00A0` nel
-    markup): così non può capitare che la freccia vada a capo da sola.
-  */
-  .fascia-gnocchi__testo {
-    /* Le righe restano lunghe uguali invece di lasciare una parola sola in
-       fondo. */
-    text-wrap: balance;
-    text-align: center;
-  }
-
-  .fascia-gnocchi__freccia {
-    display: inline-block;
-    font-size: 1.15em;
+  .pulsante-gnocchi__freccia {
+    flex: none;
+    font-size: 1.1em;
     line-height: 1;
     /* Spostata a sinistra: all'apparire del puntatore scorre a destra. */
     transform: translateX(-0.15rem);
     transition: transform 300ms ease;
   }
 
-  .fascia-gnocchi:hover,
-  .fascia-gnocchi:focus-visible {
+  .pulsante-gnocchi:hover,
+  .pulsante-gnocchi:focus-visible {
     background-color: var(--color-accento-scuro);
     transform: translateY(-2px);
     /* Ombra tenue e calda, non nera: su un fondo chiaro un'ombra grigia
        sporca, una colorata si posa. */
-    box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--color-accento-scuro) 70%, transparent);
+    box-shadow: 0 12px 26px -14px color-mix(in srgb, var(--color-accento-scuro) 75%, transparent);
   }
 
-  .fascia-gnocchi:hover .fascia-gnocchi__freccia,
-  .fascia-gnocchi:focus-visible .fascia-gnocchi__freccia {
+  .pulsante-gnocchi:hover .pulsante-gnocchi__freccia,
+  .pulsante-gnocchi:focus-visible .pulsante-gnocchi__freccia {
     transform: translateX(0.35rem);
   }
 
-  .fascia-gnocchi:active {
+  .pulsante-gnocchi:active {
     transform: translateY(0);
     box-shadow: none;
   }
 
-  /* Il contorno del focus deve restare visibile: la fascia è larga e il
-     contorno interno si vedrebbe tagliato ai bordi. */
-  .fascia-gnocchi:focus-visible {
+  .pulsante-gnocchi:focus-visible {
     outline: 3px solid var(--color-forest-700);
-    outline-offset: -3px;
+    outline-offset: 3px;
   }
 
   @media (min-width: 768px) {
-    .fascia-gnocchi {
-      padding: 2.5rem 2rem;
-      gap: 0.9rem;
+    .pulsante-gnocchi {
+      padding: 1.3rem 3rem;
+      gap: 0.85rem;
     }
   }
 
   /* Chi ha chiesto meno movimento non vede il sollevamento né lo scorrimento
      della freccia: la freccia resta visibile, semplicemente ferma. */
   @media (prefers-reduced-motion: reduce) {
-    .fascia-gnocchi,
-    .fascia-gnocchi__freccia {
+    .pulsante-gnocchi,
+    .pulsante-gnocchi__freccia {
       transition: none;
     }
 
-    .fascia-gnocchi:hover,
-    .fascia-gnocchi:focus-visible,
-    .fascia-gnocchi:active {
-      transform: none;
-    }
-
-    .fascia-gnocchi:hover .fascia-gnocchi__freccia,
-    .fascia-gnocchi:focus-visible .fascia-gnocchi__freccia {
+    .pulsante-gnocchi:hover,
+    .pulsante-gnocchi:focus-visible,
+    .pulsante-gnocchi:active,
+    .pulsante-gnocchi:hover .pulsante-gnocchi__freccia,
+    .pulsante-gnocchi:focus-visible .pulsante-gnocchi__freccia {
       transform: none;
     }
   }

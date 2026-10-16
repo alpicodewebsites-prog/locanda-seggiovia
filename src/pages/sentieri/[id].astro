@@ -98,8 +98,16 @@ const schema = {
         <div class="absolute inset-0 -z-20 bg-forest-900" aria-hidden="true" />
       )
     }
+    <!--
+      Velo per la leggibilità.
+
+      Attenzione al valore in alto (`to-stone-900/15`): con un velo pesante
+      anche in alto — com'era prima, al 40% — la fotografia sparisce e la
+      fascia sembra un blocco scuro vuoto. Il velo serve dove c'è il testo,
+      cioè in basso, e deve lasciar respirare l'immagine dove non c'è.
+    -->
     <div
-      class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/90 via-stone-900/60 to-stone-900/40"
+      class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/85 via-stone-900/45 to-stone-900/15"
       aria-hidden="true"
     >
     </div>

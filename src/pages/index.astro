@@ -103,20 +103,22 @@ const sentieri = (await getCollection('sentieri'))
        niente: chi leggeva non aveva nulla da fare, e la fascia occupava
        spazio come un riempitivo.
 
-       Ora è una fascia piena da bordo a bordo: il collegamento occupa tutta
-       la larghezza e non ha margini laterali, ed è lui stesso la fascia. Non
-       sta dentro `.shell` di proposito — è l'unico elemento della pagina che
-       esce dalla griglia del testo, e proprio per questo si nota.
+       Ora è un pulsante a pillola, centrato e largo quanto il suo testo: non
+       occupa tutta la pagina. La forma tonda lo distingue dagli altri
+       comandi del sito, che sono rettangolari, e lo rende il momento in cui
+       si può fare qualcosa.
 
        La freccia è decorativa e nascosta ai lettori di schermo: il testo del
        collegamento dice già dove porta.
        ================================================================== -->
-  <a href="/gnocchi-con-la-fioreta" class="fascia-gnocchi">
-    <span class="fascia-gnocchi__testo">
-      Scopri la nostra produzione di gnocchi con la Fioreta{'\u00A0'}
-      <span class="fascia-gnocchi__freccia" aria-hidden="true">→</span>
-    </span>
-  </a>
+  <section class="py-14 md:py-20">
+    <div class="shell flex justify-center">
+      <a href="/gnocchi-con-la-fioreta" class="pulsante-gnocchi">
+        Scopri la nostra produzione di gnocchi con la Fioreta
+        <span class="pulsante-gnocchi__freccia" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
 
 
   <!-- ==================================================================

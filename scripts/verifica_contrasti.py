@@ -28,30 +28,55 @@ SOGLIA_NORMALE = 4.5
 SOGLIA_GRANDE = 3.0
 
 # (nome del testo, nome del fondo, soglia, descrizione)
+#
+# ATTENZIONE al fondo scelto: `stone-100` è il fondo della PAGINA, `stone-50` è
+# il fondo dei PANNELLI ed è più chiaro. Verificare i testi solo sul secondo
+# darebbe risultati migliori del vero: sono due superfici diverse e vanno
+# controllate entrambe.
 COPPIE = [
-    # --- Testo su fondo chiaro -------------------------------------------
-    ("stone-900", "stone-50", SOGLIA_NORMALE, "titoli su fondo pagina"),
-    ("stone-800", "stone-50", SOGLIA_NORMALE, "corpo del testo"),
-    ("stone-600", "stone-50", SOGLIA_NORMALE, "testo secondario"),
-    ("stone-500", "stone-50", SOGLIA_NORMALE, "note e didascalie"),
-    ("stone-600", "stone-100", SOGLIA_NORMALE, "testo su fondo pietra"),
-    ("wood-500", "stone-50", SOGLIA_NORMALE, "etichette sopra i titoli"),
-    # --- Testo su fondo scuro --------------------------------------------
+    # --- Testo sul fondo della pagina (stone-100) -------------------------
+    ("stone-900", "stone-100", SOGLIA_NORMALE, "titoli sul fondo pagina"),
+    ("stone-800", "stone-100", SOGLIA_NORMALE, "corpo del testo"),
+    ("stone-600", "stone-100", SOGLIA_NORMALE, "testo secondario"),
+    ("stone-500", "stone-100", SOGLIA_NORMALE, "note e didascalie"),
+    ("wood-500", "stone-100", SOGLIA_NORMALE, "etichette sopra i titoli"),
+    # --- Testo sul fondo dei pannelli (stone-50, più chiaro) --------------
+    ("stone-900", "stone-50", SOGLIA_NORMALE, "titoli su pannello"),
+    ("stone-600", "stone-50", SOGLIA_NORMALE, "testo su pannello"),
+    ("stone-500", "stone-50", SOGLIA_NORMALE, "note su pannello"),
+    ("wood-500", "stone-50", SOGLIA_NORMALE, "etichette su pannello"),
+    # --- Pagina Camere, che ha un fondo suo -------------------------------
+    ("stone-900", "camere-fondo", SOGLIA_NORMALE, "titoli sul fondo Camere"),
+    ("stone-600", "camere-fondo", SOGLIA_NORMALE, "testo sul fondo Camere"),
+    ("stone-500", "camere-fondo", SOGLIA_NORMALE, "note sul fondo Camere"),
+    ("wood-500", "camere-fondo", SOGLIA_NORMALE, "etichette sul fondo Camere"),
+    # --- Testo su fondo scuro ---------------------------------------------
     ("stone-50", "forest-900", SOGLIA_NORMALE, "testo su fascia bosco"),
     ("stone-200", "forest-900", SOGLIA_NORMALE, "corpo su fascia bosco"),
     ("forest-300", "forest-900", SOGLIA_NORMALE, "testo secondario su fascia bosco"),
     ("stone-50", "stone-800", SOGLIA_NORMALE, "testo su fondo scuro"),
     ("stone-200", "stone-800", SOGLIA_NORMALE, "testo secondario su fondo scuro"),
     ("stone-300", "stone-800", SOGLIA_NORMALE, "note su fondo scuro"),
-    # --- Pulsanti ---------------------------------------------------------
+    # --- Pulsanti e fascia -------------------------------------------------
     ("accento-testo", "accento", SOGLIA_NORMALE, "pulsante principale (testo su ocra)"),
     ("accento-testo", "accento-scuro", SOGLIA_NORMALE, "pulsante principale, passaggio"),
-    ("stone-800", "stone-50", SOGLIA_NORMALE, "pulsante chiaro"),
-    # --- Elementi grafici -------------------------------------------------
-    ("stone-800", "stone-50", SOGLIA_GRANDE, "bordo del pulsante secondario"),
-    ("stone-500", "stone-50", SOGLIA_GRANDE, "linee di separazione"),
-    ("cai-rosso", "stone-50", SOGLIA_GRANDE, "rosso CAI sui cartelli"),
+    ("stone-900", "accento", SOGLIA_NORMALE, "testo scuro sulla fascia ocra"),
+    # --- Elementi grafici --------------------------------------------------
+    ("stone-500", "stone-100", SOGLIA_GRANDE, "linee di separazione"),
+    ("cai-rosso", "stone-100", SOGLIA_GRANDE, "rosso CAI sui cartelli"),
+    # Il contorno del focus deve vedersi: è quello che dice a chi naviga da
+    # tastiera dove si trova. Questo è un requisito, non un abbellimento.
+    ("forest-700", "stone-100", SOGLIA_GRANDE, "contorno del focus da tastiera"),
+    ("forest-700", "stone-50", SOGLIA_GRANDE, "contorno del focus sui pannelli"),
 ]
+
+# NOTA sui filetti decorativi.
+# `stone-300` è usato come linea divisoria fra le sezioni e come bordo sottile.
+# Il suo contrasto sul fondo è di circa 1,4:1 e NON è un difetto: il criterio
+# WCAG 1.4.11 chiede 3:1 per gli elementi necessari a riconoscere un comando o
+# uno stato, non per i filetti che separano due blocchi di testo. Portarlo a 3:1
+# significherebbe avere linee scure e pesanti, che è l'opposto di quello che
+# serve. Per questo non è nell'elenco qui sopra.
 
 
 def leggi_colori(percorso: pathlib.Path) -> dict[str, str]:

@@ -16,6 +16,7 @@
     "verifica:contrasti": "python scripts/verifica_contrasti.py",
     "verifica:microinterazioni": "node scripts/test_microinterazioni.mjs",
     "verifica:animazioni": "node scripts/test_animazioni.mjs",
+    "verifica:sentieri": "node scripts/test_leggibilita_hero.mjs && python scripts/misura_contrasto_hero.py",
     "gif:scroll": "node scripts/cattura_scroll.mjs /camere/ frames-camere 22 130 && python scripts/crea_gif.py frames-camere docs/animazioni-scroll.gif 140",
     "verifica:sito": "python scripts/verify_build.py",
     "verifica:header": "node scripts/test_header.mjs",
