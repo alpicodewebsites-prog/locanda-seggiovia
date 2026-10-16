@@ -35,14 +35,19 @@ const isAttiva = (href: string) =>
   style="--header-h: 4.5rem"
   data-trasparente={trasparente ? 'true' : 'false'}
 >
-  <div class="shell flex h-[4.5rem] items-center justify-between gap-6">
-    {/* --- Wordmark --- */}
+  <div class="shell flex h-[4.5rem] items-center justify-between gap-2 min-[380px]:gap-6">
+    {/* --- Wordmark ---
+        Su schermi molto stretti (320 px, il minimo richiesto dalle linee guida
+        di accessibilità) il nome e il pulsante «Contatti» insieme non ci
+        starebbero: il nome si rimpicciolisce di poco, e resta tutto visibile. */}
     <a
       href="/"
       class="site-header__wordmark group flex shrink-0 items-baseline gap-2.5 leading-none"
       aria-label={`${site.nome} — home`}
     >
-      <span class="font-[family-name:var(--font-display)] text-[1.3rem] leading-none tracking-tight">
+      <span
+        class="font-[family-name:var(--font-display)] text-[1.12rem] leading-none tracking-tight min-[380px]:text-[1.3rem]"
+      >
         Locanda Seggiovia
       </span>
       <span class="site-header__sotto hidden text-[0.68rem] leading-none tracking-[0.14em] uppercase sm:inline">
@@ -74,7 +79,7 @@ const isAttiva = (href: string) =>
         alla stessa pagina. Resta questo pulsante, l'ultimo elemento della
         barra, che è anche l'unico con il fondo ocra. */}
     <div class="flex items-center gap-3">
-      <a href="/contatti" class="btn btn--primary">Contatti</a>
+      <a href="/contatti" class="btn btn--primary btn--barra">Contatti</a>
 
       <details class="menu-mobile relative lg:hidden">
         <summary

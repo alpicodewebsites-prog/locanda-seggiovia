@@ -333,41 +333,136 @@
   }
 
   /*
-    Pulsante d'invito: quello grande, su due righe, che porta alla pagina degli
-    gnocchi. Serve una variante perché il testo è lungo — su un telefono una
-    riga sola lo farebbe sbordare o rimpicciolire troppo.
+    Il pulsante «Contatti» quando sta nella barra.
 
-    Il testo è diviso in due span nel markup, così l'a capo cade dove serve e
-    non a metà di una parola. Il sollevamento è di 2 pixel: si sente, non si
-    vede.
+    Su schermi molto stretti — 320 px, il minimo che le linee guida di
+    accessibilità chiedono di reggere — nome della locanda, pulsante e icona del
+    menu insieme non ci stanno. Il pulsante si stringe un po' invece di sparire:
+    resta visibile e toccabile, che è la cosa che conta.
   */
-  .btn--invito {
-    flex-direction: column;
-    gap: 0.15rem;
-    padding: 1.05rem 2rem;
-    font-size: 1rem;
-    line-height: 1.35;
-    text-align: center;
-  }
-
-  .btn--invito:hover {
-    transform: translateY(-2px);
-  }
-
-  .btn--invito:active {
-    transform: translateY(0);
-  }
-
-  @media (min-width: 640px) {
-    .btn--invito {
-      padding: 1.15rem 2.75rem;
-      font-size: 1.125rem;
+  @media (max-width: 379px) {
+    .btn--barra {
+      padding-inline: 0.8rem;
+      font-size: 0.875rem;
     }
   }
 
+  /*
+    Fascia degli gnocchi — da bordo a bordo.
+
+    È un collegamento, non un pulsante: occupa tutta la larghezza dello schermo
+    e non ha margini laterali, quindi è la fascia stessa. Per questo sta fuori
+    dalla griglia del testo (`shell`), ed è l'unico elemento della home che lo
+    fa: l'eccezione si nota, ed è quello che serve.
+
+    L'accento è quello del sito — `--color-accento`, la stessa ocra dei
+    pulsanti — non un oro nuovo: un secondo tono quasi uguale si vedrebbe come
+    una sbavatura. Il testo è scuro sopra, a 7,68:1 di contrasto.
+
+    Transizioni: si elencano le proprietà una per una invece di `all`. `all`
+    animerebbe anche cose che non devono muoversi e costa di più; l'effetto
+    percepito è identico.
+  */
+  .fascia-gnocchi {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    /* 2rem = 32 px di respiro sopra e sotto: la fascia è alta e si vede. */
+    padding: 2rem 1.25rem;
+    background-color: var(--color-accento);
+    color: var(--color-accento-testo);
+    font-size: clamp(1.05rem, 2.4vw, 1.6rem);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      background-color 300ms ease,
+      color 300ms ease,
+      transform 300ms ease,
+      box-shadow 300ms ease;
+  }
+
+  /*
+    Testo e freccia.
+
+    La freccia sta DENTRO il testo, non accanto: è un elemento in linea che
+    segue l'ultima parola. Il motivo è che su un telefono il testo va su due
+    righe, e un blocco dimensionato dal flex resta largo quanto lo spazio
+    disponibile — la freccia finirebbe al bordo opposto, staccata dalle parole
+    che dovrebbe accompagnare. In linea, invece, resta sempre attaccata
+    all'ultima lettera, su una riga come su due.
+
+    Lo spazio prima della freccia è un spazio unificatore (`\u00A0` nel
+    markup): così non può capitare che la freccia vada a capo da sola.
+  */
+  .fascia-gnocchi__testo {
+    /* Le righe restano lunghe uguali invece di lasciare una parola sola in
+       fondo. */
+    text-wrap: balance;
+    text-align: center;
+  }
+
+  .fascia-gnocchi__freccia {
+    display: inline-block;
+    font-size: 1.15em;
+    line-height: 1;
+    /* Spostata a sinistra: all'apparire del puntatore scorre a destra. */
+    transform: translateX(-0.15rem);
+    transition: transform 300ms ease;
+  }
+
+  .fascia-gnocchi:hover,
+  .fascia-gnocchi:focus-visible {
+    background-color: var(--color-accento-scuro);
+    transform: translateY(-2px);
+    /* Ombra tenue e calda, non nera: su un fondo chiaro un'ombra grigia
+       sporca, una colorata si posa. */
+    box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--color-accento-scuro) 70%, transparent);
+  }
+
+  .fascia-gnocchi:hover .fascia-gnocchi__freccia,
+  .fascia-gnocchi:focus-visible .fascia-gnocchi__freccia {
+    transform: translateX(0.35rem);
+  }
+
+  .fascia-gnocchi:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  /* Il contorno del focus deve restare visibile: la fascia è larga e il
+     contorno interno si vedrebbe tagliato ai bordi. */
+  .fascia-gnocchi:focus-visible {
+    outline: 3px solid var(--color-forest-700);
+    outline-offset: -3px;
+  }
+
+  @media (min-width: 768px) {
+    .fascia-gnocchi {
+      padding: 2.5rem 2rem;
+      gap: 0.9rem;
+    }
+  }
+
+  /* Chi ha chiesto meno movimento non vede il sollevamento né lo scorrimento
+     della freccia: la freccia resta visibile, semplicemente ferma. */
   @media (prefers-reduced-motion: reduce) {
-    .btn--invito:hover,
-    .btn--invito:active {
+    .fascia-gnocchi,
+    .fascia-gnocchi__freccia {
+      transition: none;
+    }
+
+    .fascia-gnocchi:hover,
+    .fascia-gnocchi:focus-visible,
+    .fascia-gnocchi:active {
+      transform: none;
+    }
+
+    .fascia-gnocchi:hover .fascia-gnocchi__freccia,
+    .fascia-gnocchi:focus-visible .fascia-gnocchi__freccia {
       transform: none;
     }
   }

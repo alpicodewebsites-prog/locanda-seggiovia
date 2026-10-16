@@ -103,18 +103,20 @@ const sentieri = (await getCollection('sentieri'))
        niente: chi leggeva non aveva nulla da fare, e la fascia occupava
        spazio come un riempitivo.
 
-       Ora c'è un solo invito, con il fondo ocra, che porta al prodotto
-       identitario della casa. Il pulsante è centrato e ha il respiro
-       attorno: è visibile senza essere invadente.
+       Ora è una fascia piena da bordo a bordo: il collegamento occupa tutta
+       la larghezza e non ha margini laterali, ed è lui stesso la fascia. Non
+       sta dentro `.shell` di proposito — è l'unico elemento della pagina che
+       esce dalla griglia del testo, e proprio per questo si nota.
+
+       La freccia è decorativa e nascosta ai lettori di schermo: il testo del
+       collegamento dice già dove porta.
        ================================================================== -->
-  <section class="border-b border-stone-200 py-14 md:py-20">
-    <div class="shell flex justify-center px-4">
-      <a href="/gnocchi-con-la-fioreta" class="btn btn--primary btn--invito">
-        <span>Scopri la nostra produzione di</span>
-        <span>gnocchi con la Fioreta</span>
-      </a>
-    </div>
-  </section>
+  <a href="/gnocchi-con-la-fioreta" class="fascia-gnocchi">
+    <span class="fascia-gnocchi__testo">
+      Scopri la nostra produzione di gnocchi con la Fioreta{'\u00A0'}
+      <span class="fascia-gnocchi__freccia" aria-hidden="true">→</span>
+    </span>
+  </a>
 
 
   <!-- ==================================================================
