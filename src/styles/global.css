@@ -476,50 +476,63 @@
   }
 
   /*
-    I tre dettagli fotografici, posati sul legno.
+    ==========================================================================
+    LA FASCIA DEGLI GNOCCHI
+    ==========================================================================
 
-    Sono decorativi e non invasivi: piccoli, distanziati, senza cornice e senza
-    testo sotto. Fanno da materia alla fascia, non da contenuto da leggere.
+    Una fotografia a copertura totale, bassa, con il pulsante sopra.
 
-    Il formato è quadrato e uguale per tutti e tre — `aspect-ratio` più
-    `object-fit: cover` — così la fila resta ordinata qualunque cosa contengano
-    le fotografie.
+    L'altezza è volutamente contenuta: è una fascia di passaggio fra l'apertura
+    e il resto della pagina, non una sezione da leggere. Prima era alta 448 px
+    e sembrava una sala d'attesa.
+
+    `min-height` e non `height`: se un giorno il testo del pulsante va su due
+    righe, la fascia cresce invece di tagliarlo.
   */
-  .tavolo__dettagli {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: clamp(0.75rem, 2.5vw, 1.75rem);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .dettaglio {
-    aspect-ratio: 1 / 1;
-    width: clamp(5.5rem, 14vw, 9rem);
+  .tavolo {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: clamp(11rem, 22vw, 16rem);
+    padding-block: clamp(2rem, 4vw, 3rem);
     overflow: hidden;
-    /* Angoli appena arrotondati: le fotografie sembrano appoggiate, non
-       incorniciate. */
-    border-radius: 0.4rem;
-    /* Un'ombra bassa: le immagini prendono posto sul tavolo invece di
-       galleggiarci sopra. */
-    box-shadow: 0 12px 26px -16px color-mix(in srgb, var(--color-wood-900) 85%, transparent);
+    background-color: var(--color-wood-900);
   }
 
-  .dettaglio :global(img) {
+  .tavolo__sfondo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* La fotografia è ritagliata sugli gnocchi: il centro è il punto giusto. */
+    object-position: center;
   }
 
-  .tavolo__invito {
+  /*
+    Il velo. Non è nero pieno: lascia vedere gli gnocchi e abbassa insieme la
+    luminosità, così il pulsante ocra resta leggibile su tutta la fascia.
+  */
+  .tavolo__velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: color-mix(in srgb, var(--color-wood-900) 34%, transparent);
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-wood-900) 22%, transparent),
+      color-mix(in srgb, var(--color-wood-900) 46%, transparent)
+    );
+  }
+
+  .tavolo__sopra {
     display: flex;
     justify-content: center;
-    margin-top: clamp(2rem, 5vw, 3rem);
   }
 
-  /* Il contorno del focus deve vedersi anche sul legno scuro. */
+  /* Il contorno del focus deve vedersi anche sopra la fotografia. */
   .tavolo :global(a:focus-visible) {
     outline: 3px solid var(--color-wood-100);
     outline-offset: 3px;

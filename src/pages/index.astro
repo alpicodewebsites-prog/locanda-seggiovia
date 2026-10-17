@@ -44,17 +44,12 @@ const specialita = menu
   }));
 
 /**
- * I tre dettagli fotografici degli ingredienti, per la fascia della home.
+ * La fotografia che fa da sfondo alla fascia degli gnocchi.
  *
- * Sono ritagli di una fotografia vera della locanda. Stanno in
- * `src/assets/gnocchi/dettagli/` e si sostituiscono rigenerandoli con
- * `python scripts/ritaglia_ingredienti.py`.
+ * È un ritaglio del piatto vero, preparato da
+ * `python scripts/prepara_sfondo_gnocchi.py`.
  */
-const dettagliIngredienti = [
-  (await import('../assets/gnocchi/dettagli/1-gnocchi.jpg')).default,
-  (await import('../assets/gnocchi/dettagli/2-fioreta.jpg')).default,
-  (await import('../assets/gnocchi/dettagli/3-farina-burro-formaggio.jpg')).default,
-];
+const sfondoGnocchi = (await import('../assets/gnocchi/sfondo-gnocchi.jpg')).default;
 
 /**
  * Home — pagina di apertura.
@@ -141,49 +136,42 @@ const sentieri = (await getCollection('sentieri'))
   <!-- ==================================================================
        La fascia degli gnocchi
        ------------------------------------------------------------------
-       Prima qui c'erano solo il pulsante e una fascia grigia vuota: il
-       pulsante sembrava appoggiato li' per caso.
+       Una fotografia degli gnocchi copre tutto il rettangolo, e sopra ci sta
+       il pulsante. Niente testo, niente elenco: la fascia è materia e basta.
 
-       Ora il fondo e' il legno del tavolo e sopra ci stanno tre dettagli
-       fotografici degli ingredienti. NIENTE TESTI: nessun titolo, nessun
-       valore, nessun elenco. Le immagini fanno da sfondo alla fascia e il
-       pulsante ci sta sopra come l'azione di quella parte della pagina.
+       LA FOTOGRAFIA È QUELLA DELLA LOCANDA
+       È un ritaglio del piatto vero (`gnocchi/02-piatto-finito.jpg`), non
+       un'immagine presa da internet: il piatto è un prodotto De.Co., e
+       mostrarne un altro al suo posto sarebbe dire una cosa falsa. In più una
+       foto trovata in rete non ha una licenza libera per un sito commerciale.
 
-       I tre dettagli sono ritagli di una fotografia VERA della locanda — il
-       tavolo con la fioreta, la farina, il burro e il formaggio — non immagini
-       d'archivio. Sono tutti dello stesso formato, cosi' la fila resta ordinata.
+       IL VELO
+       Sta fra la fotografia e il pulsante. Serve perché la fotografia ha zone
+       chiare (il piatto) e zone scure: senza velo il contrasto del pulsante
+       cambierebbe da punto a punto e non sarebbe verificabile.
 
-       Le immagini sono decorative: non aggiungono informazione che la pagina
-       non dia gia', quindi vanno con `alt` vuoto. La sezione ha comunque un
-       nome, per chi naviga con un lettore di schermo.
+       L'immagine è decorativa (`alt` vuoto): la sezione ha un nome, e il
+       pulsante dice già dove porta.
        ================================================================== -->
   <section class="tavolo" aria-label="Gli gnocchi con la Fioreta">
-    <div class="shell">
-      <ul class="tavolo__dettagli">
-        {
-          dettagliIngredienti.map((dettaglio) => (
-            <li class="dettaglio">
-              <Image
-                src={dettaglio}
-                alt=""
-                widths={[144, 216, 288, 432]}
-                sizes="(min-width: 768px) 15vw, 30vw"
-                format="webp"
-                quality={82}
-                loading="lazy"
-                decoding="async"
-              />
-            </li>
-          ))
-        }
-      </ul>
+    <Image
+      src={sfondoGnocchi}
+      alt=""
+      widths={[640, 960, 1280, 1800]}
+      sizes="100vw"
+      format="webp"
+      quality={76}
+      loading="lazy"
+      decoding="async"
+      class="tavolo__sfondo"
+    />
+    <div class="tavolo__velo" aria-hidden="true"></div>
 
-      <div class="tavolo__invito">
-        <a href="/gnocchi-con-la-fioreta" class="pulsante-gnocchi">
-          {testi.pulsanteGnocchi}
-          <span class="pulsante-gnocchi__freccia" aria-hidden="true">→</span>
-        </a>
-      </div>
+    <div class="shell tavolo__sopra">
+      <a href="/gnocchi-con-la-fioreta" class="pulsante-gnocchi">
+        {testi.pulsanteGnocchi}
+        <span class="pulsante-gnocchi__freccia" aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 
