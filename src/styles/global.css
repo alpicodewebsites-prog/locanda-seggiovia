@@ -67,6 +67,12 @@
      l'ocra è troppo chiara per fare da TESTO su fondo chiaro (2,1:1), quindi
      si usa come RIEMPIMENTO con testo scuro sopra (7,6:1), oppure come testo
      solo su fondi scuri. */
+  /* Fondo della fascia degli gnocchi: un grigio scuro, fra il nero e il
+     grigio. Non stone-800 (quasi nero) ne' stone-700 (piu' chiaro):
+     e' il tono che regge il giallo del pulsante a 6,4:1. */
+  --color-fascia-scura: #2b2a26;
+  /* Giallo piu' chiaro: passaggio del mouse e contorno del focus. */
+  --color-accento-chiaro: #e0c48f;
   --color-accento: #c9a96b;
   --color-accento-scuro: #b08f4d;
   --color-accento-testo: #1c1b19;
@@ -383,8 +389,15 @@
     border-radius: 9999px;
     /* Orizzontale generoso: è quello che dà l'aria da pillola. */
     padding: 1.15rem 2.25rem;
-    background-color: var(--color-accento);
-    color: var(--color-accento-testo);
+    /*
+       Trasparente, con il bordo e il testo nel giallo della casa.
+       Non ha più un fondo proprio: quello che lo identifica come comando è il
+       contorno, che sul grigio scuro sta a 6,4:1 — ben oltre i 3:1 che il
+       criterio sui contrasti chiede per il bordo di un comando.
+    */
+    background-color: transparent;
+    border: 2px solid var(--color-accento);
+    color: var(--color-accento);
     font-size: clamp(1rem, 2vw, 1.25rem);
     font-weight: 600;
     line-height: 1.35;
@@ -410,7 +423,11 @@
 
   .pulsante-gnocchi:hover,
   .pulsante-gnocchi:focus-visible {
-    background-color: var(--color-accento-scuro);
+    /* Un velo appena percettibile, non un riempimento: il pulsante resta
+       trasparente e lascia vedere il fondo della fascia. */
+    background-color: color-mix(in srgb, var(--color-accento) 14%, transparent);
+    border-color: var(--color-accento-chiaro);
+    color: var(--color-accento-chiaro);
     transform: translateY(-2px);
     /* Ombra tenue e calda, non nera: su un fondo chiaro un'ombra grigia
        sporca, una colorata si posa. */
@@ -428,52 +445,10 @@
   }
 
   .pulsante-gnocchi:focus-visible {
-    outline: 3px solid var(--color-forest-700);
-    outline-offset: 3px;
+    outline: 2px solid var(--color-accento-chiaro);
+    outline-offset: 4px;
   }
 
-  /*
-    ==========================================================================
-    LA FASCIA DEL TAVOLO — gli ingredienti degli gnocchi
-    ==========================================================================
-
-    Prende il posto di una fascia vuota con un pulsante in mezzo. Ora ha il
-    fondo del legno e sopra ci stanno gli ingredienti, nell'ordine della ricetta.
-
-    Il legno è fatto con due gradienti sovrapposti, non con una fotografia:
-    una fotografia di tavolo costringerebbe a caricare un altro file pesante per
-    un elemento che sta dietro al testo, e con il testo sopra il contrasto non
-    sarebbe più garantito. Così il fondo è esattamente del colore che serve.
-
-    Le venature sono larghe e irregolari di proposito: righe tutte uguali
-    sembrano una griglia, non del legno.
-  */
-  .tavolo {
-    position: relative;
-    isolation: isolate;
-    padding-block: clamp(3.5rem, 8vw, 6rem);
-    background-color: var(--color-wood-700);
-    background-image:
-      /* venature: righe chiare irregolari */
-      repeating-linear-gradient(
-        92deg,
-        color-mix(in srgb, var(--color-wood-900) 55%, transparent) 0 2px,
-        transparent 2px 11px
-      ),
-      /* assi: una linea netta ogni tanto */
-      repeating-linear-gradient(
-        88deg,
-        color-mix(in srgb, var(--color-wood-900) 80%, transparent) 0 1px,
-        transparent 1px 190px
-      ),
-      /* luce dall'alto: il piano non è piatto */
-      linear-gradient(
-        175deg,
-        color-mix(in srgb, var(--color-wood-500) 35%, transparent) 0%,
-        transparent 45%
-      );
-    color: var(--color-wood-100);
-  }
 
   /*
     ==========================================================================
@@ -497,15 +472,10 @@
     min-height: clamp(10rem, 20vw, 14rem);
     padding-block: clamp(2rem, 4vw, 3rem);
     overflow: hidden;
-    /* Dal nero al grigio, in diagonale: un fondo piatto sembrerebbe un
-       rettangolo vuoto. */
-    background-color: var(--color-stone-900);
-    background-image: linear-gradient(
-      118deg,
-      var(--color-stone-900) 0%,
-      var(--color-stone-600) 52%,
-      var(--color-stone-400) 100%
-    );
+    /* Un colore SOLO, fra il nero e il grigio. Non una sfumatura: la
+       richiesta era un unico tono. È più scuro del grigio della pagina, così
+       la fascia si stacca, e più chiaro del nero, così non sembra un buco. */
+    background-color: var(--color-fascia-scura);
   }
 
   .tavolo__sopra {
