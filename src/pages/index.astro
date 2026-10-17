@@ -44,14 +44,6 @@ const specialita = menu
   }));
 
 /**
- * La fotografia che fa da sfondo alla fascia degli gnocchi.
- *
- * È un ritaglio del piatto vero, preparato da
- * `python scripts/prepara_sfondo_gnocchi.py`.
- */
-const sfondoGnocchi = (await import('../assets/gnocchi/sfondo-gnocchi.jpg')).default;
-
-/**
  * Home — pagina di apertura.
  *
  * Struttura: quattro fasce a piena larghezza con logiche di impaginazione
@@ -136,37 +128,18 @@ const sentieri = (await getCollection('sentieri'))
   <!-- ==================================================================
        La fascia degli gnocchi
        ------------------------------------------------------------------
-       Una fotografia degli gnocchi copre tutto il rettangolo, e sopra ci sta
-       il pulsante. Niente testo, niente elenco: la fascia è materia e basta.
+       Un fondo scuro fra il nero e il grigio, e sopra il pulsante. Niente
+       fotografia, niente testo, niente elenco.
 
-       LA FOTOGRAFIA È QUELLA DELLA LOCANDA
-       È un ritaglio del piatto vero (`gnocchi/02-piatto-finito.jpg`), non
-       un'immagine presa da internet: il piatto è un prodotto De.Co., e
-       mostrarne un altro al suo posto sarebbe dire una cosa falsa. In più una
-       foto trovata in rete non ha una licenza libera per un sito commerciale.
+       Il fondo è fatto con un gradiente invece che con un'immagine: pesa zero
+       byte, non ha una risoluzione da cui dipendere, e il contrasto del
+       pulsante è lo stesso su tutta la fascia — cosa che con una fotografia
+       non sarebbe garantita, perché una foto ha zone chiare e zone scure.
 
-       IL VELO
-       Sta fra la fotografia e il pulsante. Serve perché la fotografia ha zone
-       chiare (il piatto) e zone scure: senza velo il contrasto del pulsante
-       cambierebbe da punto a punto e non sarebbe verificabile.
-
-       L'immagine è decorativa (`alt` vuoto): la sezione ha un nome, e il
-       pulsante dice già dove porta.
+       La sfumatura è diagonale perché un fondo piatto sembra un rettangolo
+       vuoto; così invece ha una direzione di luce.
        ================================================================== -->
   <section class="tavolo" aria-label="Gli gnocchi con la Fioreta">
-    <Image
-      src={sfondoGnocchi}
-      alt=""
-      widths={[640, 960, 1280, 1800]}
-      sizes="100vw"
-      format="webp"
-      quality={76}
-      loading="lazy"
-      decoding="async"
-      class="tavolo__sfondo"
-    />
-    <div class="tavolo__velo" aria-hidden="true"></div>
-
     <div class="shell tavolo__sopra">
       <a href="/gnocchi-con-la-fioreta" class="pulsante-gnocchi">
         {testi.pulsanteGnocchi}
