@@ -40,6 +40,8 @@ export interface Props {
   accessi?: { etichetta: string; titolo: string; nota: string; collegamento: string }[];
   /** L'invito secondario ai sentieri. */
   invitoSentieri?: string;
+  /** L'invito secondario agli gnocchi, accanto a quello dei sentieri. */
+  invitoGnocchi?: string;
 }
 
 const {
@@ -55,6 +57,7 @@ const {
   sottotitolo = 'Camere, cucina tradizionale alto-vicentina e i sentieri che partono dal centro di Recoaro Terme. La montagna comincia fuori dalla porta.',
   accessi = [],
   invitoSentieri = 'Scopri i sentieri',
+  invitoGnocchi = 'Scopri la nostra produzione di gnocchi con la Fioreta',
 } = Astro.props;
 
 /*
@@ -153,23 +156,46 @@ const accessiMostrati = accessi.length
       </ul>
 
       <!--
-        Terzo percorso, di peso minore: chi cerca i sentieri li trova senza
-        che l'apertura diventi una scelta fra tre cose uguali. È un link
-        testuale, non un terzo riquadro: la gerarchia resta leggibile.
+        Due percorsi di peso minore, allineati sotto le rispettive colonne: chi
+        cerca i sentieri o gli gnocchi li trova senza che l'apertura diventi una
+        scelta fra tre cose uguali. Sono link testuali, non riquadri: la
+        gerarchia resta leggibile.
+
+        La griglia usa lo stesso `gap-x-14` di quella dei due accessi qui sopra,
+        così ciascun collegamento cade esattamente sotto la sua colonna invece
+        di galleggiare a sinistra.
+
+        Stessa classe per tutti e due: si comportano allo stesso modo per
+        costruzione, non per coincidenza.
       -->
-      <p class="mt-7">
-        <a href="/sentieri" class="link-arrow accesso-sentieri">
-          {invitoSentieri}
-          <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
-            <path
-              d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
-              stroke="currentColor"
-              stroke-width="1.4"
-              stroke-linecap="round"
-              stroke-linejoin="round"></path>
-          </svg>
-        </a>
-      </p>
+      <ul class="mt-7 grid gap-x-14 gap-y-3 sm:grid-cols-2">
+        <li>
+          <a href="/sentieri" class="link-arrow accesso-secondario">
+            {invitoSentieri}
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+              <path
+                d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <a href="/gnocchi-con-la-fioreta" class="link-arrow accesso-secondario">
+            {invitoGnocchi}
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+              <path
+                d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </a>
+        </li>
+      </ul>
     </nav>
   </div>
 </section>
@@ -267,13 +293,13 @@ const accessiMostrati = accessi.length
   }
 
   /* Il terzo percorso: più leggero dei due riquadri, per non competere. */
-  .accesso-sentieri {
+  .accesso-secondario {
     color: var(--color-stone-300);
     transition: color 250ms ease-out;
   }
 
-  .accesso-sentieri:hover,
-  .accesso-sentieri:focus-visible {
+  .accesso-secondario:hover,
+  .accesso-secondario:focus-visible {
     color: var(--color-stone-50);
   }
 

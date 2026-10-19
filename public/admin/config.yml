@@ -153,10 +153,13 @@ collections:
             widget: string
             hint: Il collegamento piccolo sotto i due accessi.
 
-          - label: Testo del pulsante degli gnocchi
+          - label: Invito agli gnocchi, sotto l'apertura
             name: pulsanteGnocchi
             widget: string
-            hint: La scritta dentro il pulsante giallo a pillola.
+            hint: >-
+              Il collegamento in fondo all'apertura, accanto a quello dei
+              sentieri. Si comporta allo stesso modo: apri la pagina degli
+              gnocchi con la Fioreta.
 
           - { label: 'Sezione «La locanda» — etichetta piccola', name: locandaEtichetta, widget: string }
           - { label: 'Sezione «La locanda» — titolo', name: locandaTitolo, widget: string }

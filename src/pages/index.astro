@@ -107,46 +107,9 @@ const sentieri = (await getCollection('sentieri'))
     sottotitolo={testi.sottotitolo}
     accessi={testi.accessi}
     invitoSentieri={testi.invitoSentieri}
+    invitoGnocchi={testi.pulsanteGnocchi}
   />
 
-  <!-- ==================================================================
-       Invito alla pagina degli gnocchi
-       ------------------------------------------------------------------
-       Prima qui c'era una fascia a tre colonne — Dove / Cucina / Sentieri —
-       con tre etichette e tre testi. Diceva cose vere ma non chiedeva
-       niente: chi leggeva non aveva nulla da fare, e la fascia occupava
-       spazio come un riempitivo.
-
-       Ora è un pulsante a pillola, centrato e largo quanto il suo testo: non
-       occupa tutta la pagina. La forma tonda lo distingue dagli altri
-       comandi del sito, che sono rettangolari, e lo rende il momento in cui
-       si può fare qualcosa.
-
-       La freccia è decorativa e nascosta ai lettori di schermo: il testo del
-       collegamento dice già dove porta.
-       ================================================================== -->
-  <!-- ==================================================================
-       La fascia degli gnocchi
-       ------------------------------------------------------------------
-       Un fondo scuro fra il nero e il grigio, e sopra il pulsante. Niente
-       fotografia, niente testo, niente elenco.
-
-       Il fondo è fatto con un gradiente invece che con un'immagine: pesa zero
-       byte, non ha una risoluzione da cui dipendere, e il contrasto del
-       pulsante è lo stesso su tutta la fascia — cosa che con una fotografia
-       non sarebbe garantita, perché una foto ha zone chiare e zone scure.
-
-       La sfumatura è diagonale perché un fondo piatto sembra un rettangolo
-       vuoto; così invece ha una direzione di luce.
-       ================================================================== -->
-  <section class="tavolo" aria-label="Gli gnocchi con la Fioreta">
-    <div class="shell tavolo__sopra">
-      <a href="/gnocchi-con-la-fioreta" class="pulsante-gnocchi">
-        {testi.pulsanteGnocchi}
-        <span class="pulsante-gnocchi__freccia" aria-hidden="true">→</span>
-      </a>
-    </div>
-  </section>
 
 
   <!-- ==================================================================
