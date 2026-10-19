@@ -223,6 +223,16 @@
     /* Tinta tenue dello stesso accento: la card si stacca dal fondo senza
        bisogno di un bordo o di un'ombra. */
     background-color: color-mix(in oklab, var(--card-accento, var(--color-acc-pietra)) 12%, var(--color-stone-50));
+
+    /*
+      Senza questo, il testo parte dal bordo della card: il fondo colorato
+      arriva fino alle lettere e sembra un errore, non una scelta.
+
+      Sta qui e non nelle singole pagine perché è una proprietà della card, non
+      del suo contenuto. Chi ha bisogno di più spazio lo aggiunge con una
+      classe (`p-7` nella pagina degli gnocchi), e quella vince.
+    */
+    padding-inline: clamp(1rem, 2.4vw, 1.75rem);
   }
   .card-accento--bosco {
     --card-accento: var(--color-acc-bosco);
