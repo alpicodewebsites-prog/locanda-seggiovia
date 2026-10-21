@@ -36,7 +36,15 @@ function check(nome, ok, dettaglio = '') {
 // ---------------------------------------------------------------------------
 // 1. Il meteo si carica su ogni scheda che lo dichiara
 // ---------------------------------------------------------------------------
-const SLUG = ['gino-solda', 'grandi-alberi', 'strada-52-gallerie', 'ponte-tibetano', 'campogrosso', 'sentiero-mole'];
+const SLUG = [
+  'gino-solda',
+  'grandi-alberi',
+  'strada-52-gallerie',
+  'ponte-tibetano',
+  'campogrosso',
+  'sentiero-mole',
+  'orso-e-gallo',
+];
 
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
 

@@ -325,6 +325,14 @@ SCENES = [
         [(126, 138, 150), (208, 200, 192)],
         [(154, 156, 154), (46, 56, 50)], 6, 0.34, 0.66, GLOW_300,
     ),
+    # Sentiero dell'Orso e del Gallo: versante assolato sopra il paese, più
+    # caldo e più basso degli altri — la quota massima è 1.046 m, contro i
+    # 2.006 della Strada delle 52 Gallerie.
+    (
+        "sentieri-orso-gallo", 1920, 1280, 4207,
+        [(150, 142, 126), (226, 214, 190)],
+        [(176, 166, 142), (74, 74, 58)], 5, 0.30, 0.58, GLOW_300,
+    ),
 ]
 
 # Interni e soggetti non paesaggistici: riquadro vuoto etichettato.

@@ -483,6 +483,119 @@
     text-align: right;
   }
 
+  /*
+    ==========================================================================
+    LA FASCIA DEI DATI DI UN SENTIERO
+    ==========================================================================
+
+    Sette numeri su una fila, larghi quanto la pagina. Prima erano in una
+    colonna stretta a destra: chi voleva sapere quanto era lungo il percorso
+    doveva leggerlo in verticale, mentre metà della pagina restava vuota.
+
+    La fila si adatta da sola: `auto-fit` con una larghezza minima fa il conto.
+    Se un sentiero ha meno dati — per esempio senza segnavia — le celle si
+    allargano invece di lasciare un buco.
+  */
+  .dati-sentiero {
+    padding-block: clamp(1.5rem, 3.5vw, 2.25rem);
+    background-color: var(--color-stone-50);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-stone-500) 18%, transparent);
+  }
+
+  .dati-sentiero__fila {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+    gap: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 2vw, 1.75rem);
+    margin: 0;
+  }
+
+  .dato {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding-left: 0.85rem;
+    /* Una barretta sottile a sinistra: separa le celle senza disegnare una
+       tabella. È informazione — dice dove finisce un dato e comincia il
+       successivo — non decorazione. */
+    border-left: 1px solid color-mix(in oklab, var(--color-stone-500) 22%, transparent);
+  }
+
+  .dato__voce {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-stone-500);
+  }
+
+  .dato__valore {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1.9vw, 1.4rem);
+    line-height: 1.2;
+    color: var(--color-stone-900);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dati-sentiero__nota {
+    margin-top: 1.15rem;
+    max-width: 62ch;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--color-stone-500);
+  }
+
+  /* --- La scheda della webcam ------------------------------------------
+     Sta accanto al meteo, nella colonna delle condizioni. È un collegamento,
+     non un'immagine: la webcam la mostra la fonte, che la tiene aggiornata.
+  */
+  .webcam {
+    display: block;
+    padding: 1.15rem 1.25rem 1.2rem;
+    border: 1px solid color-mix(in oklab, var(--color-stone-500) 24%, transparent);
+    border-radius: var(--raggio-media);
+    background-color: var(--color-stone-50);
+    transition:
+      background-color 220ms ease-out,
+      border-color 220ms ease-out;
+  }
+
+  .webcam:hover {
+    background-color: var(--color-stone-100);
+    border-color: color-mix(in oklab, var(--color-stone-500) 40%, transparent);
+  }
+
+  .webcam:focus-visible {
+    outline: 2px solid var(--color-stone-700);
+    outline-offset: 2px;
+  }
+
+  .webcam__voce {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-stone-500);
+  }
+
+  .webcam__nome {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1.25;
+    color: var(--color-stone-900);
+  }
+
+  .webcam__nota {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: var(--color-stone-600);
+  }
+
   /* --- Tabella tariffe ------------------------------------------------- */
   /* Non è una <table>: le tariffe sono tre misure dello stesso oggetto, e in
      verticale restano leggibili anche su telefono senza scorrimento laterale. */

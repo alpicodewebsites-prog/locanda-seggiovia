@@ -10,34 +10,37 @@
  * — ma il dato invecchierebbe: il sito si ricompila quando qualcuno modifica un
  * contenuto, non ogni ora. Un meteo di tre giorni fa è peggio di nessun meteo.
  *
- * Quindi: l'HTML esce con un riquadro vuoto e uno script piccolo lo riempie
- * appena la pagina si apre. Nessun server, nessuna chiave, nessun costo.
- *
  * ----------------------------------------------------------------------------
- * DA DOVE ARRIVANO I DATI
+ * LO SFONDO CAMBIA CON IL TEMPO
  *
- * Open-Meteo (https://open-meteo.com): API pubblica, senza chiave, con CORS
- * aperto — è quello che rende possibile chiamarla da una pagina statica.
- * L'attribuzione è obbligatoria ed è nel riquadro.
+ * Il riquadro prende il colore del cielo che sta descrivendo: oro caldo col
+ * sereno, grigio di nebbia quando c'è nebbia, strisce oblique quando piove,
+ * punti chiari quando nevica.
+ *
+ * È fatto con gradienti e non con fotografie, e la scelta è voluta:
+ *   - pesa zero byte, e questa scheda ne ha già abbastanza
+ *   - non dipende da una licenza né da una risoluzione
+ *   - il colore è esattamente quello che serve perché il testo resti leggibile;
+ *     con una fotografia il contrasto cambierebbe da punto a punto
+ *
+ * Gli sfondi sono tutti CHIARI: il testo resta scuro su ogni condizione, quindi
+ * il contrasto non dipende da cosa c'è dietro. Anche il cielo più scuro resta
+ * sopra 6:1, ben oltre i 4,5:1 richiesti.
  *
  * ----------------------------------------------------------------------------
  * IL PUNTO CHE SI MISURA
  *
  * Le coordinate NON sono «del sentiero»: un sentiero è lungo chilometri e la
  * temperatura cambia con la quota. Sono quelle di un punto preciso, di solito il
- * parcheggio di partenza — dove uno decide se partire. `localita` lo dice a
- * parole, così il numero non sembra riferito a tutto il percorso.
+ * parcheggio di partenza. `localita` lo dice a parole.
  *
  * ----------------------------------------------------------------------------
  * ACCESSIBILITÀ
  *
- *  - Il riquadro non è una live region: annuncerebbe tutto il meteo appena la
- *    pagina si apre, sopra il resto. Chi usa un lettore di schermo legge il
- *    contenuto quando ci arriva, come qualsiasi altro testo.
- *  - Se il caricamento fallisce resta un messaggio leggibile e un collegamento
- *    a un bollettino vero: non si lascia un riquadro vuoto.
- *  - Nessuna animazione: non serve, e chi ha chiesto meno movimento non deve
- *    chiedere niente.
+ *  - Nessuna live region: annuncerebbe tutto il meteo all'apertura della pagina.
+ *  - Se il caricamento fallisce resta un messaggio leggibile e un collegamento a
+ *    un bollettino vero.
+ *  - Nessuna animazione, quindi niente da disattivare con `prefers-reduced-motion`.
  * ----------------------------------------------------------------------------
  */
 export interface Props {
@@ -92,25 +95,94 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
     Astro "isola" gli stili aggiungendo un attributo agli elementi scritti nel
     modello. Ma il contenuto di questo riquadro viene creato DOPO, da
     JavaScript: quei elementi non hanno l'attributo, quindi le regole con scopo
-    non li raggiungono e il riquadro resta senza stile — i dati comparivano
-    impilati e senza griglia.
+    non li raggiungono e il riquadro resta senza stile.
 
-    Si può scrivere tutto globale perché ogni classe comincia con `meteo`:
-    nessun'altra parte del sito può essere toccata. Vale la pena preferirlo a un
-    `:global()` su ogni selettore, che sarebbe fragile: basta aggiungere una
-    classe al contenuto iniettato e ci si dimentica di scriverla.
+    Si può scrivere tutto globale perché ogni classe comincia con `meteo`.
   */
   .meteo {
+    --testo-meteo: #1c1b19;
+    /* Testi secondari: un grigio pieno, non un nero trasparente. */
+    --testo-meteo-2: #3a3a35;
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
-    padding: 1.35rem 1.35rem 1.2rem;
-    border: 1px solid var(--color-stone-200);
-    border-radius: var(--raggio-media);
-    background-color: var(--color-stone-50);
+    padding: 1.4rem 1.4rem 1.15rem;
+    overflow: hidden;
+    border-radius: var(--raggio-card);
+    color: var(--testo-meteo);
+    /* Ripiego prima del caricamento: cielo coperto, neutro. */
+    background-color: #ddd9d2;
+    background-image: linear-gradient(160deg, #e6e2db, #cbc7bf);
+  }
+
+  /* --- I cieli ---------------------------------------------------------
+     Tutti chiari: il testo scuro resta leggibile su ogni condizione, e il
+     contrasto non dipende da dove cade il testo.
+  */
+  .meteo[data-cielo='sereno'] {
+    background-color: #ecd9ac;
+    background-image:
+      radial-gradient(circle at 82% 12%, rgba(255, 250, 232, 0.95) 0%, rgba(255, 246, 214, 0) 46%),
+      linear-gradient(160deg, #f6ecd4, #e5cfa0);
+  }
+
+  .meteo[data-cielo='poco-nuvoloso'] {
+    background-color: #e2ddd1;
+    background-image:
+      radial-gradient(circle at 80% 10%, rgba(255, 249, 232, 0.8) 0%, rgba(255, 249, 232, 0) 40%),
+      linear-gradient(160deg, #f0ebe0, #d6d0c2);
+  }
+
+  .meteo[data-cielo='nuvoloso'] {
+    background-color: #cfccc4;
+    background-image:
+      repeating-linear-gradient(168deg, rgba(255, 255, 255, 0.28) 0 2px, transparent 2px 18px),
+      linear-gradient(160deg, #dedad3, #bdbab2);
+  }
+
+  .meteo[data-cielo='nebbia'] {
+    background-color: #d2d2cc;
+    background-image:
+      repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0 14px, transparent 14px 34px),
+      linear-gradient(180deg, #e6e5e0, #c6c6c0);
+  }
+
+  .meteo[data-cielo='pioggia'] {
+    background-color: #bfc5c6;
+    background-image:
+      repeating-linear-gradient(104deg, rgba(255, 255, 255, 0.38) 0 1px, transparent 1px 8px),
+      linear-gradient(160deg, #ccd1d2, #aab0b2);
+  }
+
+  .meteo[data-cielo='rovesci'] {
+    background-color: #b9bfc0;
+    background-image:
+      repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.5) 0 1px, transparent 1px 6px),
+      linear-gradient(160deg, #cfd4d5, #a6acae);
+  }
+
+  .meteo[data-cielo='neve'] {
+    background-color: #e4e8e8;
+    background-image:
+      radial-gradient(circle at 18% 26%, rgba(255, 255, 255, 0.95) 0 1.5px, transparent 2px),
+      radial-gradient(circle at 62% 48%, rgba(255, 255, 255, 0.95) 0 1.5px, transparent 2px),
+      radial-gradient(circle at 40% 74%, rgba(255, 255, 255, 0.9) 0 1.5px, transparent 2px),
+      radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.9) 0 1.5px, transparent 2px),
+      linear-gradient(160deg, #f1f4f4, #d8dede);
+  }
+
+  .meteo[data-cielo='temporale'] {
+    background-color: #a6a8a2;
+    background-image:
+      linear-gradient(118deg, transparent 42%, rgba(255, 252, 236, 0.7) 47%, transparent 53%),
+      repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.3) 0 1px, transparent 1px 7px),
+      linear-gradient(160deg, #c4c6bf, #aaaca5);
   }
 
   .meteo__testa {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -122,12 +194,12 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-stone-500);
+    color: var(--testo-meteo-2);
   }
 
   .meteo__luogo {
     font-size: 0.875rem;
-    color: var(--color-stone-600);
+    color: var(--testo-meteo-2);
   }
 
   .meteo__quota {
@@ -136,32 +208,34 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
 
   .meteo__attesa {
     font-size: 0.95rem;
-    color: var(--color-stone-500);
+    color: var(--testo-meteo-2);
   }
 
   /* --- Adesso ---------------------------------------------------------- */
   .meteo__adesso {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.15rem 0.85rem;
+    gap: 0.1rem 0.9rem;
   }
 
   .meteo__gradi {
     font-family: var(--font-display);
-    font-size: 2rem;
-    line-height: 1;
-    color: var(--color-stone-900);
+    font-size: clamp(2.6rem, 6vw, 3.4rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
   }
 
   .meteo__condizione {
-    font-size: 0.95rem;
-    color: var(--color-stone-700);
+    font-size: 1rem;
+    color: var(--testo-meteo);
   }
 
   /* --- I dati di oggi -------------------------------------------------- */
   .meteo__dati {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem 1.75rem;
@@ -175,32 +249,32 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
   }
 
   .meteo__dati dt {
-    color: var(--color-stone-500);
+    color: var(--testo-meteo-2);
   }
 
   .meteo__dati dd {
     margin: 0;
     font-variant-numeric: tabular-nums;
-    color: var(--color-stone-800);
   }
 
   /* --- I prossimi giorni ----------------------------------------------- */
   .meteo__giorni {
+    position: relative;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     margin: 0;
     padding: 0.85rem 0 0;
-    border-top: 1px solid var(--color-stone-200);
+    border-top: 1px solid color-mix(in srgb, var(--testo-meteo) 20%, transparent);
     list-style: none;
   }
 
   .meteo__giorno {
     display: block;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-stone-500);
+    color: var(--testo-meteo-2);
   }
 
   .meteo__valori {
@@ -208,73 +282,74 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
     margin-top: 0.15rem;
     font-size: 0.95rem;
     font-variant-numeric: tabular-nums;
-    color: var(--color-stone-900);
   }
 
   .meteo__vento {
     display: block;
-    font-size: 0.8rem;
-    color: var(--color-stone-600);
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: var(--testo-meteo-2);
   }
 
   .meteo__fonte {
-    font-size: 0.75rem;
+    position: relative;
+    font-size: 0.72rem;
     line-height: 1.5;
-    color: var(--color-stone-500);
+    color: var(--testo-meteo-2);
   }
 
   .meteo__fonte a {
-    color: var(--color-stone-700);
+    color: inherit;
     text-decoration: underline;
     text-underline-offset: 0.15em;
   }
 
   .meteo__fonte a:focus-visible {
-    outline: 2px solid var(--color-stone-700);
+    outline: 2px solid var(--testo-meteo);
     outline-offset: 2px;
   }
 </style>
 
 <script>
   /*
-    Codici meteo WMO → parole italiane.
+    Codici meteo WMO → parole italiane, e → cielo da disegnare.
     Open-Meteo restituisce un numero; senza questa tabella il riquadro
     mostrerebbe «61», che non dice niente a nessuno.
   */
-  const CONDIZIONI: Record<number, string> = {
-    0: 'Sereno',
-    1: 'Prevalentemente sereno',
-    2: 'Parzialmente nuvoloso',
-    3: 'Nuvoloso',
-    45: 'Nebbia',
-    48: 'Nebbia con brina',
-    51: 'Pioviggine debole',
-    53: 'Pioviggine moderata',
-    55: 'Pioviggine intensa',
-    56: 'Pioviggine gelata',
-    57: 'Pioviggine gelata intensa',
-    61: 'Pioggia debole',
-    63: 'Pioggia moderata',
-    65: 'Pioggia forte',
-    66: 'Pioggia gelata',
-    67: 'Pioggia gelata forte',
-    71: 'Neve debole',
-    73: 'Neve moderata',
-    75: 'Neve forte',
-    77: 'Granelli di neve',
-    80: 'Rovesci deboli',
-    81: 'Rovesci moderati',
-    82: 'Rovesci forti',
-    85: 'Rovesci di neve',
-    86: 'Rovesci di neve forti',
-    95: 'Temporale',
-    96: 'Temporale con grandine',
-    99: 'Temporale con grandine forte',
+  const CONDIZIONI: Record<number, { testo: string; cielo: string }> = {
+    0: { testo: 'Sereno', cielo: 'sereno' },
+    1: { testo: 'Prevalentemente sereno', cielo: 'sereno' },
+    2: { testo: 'Parzialmente nuvoloso', cielo: 'poco-nuvoloso' },
+    3: { testo: 'Nuvoloso', cielo: 'nuvoloso' },
+    45: { testo: 'Nebbia', cielo: 'nebbia' },
+    48: { testo: 'Nebbia con brina', cielo: 'nebbia' },
+    51: { testo: 'Pioviggine debole', cielo: 'pioggia' },
+    53: { testo: 'Pioviggine moderata', cielo: 'pioggia' },
+    55: { testo: 'Pioviggine intensa', cielo: 'pioggia' },
+    56: { testo: 'Pioviggine gelata', cielo: 'pioggia' },
+    57: { testo: 'Pioviggine gelata intensa', cielo: 'pioggia' },
+    61: { testo: 'Pioggia debole', cielo: 'pioggia' },
+    63: { testo: 'Pioggia moderata', cielo: 'pioggia' },
+    65: { testo: 'Pioggia forte', cielo: 'pioggia' },
+    66: { testo: 'Pioggia gelata', cielo: 'pioggia' },
+    67: { testo: 'Pioggia gelata forte', cielo: 'pioggia' },
+    71: { testo: 'Neve debole', cielo: 'neve' },
+    73: { testo: 'Neve moderata', cielo: 'neve' },
+    75: { testo: 'Neve forte', cielo: 'neve' },
+    77: { testo: 'Granelli di neve', cielo: 'neve' },
+    80: { testo: 'Rovesci deboli', cielo: 'rovesci' },
+    81: { testo: 'Rovesci moderati', cielo: 'rovesci' },
+    82: { testo: 'Rovesci forti', cielo: 'rovesci' },
+    85: { testo: 'Rovesci di neve', cielo: 'neve' },
+    86: { testo: 'Rovesci di neve forti', cielo: 'neve' },
+    95: { testo: 'Temporale', cielo: 'temporale' },
+    96: { testo: 'Temporale con grandine', cielo: 'temporale' },
+    99: { testo: 'Temporale con grandine forte', cielo: 'temporale' },
   };
 
   /** Un codice sconosciuto non deve diventare «undefined» in pagina. */
-  function condizione(codice: number): string {
-    return CONDIZIONI[codice] ?? 'Condizioni variabili';
+  function condizione(codice: number) {
+    return CONDIZIONI[codice] ?? { testo: 'Condizioni variabili', cielo: 'nuvoloso' };
   }
 
   const GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
@@ -291,8 +366,14 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
     return `${Math.round(valore)}°`;
   }
 
+  /** Dipinge il cielo del riquadro secondo la condizione. */
+  function dipingiCielo(el: HTMLElement, codice: number) {
+    el.dataset.cielo = condizione(codice).cielo;
+  }
+
   /** Il riquadro quando il meteo non arriva: niente spazio vuoto. */
-  function mostraErrore(corpo: HTMLElement) {
+  function mostraErrore(el: HTMLElement, corpo: HTMLElement) {
+    el.dataset.cielo = 'nuvoloso';
     corpo.setAttribute('aria-busy', 'false');
     corpo.innerHTML =
       '<p class="meteo__attesa">Il meteo non è disponibile in questo momento. ' +
@@ -312,7 +393,7 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
     };
   };
 
-  function disegna(corpo: HTMLElement, d: Risposta) {
+  function disegna(el: HTMLElement, corpo: HTMLElement, d: Risposta) {
     const oggi = d.daily;
     const giorni = oggi.time.slice(0, 3).map((data, i) => {
       const pioggia = oggi.precipitation_probability_max?.[i];
@@ -320,17 +401,18 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
         <li>
           <span class="meteo__giorno">${etichettaGiorno(i, data)}</span>
           <span class="meteo__valori">${gradi(oggi.temperature_2m_max[i])} / ${gradi(oggi.temperature_2m_min[i])}</span>
-          <span class="meteo__vento">${condizione(oggi.weather_code[i])}${
+          <span class="meteo__vento">${condizione(oggi.weather_code[i]).testo}${
             typeof pioggia === 'number' ? ` · ${pioggia}%` : ''
           }</span>
         </li>`;
     });
 
+    dipingiCielo(el, d.current.weather_code);
     corpo.setAttribute('aria-busy', 'false');
     corpo.innerHTML = `
       <div class="meteo__adesso">
         <span class="meteo__gradi">${gradi(d.current.temperature_2m)}</span>
-        <span class="meteo__condizione">${condizione(d.current.weather_code)}</span>
+        <span class="meteo__condizione">${condizione(d.current.weather_code).testo}</span>
       </div>
       <dl class="meteo__dati">
         <div>
@@ -348,8 +430,7 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
   /*
     La memoria della scheda: se si torna sulla pagina dopo poco, i dati si
     riusano invece di richiederli di nuovo. Quindici minuti è il passo con cui
-    Open-Meteo aggiorna le previsioni: chiedere più spesso non darebbe un dato
-    più fresco, darebbe solo più richieste.
+    Open-Meteo aggiorna le previsioni.
   */
   const DURATA_MEMORIA = 15 * 60 * 1000;
 
@@ -385,7 +466,7 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
 
     const memorizzato = leggiMemoria(lat, lon);
     if (memorizzato) {
-      disegna(corpo, memorizzato);
+      disegna(el, corpo, memorizzato);
       return;
     }
 
@@ -396,7 +477,7 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
       '&timezone=Europe%2FRome&forecast_days=3';
 
     try {
-      // Se il servizio non risponde entro dieci secondi, si smette di aspettare:
+      // Se il servizio non risponde entro dieci secondi si smette di aspettare:
       // il riquadro deve dire qualcosa, non restare in caricamento.
       const controllo = new AbortController();
       const scadenza = setTimeout(() => controllo.abort(), 10_000);
@@ -408,9 +489,9 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
 
       const dati = (await risposta.json()) as Risposta;
       scriviMemoria(lat, lon, dati);
-      disegna(corpo, dati);
+      disegna(el, corpo, dati);
     } catch {
-      mostraErrore(corpo);
+      mostraErrore(el, corpo);
     }
   }
 
