@@ -45,3 +45,21 @@ CARICA-SU-GITHUB.cmd
 Usersaless*
 *AppDataLocalTemp*
 *.txt.tmp
+
+# --- Uscite grezze del generatore di segnaposto ----------------------------
+# `scripts/generate_placeholders.py` scrive nella radice di src/assets con i
+# nomi grezzi; `scripts/organizza_immagini.py` li sposta poi nelle cartelle
+# giuste con i nomi numerati. Se qualcuno esegue il generatore e non l'ordina,
+# quei file resterebbero nel repository come doppioni inutilizzati (è successo).
+src/assets/sentieri-*.jpg
+src/assets/hero-*.jpg
+src/assets/piccole-dolomiti-*.jpg
+
+# Fotogrammi di verifica (scripts/scatta_*.mjs, verifica_cieli)
+cieli/
+sentiero.png
+meteo.png
+tavolo.png
+menu.png
+hero-collegamenti.png
+dettagli-foglio.png
