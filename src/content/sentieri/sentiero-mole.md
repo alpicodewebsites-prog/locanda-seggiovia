@@ -15,5 +15,8 @@ dislivello: 400 m
 durata: 3 ore e 30 minuti
 partenza: Rifugio La Guardia
 segnavia: CAI 151/144
+meteoLatitudine: 45.759609
+meteoLongitudine: 11.173866
+meteoLocalita: Passo Pian delle Fugazze
 immagine: /assets/sentieri/02-sentiero-mole.jpg
 ---

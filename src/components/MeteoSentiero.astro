@@ -1,0 +1,428 @@
+---
+/**
+ * MeteoSentiero — il meteo di un punto preciso, aggiornato dal browser.
+ *
+ * ----------------------------------------------------------------------------
+ * PERCHÉ SI CARICA DAL BROWSER E NON DURANTE LA COMPILAZIONE
+ *
+ * Il sito è statico: potrebbe interrogare il meteo una volta sola, quando si
+ * compila, e scrivere il risultato nell'HTML. Sarebbe più semplice e più veloce
+ * — ma il dato invecchierebbe: il sito si ricompila quando qualcuno modifica un
+ * contenuto, non ogni ora. Un meteo di tre giorni fa è peggio di nessun meteo.
+ *
+ * Quindi: l'HTML esce con un riquadro vuoto e uno script piccolo lo riempie
+ * appena la pagina si apre. Nessun server, nessuna chiave, nessun costo.
+ *
+ * ----------------------------------------------------------------------------
+ * DA DOVE ARRIVANO I DATI
+ *
+ * Open-Meteo (https://open-meteo.com): API pubblica, senza chiave, con CORS
+ * aperto — è quello che rende possibile chiamarla da una pagina statica.
+ * L'attribuzione è obbligatoria ed è nel riquadro.
+ *
+ * ----------------------------------------------------------------------------
+ * IL PUNTO CHE SI MISURA
+ *
+ * Le coordinate NON sono «del sentiero»: un sentiero è lungo chilometri e la
+ * temperatura cambia con la quota. Sono quelle di un punto preciso, di solito il
+ * parcheggio di partenza — dove uno decide se partire. `localita` lo dice a
+ * parole, così il numero non sembra riferito a tutto il percorso.
+ *
+ * ----------------------------------------------------------------------------
+ * ACCESSIBILITÀ
+ *
+ *  - Il riquadro non è una live region: annuncerebbe tutto il meteo appena la
+ *    pagina si apre, sopra il resto. Chi usa un lettore di schermo legge il
+ *    contenuto quando ci arriva, come qualsiasi altro testo.
+ *  - Se il caricamento fallisce resta un messaggio leggibile e un collegamento
+ *    a un bollettino vero: non si lascia un riquadro vuoto.
+ *  - Nessuna animazione: non serve, e chi ha chiesto meno movimento non deve
+ *    chiedere niente.
+ * ----------------------------------------------------------------------------
+ */
+export interface Props {
+  /** Latitudine del punto in cui si misura il meteo. */
+  latitudine: number;
+  /** Longitudine del punto in cui si misura il meteo. */
+  longitudine: number;
+  /** Il luogo, a parole: si mostra accanto ai dati. */
+  localita: string;
+  /** Quota del punto, in metri. Facoltativa. */
+  quota?: number;
+}
+
+const { latitudine, longitudine, localita, quota } = Astro.props;
+---
+
+<div
+  class="meteo"
+  data-meteo
+  data-lat={latitudine}
+  data-lon={longitudine}
+  data-luogo={localita}
+>
+  <div class="meteo__testa">
+    <p class="meteo__etichetta">Meteo</p>
+    <p class="meteo__luogo">
+      {localita}{quota && <span class="meteo__quota"> · {quota} m</span>}
+    </p>
+  </div>
+
+  <div class="meteo__corpo" data-meteo-corpo aria-busy="true">
+    <p class="meteo__attesa">Caricamento del meteo…</p>
+  </div>
+
+  <p class="meteo__fonte">
+    Dati <a href="https://open-meteo.com/" rel="noopener" target="_blank">Open-Meteo</a>,
+    aggiornati a ogni apertura della pagina.
+  </p>
+
+  <noscript>
+    <p class="meteo__fonte">
+      Il meteo si carica con JavaScript attivo. Senza, resta il
+      <a href="https://www.ilmeteo.it/meteo/Recoaro+Terme">bollettino di Recoaro Terme</a>.
+    </p>
+  </noscript>
+</div>
+
+<style is:global>
+  /*
+    ATTENZIONE — `is:global` non è pigrizia, è necessario.
+
+    Astro "isola" gli stili aggiungendo un attributo agli elementi scritti nel
+    modello. Ma il contenuto di questo riquadro viene creato DOPO, da
+    JavaScript: quei elementi non hanno l'attributo, quindi le regole con scopo
+    non li raggiungono e il riquadro resta senza stile — i dati comparivano
+    impilati e senza griglia.
+
+    Si può scrivere tutto globale perché ogni classe comincia con `meteo`:
+    nessun'altra parte del sito può essere toccata. Vale la pena preferirlo a un
+    `:global()` su ogni selettore, che sarebbe fragile: basta aggiungere una
+    classe al contenuto iniettato e ci si dimentica di scriverla.
+  */
+  .meteo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.35rem 1.35rem 1.2rem;
+    border: 1px solid var(--color-stone-200);
+    border-radius: var(--raggio-media);
+    background-color: var(--color-stone-50);
+  }
+
+  .meteo__testa {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .meteo__etichetta {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-stone-500);
+  }
+
+  .meteo__luogo {
+    font-size: 0.875rem;
+    color: var(--color-stone-600);
+  }
+
+  .meteo__quota {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .meteo__attesa {
+    font-size: 0.95rem;
+    color: var(--color-stone-500);
+  }
+
+  /* --- Adesso ---------------------------------------------------------- */
+  .meteo__adesso {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.85rem;
+  }
+
+  .meteo__gradi {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--color-stone-900);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .meteo__condizione {
+    font-size: 0.95rem;
+    color: var(--color-stone-700);
+  }
+
+  /* --- I dati di oggi -------------------------------------------------- */
+  .meteo__dati {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.75rem;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  .meteo__dati div {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .meteo__dati dt {
+    color: var(--color-stone-500);
+  }
+
+  .meteo__dati dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-stone-800);
+  }
+
+  /* --- I prossimi giorni ----------------------------------------------- */
+  .meteo__giorni {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.85rem 0 0;
+    border-top: 1px solid var(--color-stone-200);
+    list-style: none;
+  }
+
+  .meteo__giorno {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-stone-500);
+  }
+
+  .meteo__valori {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-stone-900);
+  }
+
+  .meteo__vento {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-stone-600);
+  }
+
+  .meteo__fonte {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-stone-500);
+  }
+
+  .meteo__fonte a {
+    color: var(--color-stone-700);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .meteo__fonte a:focus-visible {
+    outline: 2px solid var(--color-stone-700);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  /*
+    Codici meteo WMO → parole italiane.
+    Open-Meteo restituisce un numero; senza questa tabella il riquadro
+    mostrerebbe «61», che non dice niente a nessuno.
+  */
+  const CONDIZIONI: Record<number, string> = {
+    0: 'Sereno',
+    1: 'Prevalentemente sereno',
+    2: 'Parzialmente nuvoloso',
+    3: 'Nuvoloso',
+    45: 'Nebbia',
+    48: 'Nebbia con brina',
+    51: 'Pioviggine debole',
+    53: 'Pioviggine moderata',
+    55: 'Pioviggine intensa',
+    56: 'Pioviggine gelata',
+    57: 'Pioviggine gelata intensa',
+    61: 'Pioggia debole',
+    63: 'Pioggia moderata',
+    65: 'Pioggia forte',
+    66: 'Pioggia gelata',
+    67: 'Pioggia gelata forte',
+    71: 'Neve debole',
+    73: 'Neve moderata',
+    75: 'Neve forte',
+    77: 'Granelli di neve',
+    80: 'Rovesci deboli',
+    81: 'Rovesci moderati',
+    82: 'Rovesci forti',
+    85: 'Rovesci di neve',
+    86: 'Rovesci di neve forti',
+    95: 'Temporale',
+    96: 'Temporale con grandine',
+    99: 'Temporale con grandine forte',
+  };
+
+  /** Un codice sconosciuto non deve diventare «undefined» in pagina. */
+  function condizione(codice: number): string {
+    return CONDIZIONI[codice] ?? 'Condizioni variabili';
+  }
+
+  const GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+
+  /** «Oggi», «Domani», poi il nome del giorno. */
+  function etichettaGiorno(indice: number, data: string): string {
+    if (indice === 0) return 'Oggi';
+    if (indice === 1) return 'Domani';
+    const d = new Date(`${data}T12:00:00`);
+    return GIORNI[d.getDay()] ?? data;
+  }
+
+  function gradi(valore: number): string {
+    return `${Math.round(valore)}°`;
+  }
+
+  /** Il riquadro quando il meteo non arriva: niente spazio vuoto. */
+  function mostraErrore(corpo: HTMLElement) {
+    corpo.setAttribute('aria-busy', 'false');
+    corpo.innerHTML =
+      '<p class="meteo__attesa">Il meteo non è disponibile in questo momento. ' +
+      'Riprova più tardi, oppure consulta il ' +
+      '<a href="https://www.ilmeteo.it/meteo/Recoaro+Terme" rel="noopener" target="_blank">' +
+      'bollettino di Recoaro Terme</a>.</p>';
+  }
+
+  type Risposta = {
+    current: { temperature_2m: number; weather_code: number; wind_speed_10m: number };
+    daily: {
+      time: string[];
+      temperature_2m_max: number[];
+      temperature_2m_min: number[];
+      weather_code: number[];
+      precipitation_probability_max: (number | null)[];
+    };
+  };
+
+  function disegna(corpo: HTMLElement, d: Risposta) {
+    const oggi = d.daily;
+    const giorni = oggi.time.slice(0, 3).map((data, i) => {
+      const pioggia = oggi.precipitation_probability_max?.[i];
+      return `
+        <li>
+          <span class="meteo__giorno">${etichettaGiorno(i, data)}</span>
+          <span class="meteo__valori">${gradi(oggi.temperature_2m_max[i])} / ${gradi(oggi.temperature_2m_min[i])}</span>
+          <span class="meteo__vento">${condizione(oggi.weather_code[i])}${
+            typeof pioggia === 'number' ? ` · ${pioggia}%` : ''
+          }</span>
+        </li>`;
+    });
+
+    corpo.setAttribute('aria-busy', 'false');
+    corpo.innerHTML = `
+      <div class="meteo__adesso">
+        <span class="meteo__gradi">${gradi(d.current.temperature_2m)}</span>
+        <span class="meteo__condizione">${condizione(d.current.weather_code)}</span>
+      </div>
+      <dl class="meteo__dati">
+        <div>
+          <dt>Oggi</dt>
+          <dd>${gradi(oggi.temperature_2m_max[0])} / ${gradi(oggi.temperature_2m_min[0])}</dd>
+        </div>
+        <div>
+          <dt>Vento</dt>
+          <dd>${Math.round(d.current.wind_speed_10m)} km/h</dd>
+        </div>
+      </dl>
+      <ul class="meteo__giorni">${giorni.join('')}</ul>`;
+  }
+
+  /*
+    La memoria della scheda: se si torna sulla pagina dopo poco, i dati si
+    riusano invece di richiederli di nuovo. Quindici minuti è il passo con cui
+    Open-Meteo aggiorna le previsioni: chiedere più spesso non darebbe un dato
+    più fresco, darebbe solo più richieste.
+  */
+  const DURATA_MEMORIA = 15 * 60 * 1000;
+
+  function chiave(lat: string, lon: string) {
+    return `meteo:${lat},${lon}`;
+  }
+
+  function leggiMemoria(lat: string, lon: string): Risposta | null {
+    try {
+      const grezzo = sessionStorage.getItem(chiave(lat, lon));
+      if (!grezzo) return null;
+      const { quando, dati } = JSON.parse(grezzo);
+      if (Date.now() - quando > DURATA_MEMORIA) return null;
+      return dati;
+    } catch {
+      return null;
+    }
+  }
+
+  function scriviMemoria(lat: string, lon: string, dati: Risposta) {
+    try {
+      sessionStorage.setItem(chiave(lat, lon), JSON.stringify({ quando: Date.now(), dati }));
+    } catch {
+      /* Spazio pieno o memoria disattivata: non è un problema, si richiede. */
+    }
+  }
+
+  async function carica(el: HTMLElement) {
+    const lat = el.dataset.lat;
+    const lon = el.dataset.lon;
+    const corpo = el.querySelector<HTMLElement>('[data-meteo-corpo]');
+    if (!lat || !lon || !corpo) return;
+
+    const memorizzato = leggiMemoria(lat, lon);
+    if (memorizzato) {
+      disegna(corpo, memorizzato);
+      return;
+    }
+
+    const url =
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+      '&current=temperature_2m,weather_code,wind_speed_10m' +
+      '&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max' +
+      '&timezone=Europe%2FRome&forecast_days=3';
+
+    try {
+      // Se il servizio non risponde entro dieci secondi, si smette di aspettare:
+      // il riquadro deve dire qualcosa, non restare in caricamento.
+      const controllo = new AbortController();
+      const scadenza = setTimeout(() => controllo.abort(), 10_000);
+
+      const risposta = await fetch(url, { signal: controllo.signal });
+      clearTimeout(scadenza);
+
+      if (!risposta.ok) throw new Error(`Risposta ${risposta.status}`);
+
+      const dati = (await risposta.json()) as Risposta;
+      scriviMemoria(lat, lon, dati);
+      disegna(corpo, dati);
+    } catch {
+      mostraErrore(corpo);
+    }
+  }
+
+  function avvia() {
+    document.querySelectorAll<HTMLElement>('[data-meteo]').forEach((el) => {
+      void carica(el);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', avvia, { once: true });
+  } else {
+    avvia();
+  }
+</script>

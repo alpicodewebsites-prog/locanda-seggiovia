@@ -15,5 +15,10 @@ distanza: circa 10 km
 dislivello: 300 m
 durata: 4 ore
 partenza: Passo Pian delle Fugazze
+meteoLatitudine: 45.7601
+meteoLongitudine: 11.17331
+meteoLocalita: Passo Pian delle Fugazze
+webcam: https://www.rifugiocampogrosso.com/webcam/
+webcamEtichetta: Rifugio Campogrosso
 immagine: /assets/sentieri/05-campogrosso.jpg
 ---

@@ -11,8 +11,13 @@ descrizione: >-
   hanno più anni di chiunque li guardi. Lungo il percorso si aprono i panorami
   sul Gruppo del Carega. Non è percorribile con i passeggini.
 difficolta: E
-distanza: 12 km (solo andata)
-dislivello: 400-550 m
+distanza: 11,4 km
+dislivello: 463 m
 partenza: Falde di Recoaro Mille
+durata: 3 ore e 50 minuti
+segnavia: CAI 120
+meteoLatitudine: 45.68339
+meteoLongitudine: 11.22444
+meteoLocalita: Recoaro Mille
 immagine: /assets/sentieri/03-grandi-alberi.jpg
 ---

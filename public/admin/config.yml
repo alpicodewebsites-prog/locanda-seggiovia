@@ -396,6 +396,48 @@ collections:
       - { label: Durata, name: durata, widget: string, required: false, hint: 'Esempio: 4 ore' }
       - { label: Punto di partenza, name: partenza, widget: string, required: false }
       - { label: Segnaletica CAI, name: segnavia, widget: string, required: false, hint: 'Esempio: CAI 151/144' }
+      - { label: Quota massima (metri), name: quota, widget: number, required: false, value_type: int, min: 0, hint: 'Il punto piu alto del percorso. Solo il numero, senza la m.' }
+
+      # --- Meteo ------------------------------------------------------------
+      # Le coordinate NON sono quelle del sentiero: un percorso e' lungo
+      # chilometri e la temperatura cambia con la quota. Sono quelle del punto
+      # dove si misura, di solito il parcheggio di partenza.
+      - label: Meteo, localita
+        name: meteoLocalita
+        widget: string
+        required: false
+        hint: >-
+          Il luogo dove si misura il meteo, per esempio «Bocchetta Campiglia».
+          Si mostra accanto ai dati: senza, il numero sembrerebbe riferito a
+          tutto il percorso. Se lasci vuoto questo campo, la scheda non mostra
+          il meteo.
+      - label: Meteo, latitudine
+        name: meteoLatitudine
+        widget: number
+        required: false
+        hint: 'Esempio: 45.778657. Con il punto, non con la virgola.'
+      - label: Meteo, longitudine
+        name: meteoLongitudine
+        widget: number
+        required: false
+        hint: 'Esempio: 11.227940. Con il punto, non con la virgola.'
+
+      # --- Webcam -----------------------------------------------------------
+      - label: Webcam, indirizzo della pagina
+        name: webcam
+        widget: string
+        required: false
+        hint: >-
+          L'indirizzo della PAGINA della webcam, non dell'immagine: le immagini
+          cambiano indirizzo e non sono pensate per essere incorporate da altri
+          siti. La scheda rimanda alla fonte, che mostra lei l'immagine
+          aggiornata.
+      - label: Webcam, nome
+        name: webcamEtichetta
+        widget: string
+        required: false
+        hint: 'Esempio: Rifugio Campogrosso'
+
       - label: Fotografia di copertina
         name: immagine
         widget: image

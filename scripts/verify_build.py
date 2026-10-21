@@ -193,13 +193,21 @@ def main() -> int:
     check("gnocchi: riferimento a Nonna Maria", "Nonna Maria" in gno_html)
 
     # --- Sentieri: le sei schede --------------------------------------------
+    # I dati attesi vengono dalle schede del Comune di Recoaro Terme su
+    # outdooractive («Partner verificato») e da UM.PASUBIO.
+    #
+    # ATTENZIONE al nome del primo: il sentiero è intitolato a **Italo** Soldà,
+    # non a Gino. La scheda ufficiale del Comune lo chiama «6 SENTIERO ITALO
+    # SOLDA'», e lo stesso fa il CAI Chioggia. «Gino Soldà» è l'alpinista
+    # recoarese, una persona diversa: questo controllo lo confondeva, ed è
+    # stato per due volte segnalato alla cliente come se fosse un refuso suo.
     sentieri_attesi = {
-        "grandi-alberi": ["Sentiero dei Grandi Alberi", "12 km", "E"],
+        "grandi-alberi": ["Sentiero dei Grandi Alberi", "11,4 km", "E"],
         "campogrosso": ["Anello Storico di Campogrosso", "10 km", "E"],
-        "ponte-tibetano": ["Ponte Tibetano AVIS", "105", "E"],
+        "ponte-tibetano": ["Ponte Tibetano AVIS", "13,2 km", "E"],
         "strada-52-gallerie": ["Strada delle 52 Gallerie", "6,6 km", "EE"],
         "sentiero-mole": ["Sentiero delle Mole", "151/144", "T"],
-        "gino-solda": ["Sentiero Gino Soldà", "4,25 km", "E"],
+        "gino-solda": ["Sentiero Italo Soldà", "11,4 km", "E"],
     }
     for slug, attesi in sentieri_attesi.items():
         percorso = DIST / f"sentieri/{slug}/index.html"

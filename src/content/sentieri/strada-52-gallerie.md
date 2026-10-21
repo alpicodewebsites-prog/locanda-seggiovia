@@ -11,7 +11,13 @@ descrizione: >-
   è necessaria.
 difficolta: EE
 distanza: 6,6 km
-dislivello: 1002 m
+dislivello: 948 m
 partenza: Bocchetta Campiglia
+durata: 3 ore e 50 minuti
+segnavia: CAI 366
+quota: 2006
+meteoLatitudine: 45.778657
+meteoLongitudine: 11.227940
+meteoLocalita: Bocchetta Campiglia
 immagine: /assets/sentieri/06-strada-52-gallerie.jpg
 ---

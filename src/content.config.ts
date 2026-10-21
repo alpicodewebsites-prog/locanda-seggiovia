@@ -190,6 +190,34 @@ const sentieri = defineCollection({
     /** Segnaletica CAI, se presente. */
     segnavia: z.string().optional(),
     partenza: z.string().optional(),
+    /** Quota del punto più alto, in metri. */
+    quota: z.number().int().positive().optional(),
+
+    /**
+     * Dove si misura il meteo, e a che coordinate.
+     *
+     * NON è «le coordinate del sentiero»: un sentiero è lungo chilometri e il
+     * tempo cambia con la quota. Sono le coordinate di un punto preciso — di
+     * solito il parcheggio di partenza, che è dove uno decide se partire.
+     *
+     * `meteoLocalita` si mostra accanto ai dati: senza, il numero sembrerebbe
+     * riferito a tutto il percorso. Con, si legge «Meteo a Bocchetta Campiglia».
+     */
+    meteoLatitudine: z.number().min(-90).max(90).optional(),
+    meteoLongitudine: z.number().min(-180).max(180).optional(),
+    meteoLocalita: z.string().optional(),
+
+    /**
+     * Webcam ufficiale, se il sentiero ne ha una.
+     *
+     * È l'indirizzo della PAGINA della webcam, non dell'immagine: le immagini
+     * live cambiano indirizzo e non sono pensate per essere incorporate da
+     * altri siti. La scheda rimanda alla fonte, che resta lei a mostrare
+     * l'immagine aggiornata.
+     */
+    webcam: z.string().url().optional(),
+    webcamEtichetta: z.string().optional(),
+
     /** Immagine di copertina. */
     immagine,
   }),

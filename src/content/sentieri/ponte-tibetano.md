@@ -10,6 +10,13 @@ descrizione: >-
   della tragedia del 1956. Si trova nell'Anello del Sengio Alto, a circa 40
   minuti dall'Ossario del Pasubio. Non è accessibile con neve o vento forte.
 difficolta: E
-partenza: Anello del Sengio Alto
+partenza: Pian delle Fugazze / Alpe di Campogrosso
+distanza: 13,2 km
+dislivello: 552 m
+durata: 4 ore e 20 minuti
+quota: 1545
+meteoLatitudine: 45.759609
+meteoLongitudine: 11.173866
+meteoLocalita: Pian delle Fugazze
 immagine: /assets/sentieri/04-ponte-tibetano.jpg
 ---
