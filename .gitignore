@@ -63,3 +63,8 @@ tavolo.png
 menu.png
 hero-collegamenti.png
 dettagli-foglio.png
+
+# Messaggi di commit scritti su file (per evitare i problemi di virgolette di
+# PowerShell). Non devono entrare nel repository: e' successo due volte.
+.msg*.txt
+.messaggio.txt
