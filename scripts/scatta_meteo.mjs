@@ -27,7 +27,7 @@ await page
   .catch(() => {});
 await page.waitForTimeout(400);
 
-const colonna = page.locator('aside[aria-labelledby="titolo-dati"]');
+const colonna = page.locator('[data-meteo]');
 await colonna.scrollIntoViewIfNeeded();
 await page.waitForTimeout(600);
 await colonna.screenshot({ path: 'meteo.png' });

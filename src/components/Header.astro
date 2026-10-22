@@ -15,6 +15,7 @@
  * Il menu mobile usa <details>/<summary>: funziona anche senza JavaScript.
  */
 import { site, navigazione } from '../data/site';
+import imgLogo from '../assets/locanda-logo.png';
 
 export interface Props {
   /** True se la pagina inizia con un'immagine a tutta larghezza. */
@@ -42,9 +43,22 @@ const isAttiva = (href: string) =>
         starebbero: il nome si rimpicciolisce di poco, e resta tutto visibile. */}
     <a
       href="/"
-      class="site-header__wordmark group flex shrink-0 items-baseline gap-2.5 leading-none"
+      class="site-header__wordmark group flex shrink-0 items-center gap-2.5 leading-none"
       aria-label={`${site.nome} — home`}
     >
+      {/*
+        Il logo, prima del nome. `alt` vuoto: il nome è scritto subito accanto,
+        e con un alt lo si sentirebbe due volte. Sotto i 380 px resta nascosto,
+        dove lo spazio è già conteso fra nome e pulsante «Contatti».
+      */}
+      <img
+        src={imgLogo.src}
+        alt=""
+        width="62"
+        height="48"
+        decoding="async"
+        class="site-header__logo hidden h-12 w-auto shrink-0 object-contain min-[380px]:block"
+      />
       <span
         class="font-[family-name:var(--font-display)] text-[1.12rem] leading-none tracking-tight min-[380px]:text-[1.3rem]"
       >

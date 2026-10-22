@@ -225,12 +225,28 @@ const accessiMostrati = accessi.length
   }
 
   .accesso__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-stone-400);
     transition: color 250ms ease-out;
+  }
+
+  /*
+    La barretta rossa: prende il colore dal logo e lega le due etichette a
+    quella dell'insegna. È l'unico rosso dell'apertura, e sta sopra il testo
+    quindi non tocca la leggibilità.
+  */
+  .accesso__eyebrow::before {
+    content: '';
+    width: 1.15rem;
+    height: 2px;
+    border-radius: 1px;
+    background-color: var(--color-rosso-locanda-chiaro);
   }
 
   .accesso__riga {
@@ -300,7 +316,7 @@ const accessiMostrati = accessi.length
 
   .accesso-secondario:hover,
   .accesso-secondario:focus-visible {
-    color: var(--color-stone-50);
+    color: var(--color-rosso-locanda-chiaro);
   }
 
   /* Chi ha chiesto meno movimento non deve vedere lo scorrimento della freccia:

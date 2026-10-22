@@ -80,6 +80,16 @@
      componente Segnavia: è un rosso pieno e riconoscibile, diverso dal
      terracotta spento usato altrove. */
   --color-cai-rosso: #c1272d;
+  /* --- Rosso della locanda ---------------------------------------------
+     Campionato dal logo, non scelto a occhio. Tre toni perché lo stesso rosso
+     non può stare su un fondo chiaro e su uno scuro: vedi i commenti qui sotto.
+  */
+  /* Filetti e frecce su fondo chiaro. */
+  --color-rosso-locanda: #b51c06;
+  /* Testo su fondo chiaro: il tono sopra darebbe 3,9:1. */
+  --color-rosso-locanda-scuro: #8e1a0a;
+  /* Tutto ciò che sta su fondo scuro, come l'apertura: 5,7:1 sul velo. */
+  --color-rosso-locanda-chiaro: #e88a74;
 
   /* --- Fondo della pagina Camere ---------------------------------------
      Un verde bosco così desaturato da leggersi come grigio, con appena una
@@ -124,7 +134,7 @@
   /* --- Angoli ---------------------------------------------------------
      Squadrati per scelta: l'immagine non deve sembrare un riquadro da app.
      Due valori soli, così la forma resta coerente in tutto il sito. */
-  --raggio: 2px;
+  --raggio: 0.75rem;
   --raggio-micro: 1px;
   /* Immagini e card: la fotografia deve sembrare una fotografia, non un
      blocco rettangolare incollato sulla pagina. */

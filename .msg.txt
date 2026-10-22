@@ -1,0 +1,54 @@
+Interfaccia: rosso del logo, logo nell'header, cielo figurativo, simboli del tempo
+
+Richieste del committente, in ordine.
+
+1. IL CIELO DEL METEO NON E' PIU' SOLO UNA TINTA
+Prima il fondo cambiava colore ma non si VEDEVA niente. Ora ci sono forme
+disegnate: disco di sole con alone, banchi di nuvole, bande di nebbia, fiocchi,
+lampo. Tutte in gradienti radiali, quindi zero byte di immagini.
+
+Le nuvole sono GRIGIE, non bianche: la prima versione le aveva bianche su un
+cielo chiaro, e il fotogramma mostrava che non si vedevano affatto.
+
+2. UN SIMBOLO DEL TEMPO ACCANTO AI GRADI
+Sole, sole dietro nuvola, nuvola, nebbia, pioggia, rovesci, neve, temporale.
+Il fondo dice l'atmosfera; il simbolo dice la condizione senza ambiguita' e non
+dipende da quanto e' scuro il cielo. E' la parte che si legge a colpo d'occhio.
+
+3. IL ROSSO DEL LOGO
+Campionato dal logo vero (scripts/campiona_rosso_logo.py): dominante #b51c06,
+media #ab2617. Tre toni, perche' un colore solo non puo' stare su un fondo
+chiaro e su uno scuro:
+  #b51c06  filetti e frecce su fondo chiaro
+  #8e1a0a  testo su fondo chiaro (il primo darebbe 3,9:1)
+  #e88a74  tutto cio' che sta sull'apertura scura (5,7:1)
+Nella home: una barretta rossa prima di DORMIRE e MANGIARE, e i due
+collegamenti in fondo che si accendono di rosso.
+
+4. IL LOGO NELL'HEADER
+Non c'era: solo la scritta. Ora c'e', prima del nome, alto 48 px. `alt` vuoto,
+perche' il nome e' scritto subito accanto e un lettore di schermo lo direbbe due
+volte. Sotto i 380 px resta nascosto, dove lo spazio e' conteso.
+
+5. I PULSANTI PIU' STONDATI
+`--raggio` era 2px: per questo sembravano squadrati. Ora 0,75rem (12 px).
+Tocca anche i campi dei moduli, ed e' giusto: un pulsante stondato accanto a un
+campo squadrato sembra un errore.
+
+6. IL NUMERO CAI MANCANTE
+Aggiunto C12 al Ponte Tibetano (Anello del Sengio Alto, itinerario CAI Veneto).
+Gli altri due NON hanno un numero CAI, e non e' una svista:
+  - Anello Storico di Campogrosso: la scheda ufficiale del Comune dice che e'
+    segnalato con paletti gialli e lo classifica T, non con un numero CAI;
+  - Sentiero dell'Orso e del Gallo: e' il percorso 5 della numerazione del
+    Comune, non un sentiero CAI.
+
+DIFETTO TROVATO MISURANDO
+Le nuvole piu' marcate avevano portato tre cieli a 4,32-4,46:1 per le etichette
+piccole, sotto i 4,5. Ho scurito le etichette da #3a3a35 a #32322d: i cieli
+tornano tutti sopra soglia e le nuvole restano visibili. Senza la misurazione
+sarebbe stato un peggioramento invisibile a occhio ma reale.
+
+Controlli: build 18 pagine, verify_build 308/308, verifica_config 58/58,
+etichette a posto, contrasti 34/34 (erano 31, aggiunti i tre del rosso),
+cieli 8/8 sopra 4,5:1, codifica valida.

@@ -18,5 +18,6 @@ quota: 1545
 meteoLatitudine: 45.759609
 meteoLongitudine: 11.173866
 meteoLocalita: Pian delle Fugazze
+segnavia: C12
 immagine: /assets/sentieri/04-ponte-tibetano.jpg
 ---

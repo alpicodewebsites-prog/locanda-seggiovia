@@ -24,7 +24,7 @@ RADICE = pathlib.Path(__file__).resolve().parent.parent
 CARTELLA = RADICE / "cieli"
 
 PRINCIPALE = "#1c1b19"
-SECONDARIO = "#3a3a35"
+SECONDARIO = "#32322d"
 SOGLIA = 4.5
 
 

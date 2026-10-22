@@ -70,6 +70,11 @@ COPPIE = [
     ("stone-50", "wood-700", SOGLIA_NORMALE, "titolo sul legno scuro"),
     ("wood-900", "wood-100", SOGLIA_NORMALE, "testo scuro sulla tessera chiara"),
     ("wood-500", "wood-100", SOGLIA_NORMALE, "quantita' sulla tessera chiara"),
+    # --- Rosso della locanda --------------------------------------------
+    ("rosso-locanda-scuro", "stone-100", SOGLIA_NORMALE, "testo rosso sul fondo pagina"),
+    ("rosso-locanda-chiaro", "stone-900", SOGLIA_NORMALE, "rosso chiaro sull'apertura scura"),
+    ("rosso-locanda", "stone-100", SOGLIA_GRANDE, "filetto rosso sul fondo pagina"),
+
 
     # Il contorno del focus deve vedersi: è quello che dice a chi naviga da
     # tastiera dove si trova. Questo è un requisito, non un abbellimento.
