@@ -57,6 +57,75 @@ export interface TestiPagine {
     pulsanteCamere: string;
     pulsanteContatti: string;
   };
+  cookie: {
+    metaTitolo: string;
+    metaDescrizione: string;
+    etichetta: string;
+    titolo: string;
+    lede: string;
+    titoloElenco: string;
+    captionTabella: string;
+    tabella: { voce: string; tipo: string; durata: string };
+    elenco: { nome: string; tipo: string; durata: string; nota: string }[];
+    notaElenco: string;
+    titoloGestione: string;
+    testoGestione: string;
+    titoloBanner: string;
+    /** Il testo del banner si spezza per la parola in corsivo. */
+    testoBannerPrima: string;
+    testoBannerCorsivo: string;
+    testoBannerDopo: string;
+    linkPrivacy: string;
+    linkContatti: string;
+    notaPrevalenza: string;
+  };
+  privacy: {
+    metaTitolo: string;
+    metaDescrizione: string;
+    etichetta: string;
+    titolo: string;
+    lede: string;
+    avvisoTitolo: string;
+    avvisoTesto: string;
+    titoloTitolare: string;
+    vociTitolare: {
+      ragioneSociale: string;
+      partitaIva: string;
+      sedeLegale: string;
+      recapito: string;
+      titolare: string;
+    };
+    daConfermare: string;
+    titoloTrattamenti: string;
+    campi: {
+      finalita: string;
+      dati: string;
+      base: string;
+      conservazione: string;
+      destinatari: string;
+    };
+    trattamenti: {
+      nome: string;
+      finalita: string;
+      dati: string;
+      base: string;
+      conservazione: string;
+      destinatari: string;
+    }[];
+    titoloDiritti: string;
+    /** Il testo si spezza per inserire il collegamento all'email. */
+    testoDirittiPrima: string;
+    testoDirittiDopo: string;
+    testoGarantePrima: string;
+    testoGaranteDopo: string;
+    titoloTrasferimenti: string;
+    testoTrasferimenti: string;
+    titoloModifiche: string;
+    testoModifiche: string;
+    linkCookie: string;
+    /** Chi prevale se le due versioni dicono cose diverse. */
+    notaPrevalenza: string;
+  };
   contatti: {
     metaTitolo: string;
     metaDescrizione: string;
@@ -289,6 +358,136 @@ const IT: TestiPagine = {
       'Le camere sono semplici e curate, il ristorante è aperto a pranzo e a cena. Scrivici e ti diciamo tutto quello che serve.',
     pulsanteCamere: 'Le camere',
     pulsanteContatti: 'Contatti',
+  },
+  cookie: {
+    metaTitolo: 'Cookie Policy',
+    metaDescrizione:
+      'Cookie Policy del sito della Locanda Seggiovia: il sito non imposta cookie prima di un’azione dell’utente, e la mappa di Google si carica solo su richiesta.',
+    etichetta: 'Informativa',
+    titolo: 'Cookie Policy',
+    lede:
+      'Questo sito non ti chiede di accettare cookie che non usa. Ecco esattamente cosa viene impostato e quando.',
+    titoloElenco: 'Cosa viene impostato, in concreto',
+    captionTabella: 'Elenco dei cookie e delle memorizzazioni tecniche del sito',
+    tabella: { voce: 'Voce', tipo: 'Tipo', durata: 'Durata' },
+    elenco: [
+      {
+        nome: 'Cookie tecnici propri',
+        tipo: 'Nessuno',
+        durata: '—',
+        nota: 'Il sito non imposta cookie propri: non ci sono sessioni, carrelli o preferenze da ricordare.',
+      },
+      {
+        nome: 'Cookie di Google Maps',
+        tipo: 'Di terze parti',
+        durata: 'Stabilita da Google',
+        nota:
+          'Vengono impostati solo dopo che l’utente ha premuto «Carica la mappa» nella pagina Contatti. Se non si preme il pulsante, nessun cookie di Google viene impostato.',
+      },
+      {
+        nome: 'Cookie di reCAPTCHA (Google)',
+        tipo: 'Di terze parti',
+        durata: 'Stabilita da Google',
+        nota:
+          'Presenti solo se è attiva la verifica reCAPTCHA sul modulo di contatto. Al momento l’opzione è disattivata, quindi questi cookie non vengono impostati.',
+      },
+      {
+        nome: 'Log tecnici dell’hosting',
+        tipo: 'Non sono cookie',
+        durata: 'Breve periodo',
+        nota:
+          'Il fornitore di hosting registra indirizzo IP e richieste per sicurezza e diagnostica. Non sono cookie e non servono a profilare.',
+      },
+    ],
+    notaElenco:
+      'L’elenco è aggiornato alla data di pubblicazione e viene rivisto quando cambia qualcosa nel sito. Se in futuro venisse attivato uno strumento di statistica, verrebbe indicato qui e il sito chiederebbe il consenso prima di attivarlo.',
+    titoloGestione: 'Come gestirli dal browser',
+    testoGestione:
+      'Puoi bloccare o cancellare i cookie dalle impostazioni del tuo browser. Bloccare i cookie di terze parti non impedisce di usare questo sito: l’unica cosa che non funzionerebbe è la mappa incorporata, che puoi comunque aprire in una nuova scheda.',
+    titoloBanner: 'Perché non c’è un banner',
+    testoBannerPrima:
+      'Il banner serve quando un sito imposta cookie non necessari',
+    testoBannerCorsivo: 'prima',
+    testoBannerDopo:
+      'che l’utente acconsenta. Qui non accade: la mappa di Google si carica solo dopo un clic, e non ci sono altri script di terze parti. Senza cookie da autorizzare, un banner sarebbe solo un ostacolo in più.',
+    linkPrivacy: 'Leggi la Privacy Policy',
+    linkContatti: 'Contatti',
+    notaPrevalenza:
+      'Questa è la traduzione inglese della cookie policy. In caso di divergenza fa fede la versione italiana.',
+  },
+  privacy: {
+    metaTitolo: 'Privacy Policy',
+    metaDescrizione:
+      'Informativa sul trattamento dei dati personali del sito della Locanda Seggiovia: quali dati raccogliamo, perché, per quanto tempo e come esercitare i tuoi diritti.',
+    etichetta: 'Informativa',
+    titolo: 'Privacy Policy',
+    lede:
+      'Questa pagina spiega quali dati personali raccoglie il sito, perché li raccoglie e che fine fanno. È scritta per essere letta, non per essere saltata.',
+    avvisoTitolo: 'Documento in fase di completamento.',
+    avvisoTesto:
+      'Il testo descrive correttamente come il sito tratta i dati, ma i dati societari contrassegnati come «da confermare» devono essere verificati con la proprietaria prima della pubblicazione.',
+    titoloTitolare: 'Titolare del trattamento',
+    vociTitolare: {
+      ragioneSociale: 'Ragione sociale completa',
+      partitaIva: 'Partita IVA / Codice fiscale',
+      sedeLegale: 'Sede legale',
+      recapito: 'Recapito per la privacy',
+      titolare: 'Titolare del trattamento',
+    },
+    daConfermare: '(da confermare)',
+    titoloTrattamenti: 'Quali dati trattiamo e perché',
+    campi: {
+      finalita: 'Finalità',
+      dati: 'Dati raccolti',
+      base: 'Base giuridica',
+      conservazione: 'Conservazione',
+      destinatari: 'Destinatari',
+    },
+    trattamenti: [
+      {
+        nome: 'Modulo di contatto',
+        finalita: 'Rispondere alla richiesta di informazioni, prenotazione o preventivo.',
+        dati: 'Nome e cognome, indirizzo email, numero di telefono (facoltativo), contenuto del messaggio.',
+        base: 'Consenso dell’interessato, espresso con la casella di conferma prima dell’invio.',
+        conservazione:
+          'Per il tempo necessario a gestire la richiesta e gli eventuali obblighi di legge collegati.',
+        destinatari:
+          'Web3Forms (servizio di inoltro del modulo) e Google se è attiva la verifica reCAPTCHA. Il messaggio arriva all’indirizzo email della struttura.',
+      },
+      {
+        nome: 'Prenotazione e soggiorno',
+        finalita:
+          'Gestire la prenotazione, l’accoglienza e gli obblighi di legge (comunicazione degli alloggiati).',
+        dati: 'Dati anagrafici degli ospiti, documento d’identità, date del soggiorno.',
+        base: 'Esecuzione del contratto e obblighi di legge.',
+        conservazione: 'Per i termini previsti dalla normativa fiscale e di pubblica sicurezza.',
+        destinatari: 'Autorità competenti, quando la legge lo richiede.',
+      },
+      {
+        nome: 'Log tecnici dell’hosting',
+        finalita: 'Garantire il funzionamento e la sicurezza del sito.',
+        dati: 'Indirizzo IP, tipo di browser, pagina richiesta, data e ora.',
+        base: 'Legittimo interesse alla sicurezza del servizio.',
+        conservazione: 'Per brevi periodi, secondo le politiche del fornitore di hosting.',
+        destinatari: 'Fornitore di hosting (Vercel e/o Netlify).',
+      },
+    ],
+    titoloDiritti: 'I tuoi diritti',
+    testoDirittiPrima:
+      'Puoi chiedere in qualsiasi momento di accedere ai tuoi dati, correggerli, cancellarli, limitarne il trattamento o opporti al trattamento, e puoi richiedere la portabilità dei dati che ci hai fornito. Per esercitare questi diritti scrivi a',
+    testoDirittiDopo: '.',
+    testoGarantePrima:
+      'Se ritieni che il trattamento non rispetti la normativa, puoi rivolgerti al Garante per la protezione dei dati personali',
+    testoGaranteDopo: '.',
+    titoloTrasferimenti: 'Trasferimenti fuori dall’Unione Europea',
+    testoTrasferimenti:
+      'Il servizio di inoltro del modulo e i servizi dell’hosting possono trattare i dati anche negli Stati Uniti. In quel caso il trasferimento avviene sulla base delle clausole contrattuali standard o di decisioni di adeguatezza della Commissione Europea.',
+    titoloModifiche: 'Modifiche a questa informativa',
+    testoModifiche:
+      'Se l’informativa cambia, la versione aggiornata sostituisce questa pagina. Non usiamo i dati per finalità diverse da quelle descritte qui.',
+    linkCookie: 'Leggi la Cookie Policy',
+    notaPrevalenza:
+      'Questa è la traduzione inglese dell’informativa. In caso di divergenza fa fede la versione italiana.',
   },
   contatti: {
     metaTitolo: 'Contatti',
@@ -590,6 +789,136 @@ const EN: TestiPagine = {
       'The rooms are simple and carefully kept, the restaurant is open at lunch and in the evening. Write to us and we will tell you everything you need.',
     pulsanteCamere: 'The rooms',
     pulsanteContatti: 'Contact',
+  },
+  cookie: {
+    metaTitolo: 'Cookie Policy',
+    metaDescrizione:
+      'Cookie Policy of the Locanda Seggiovia website: the site sets no cookies before you act, and the Google map loads only when you ask for it.',
+    etichetta: 'Privacy notice',
+    titolo: 'Cookie Policy',
+    lede:
+      'This site does not ask you to accept cookies it never uses. Here is exactly what is set, and when.',
+    titoloElenco: 'What is actually set',
+    captionTabella: 'Cookies and technical storage used by the site',
+    tabella: { voce: 'Item', tipo: 'Type', durata: 'Duration' },
+    elenco: [
+      {
+        nome: 'Our own technical cookies',
+        tipo: 'None',
+        durata: '—',
+        nota: 'The site sets no cookies of its own: there are no sessions, baskets or preferences to remember.',
+      },
+      {
+        nome: 'Google Maps cookies',
+        tipo: 'Third party',
+        durata: 'Set by Google',
+        nota:
+          'They are set only after you press “Load the map” on the Contact page. If you do not press the button, no Google cookie is set.',
+      },
+      {
+        nome: 'reCAPTCHA cookies (Google)',
+        tipo: 'Third party',
+        durata: 'Set by Google',
+        nota:
+          'Present only if the reCAPTCHA check on the contact form is active. At the moment that option is off, so these cookies are not set.',
+      },
+      {
+        nome: 'Technical hosting logs',
+        tipo: 'Not cookies',
+        durata: 'Short period',
+        nota:
+          'The hosting provider records IP address and requests for security and diagnostics. These are not cookies and are not used to profile anyone.',
+      },
+    ],
+    notaElenco:
+      'This list is up to date as of publication and is reviewed whenever something changes on the site. If a statistics tool were ever enabled, it would be listed here and the site would ask for consent before switching it on.',
+    titoloGestione: 'How to manage them in your browser',
+    testoGestione:
+      'You can block or delete cookies in your browser settings. Blocking third-party cookies does not stop you using this site: the only thing that would not work is the embedded map, which you can still open in a new tab.',
+    titoloBanner: 'Why there is no banner',
+    testoBannerPrima:
+      'A banner is needed when a site sets unnecessary cookies',
+    testoBannerCorsivo: 'before',
+    testoBannerDopo:
+      'the visitor agrees. That does not happen here: the Google map loads only after a click, and there are no other third-party scripts. With no cookies to authorise, a banner would only be one more obstacle.',
+    linkPrivacy: 'Read the Privacy Policy',
+    linkContatti: 'Contact',
+    notaPrevalenza:
+      'This is the English translation of the cookie policy. In case of discrepancy, the Italian version prevails.',
+  },
+  privacy: {
+    metaTitolo: 'Privacy Policy',
+    metaDescrizione:
+      'How the Locanda Seggiovia website processes personal data: what we collect, why, for how long, and how to exercise your rights.',
+    etichetta: 'Privacy notice',
+    titolo: 'Privacy Policy',
+    lede:
+      'This page explains what personal data the site collects, why it collects it and what becomes of it. It is written to be read, not to be skipped.',
+    avvisoTitolo: 'This document is still being completed.',
+    avvisoTesto:
+      'The text describes correctly how the site handles data, but the company details marked “to be confirmed” must be checked with the owner before publication.',
+    titoloTitolare: 'Data controller',
+    vociTitolare: {
+      ragioneSociale: 'Full registered name',
+      partitaIva: 'VAT number / tax code',
+      sedeLegale: 'Registered office',
+      recapito: 'Contact for privacy matters',
+      titolare: 'Data controller',
+    },
+    daConfermare: '(to be confirmed)',
+    titoloTrattamenti: 'What data we process, and why',
+    campi: {
+      finalita: 'Purpose',
+      dati: 'Data collected',
+      base: 'Legal basis',
+      conservazione: 'Retention',
+      destinatari: 'Recipients',
+    },
+    trattamenti: [
+      {
+        nome: 'Contact form',
+        finalita: 'To answer a request for information, a booking or a quotation.',
+        dati: 'Name and surname, email address, telephone number (optional), the content of the message.',
+        base: 'The consent of the person concerned, given with the confirmation box before sending.',
+        conservazione:
+          'For as long as it takes to deal with the request and any legal obligations connected with it.',
+        destinatari:
+          'Web3Forms (the service that forwards the form) and Google if the reCAPTCHA check is active. The message arrives at the email address of the inn.',
+      },
+      {
+        nome: 'Bookings and stays',
+        finalita:
+          'To manage the booking, the welcome, and the legal obligations (reporting of guests to the authorities).',
+        dati: 'Identity details of guests, identity document, dates of the stay.',
+        base: 'Performance of the contract, and legal obligations.',
+        conservazione: 'For the periods required by tax and public-safety law.',
+        destinatari: 'The competent authorities, where the law requires it.',
+      },
+      {
+        nome: 'Technical hosting logs',
+        finalita: 'To keep the site working and secure.',
+        dati: 'IP address, browser type, page requested, date and time.',
+        base: 'Legitimate interest in the security of the service.',
+        conservazione: 'For short periods, according to the policies of the hosting provider.',
+        destinatari: 'The hosting provider (Vercel and/or Netlify).',
+      },
+    ],
+    titoloDiritti: 'Your rights',
+    testoDirittiPrima:
+      'You may ask at any time to see your data, correct it, delete it, restrict how it is processed or object to the processing, and you may ask for the data you gave us to be transferred. To exercise these rights, write to',
+    testoDirittiDopo: '.',
+    testoGarantePrima:
+      'If you believe the processing does not comply with the law, you may turn to the Italian data protection authority, the Garante per la protezione dei dati personali',
+    testoGaranteDopo: '.',
+    titoloTrasferimenti: 'Transfers outside the European Union',
+    testoTrasferimenti:
+      'The service that forwards the form, and the hosting services, may also process data in the United States. Where that happens, the transfer relies on the standard contractual clauses or on adequacy decisions of the European Commission.',
+    titoloModifiche: 'Changes to this notice',
+    testoModifiche:
+      'If this notice changes, the updated version replaces this page. We do not use the data for any purpose other than the ones described here.',
+    linkCookie: 'Read the Cookie Policy',
+    notaPrevalenza:
+      'This is the English translation of the privacy notice. In case of discrepancy, the Italian version prevails.',
   },
   contatti: {
     metaTitolo: 'Contact',

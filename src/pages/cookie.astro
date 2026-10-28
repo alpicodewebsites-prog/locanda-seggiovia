@@ -9,65 +9,45 @@
  * dell'utente. La mappa di Google è a caricamento differito proprio per questo.
  * Se un giorno si aggiungesse analytics o si caricasse la mappa da sola, questa
  * pagina e il banner diventerebbero obbligatori.
+ *
+ * Bilingue. L'elenco dei cookie è un DATO, non un testo: le due versioni devono
+ * restare allineate, e la nota in fondo dice quale prevale se divergono.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site, SITE_URL } from '../data/site';
+import { linguaDaUrl, percorsoLocalizzato, type Lingua } from '../i18n';
+import { testiPagina } from '../i18n/pagine';
 
-const description =
-  'Cookie Policy del sito della Locanda Seggiovia: il sito non imposta cookie prima di un’azione dell’utente, e la mappa di Google si carica solo su richiesta.';
+export interface Props {
+  /** Forzata dal guscio inglese, che rende questa pagina come componente. */
+  lingua?: Lingua;
+}
 
-/**
- * Cookie e memorizzazioni realmente presenti.
- * Va tenuto allineato al codice: se cambia qualcosa nel sito, cambia qui.
- */
-const elenco = [
-  {
-    nome: 'Cookie tecnici propri',
-    tipo: 'Nessuno',
-    durata: '—',
-    nota: 'Il sito non imposta cookie propri: non ci sono sessioni, carrelli o preferenze da ricordare.',
-  },
-  {
-    nome: 'Cookie di Google Maps',
-    tipo: 'Di terze parti',
-    durata: 'Stabilita da Google',
-    nota:
-      'Vengono impostati solo dopo che l’utente ha premuto «Carica la mappa» nella pagina Contatti. Se non si preme il pulsante, nessun cookie di Google viene impostato.',
-  },
-  {
-    nome: 'Cookie di reCAPTCHA (Google)',
-    tipo: 'Di terze parti',
-    durata: 'Stabilita da Google',
-    nota:
-      'Presenti solo se è attiva la verifica reCAPTCHA sul modulo di contatto. Al momento l’opzione è disattivata, quindi questi cookie non vengono impostati.',
-  },
-  {
-    nome: 'Log tecnici dell’hosting',
-    tipo: 'Non sono cookie',
-    durata: 'Breve periodo',
-    nota:
-      'Il fornitore di hosting registra indirizzo IP e richieste per sicurezza e diagnostica. Non sono cookie e non servono a profilare.',
-  },
-];
+const lingua = Astro.props.lingua ?? linguaDaUrl(Astro.url);
+const t = testiPagina(lingua).cookie;
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: `Cookie Policy — ${site.nome}`,
-  url: `${SITE_URL}/cookie`,
-  inLanguage: 'it-IT',
+  name: `${t.metaTitolo} — ${site.nome}`,
+  url: `${SITE_URL}${percorsoLocalizzato('/cookie', lingua)}`,
+  inLanguage: lingua === 'en' ? 'en' : 'it-IT',
   isPartOf: { '@id': `${SITE_URL}/#locanda` },
 };
 ---
 
-<BaseLayout title="Cookie Policy" description={description} schema={schema}>
+<BaseLayout
+  title={t.metaTitolo}
+  description={t.metaDescrizione}
+  schema={schema}
+  lingua={lingua}
+>
   <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
     <div class="shell">
-      <p class="eyebrow">Informativa</p>
-      <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">Cookie Policy</h1>
+      <p class="eyebrow">{t.etichetta}</p>
+      <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">{t.titolo}</h1>
       <p class="lede mt-6 max-w-[58ch]">
-        Questo sito non ti chiede di accettare cookie che non usa. Ecco esattamente
-        cosa viene impostato e quando.
+        {t.lede}
       </p>
     </div>
   </section>
@@ -75,24 +55,24 @@ const schema = {
   <section class="section-y" aria-labelledby="titolo-elenco">
     <div class="shell">
       <h2 id="titolo-elenco" class="display-2 max-w-[24ch] text-stone-900">
-        Cosa viene impostato, in concreto
+        {t.titoloElenco}
       </h2>
 
       <div class="mt-10 overflow-x-auto">
         <table class="tariffe tariffe--testo min-w-[42rem]">
           <caption class="sr-only">
-            Elenco dei cookie e delle memorizzazioni tecniche del sito
+            {t.captionTabella}
           </caption>
           <thead>
             <tr>
-              <th scope="col">Voce</th>
-              <th scope="col">Tipo</th>
-              <th scope="col">Durata</th>
+              <th scope="col">{t.tabella.voce}</th>
+              <th scope="col">{t.tabella.tipo}</th>
+              <th scope="col">{t.tabella.durata}</th>
             </tr>
           </thead>
           <tbody>
             {
-              elenco.map((voce) => (
+              t.elenco.map((voce) => (
                 <tr>
                   <th scope="row">
                     {voce.nome}
@@ -110,9 +90,7 @@ const schema = {
       </div>
 
       <p class="mt-6 max-w-[70ch] text-[0.875rem] leading-relaxed text-stone-500">
-        L’elenco è aggiornato alla data di pubblicazione e viene rivisto quando cambia
-        qualcosa nel sito. Se in futuro venisse attivato uno strumento di statistica,
-        verrebbe indicato qui e il sito chiederebbe il consenso prima di attivarlo.
+        {t.notaElenco}
       </p>
     </div>
   </section>
@@ -121,31 +99,37 @@ const schema = {
     <div class="shell grid gap-10 md:grid-cols-12">
       <div class="md:col-span-4">
         <h2 id="titolo-gestione" class="display-2 max-w-[18ch] text-stone-900">
-          Come gestirli dal browser
+          {t.titoloGestione}
         </h2>
       </div>
       <div class="md:col-span-8">
         <p class="max-w-[62ch] text-[1.0625rem] leading-relaxed text-stone-600">
-          Puoi bloccare o cancellare i cookie dalle impostazioni del tuo browser. Bloccare
-          i cookie di terze parti non impedisce di usare questo sito: l’unica cosa che non
-          funzionerebbe è la mappa incorporata, che puoi comunque aprire in una nuova
-          scheda.
+          {t.testoGestione}
         </p>
 
         <h3 class="mt-10 font-[family-name:var(--font-display)] text-xl text-stone-900">
-          Perché non c’è un banner
+          {t.titoloBanner}
         </h3>
         <p class="mt-3 max-w-[62ch] text-[0.95rem] leading-relaxed text-stone-600">
-          Il banner serve quando un sito imposta cookie non necessari <em>prima</em> che
-          l’utente acconsenta. Qui non accade: la mappa di Google si carica solo dopo un
-          clic, e non ci sono altri script di terze parti. Senza cookie da autorizzare,
-          un banner sarebbe solo un ostacolo in più.
+          {t.testoBannerPrima} <em>{t.testoBannerCorsivo}</em> {t.testoBannerDopo}
         </p>
 
         <p class="mt-10 flex flex-wrap gap-x-8 gap-y-3">
-          <a href="/privacy" class="link-arrow">Leggi la Privacy Policy</a>
-          <a href="/contatti" class="link-arrow">Contatti</a>
+          <a href={percorsoLocalizzato('/privacy', lingua)} class="link-arrow">
+            {t.linkPrivacy}
+          </a>
+          <a href={percorsoLocalizzato('/contatti', lingua)} class="link-arrow">
+            {t.linkContatti}
+          </a>
         </p>
+
+        {
+          lingua === 'en' && (
+            <p class="mt-8 border-t border-stone-300 pt-5 max-w-[62ch] text-[0.8rem] leading-relaxed text-stone-500">
+              {t.notaPrevalenza}
+            </p>
+          )
+        }
       </div>
     </div>
   </section>

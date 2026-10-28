@@ -280,6 +280,40 @@ def main() -> int:
         "Distance" in scheda_en and "Ascent" in scheda_en,
     )
 
+    # --- Le pagine legali, in inglese ---------------------------------------
+    #
+    # Sono testi legali: la cosa che conta non è solo che siano tradotti, ma che
+    # la versione inglese DICA quale prevale. Se le due divergono e nessuno lo
+    # dichiara, non si sa a cosa attenersi.
+    for percorso_legale, parola_italiana in [
+        ("privacy", "Titolare del trattamento"),
+        ("cookies", "Perché non c’è un banner"),
+    ]:
+        file_en = DIST / "en" / percorso_legale / "index.html"
+        if not file_en.exists():
+            check(f"/en/{percorso_legale}/: esiste", False)
+            continue
+        html_legale = leggi(file_en)
+        check(f"/en/{percorso_legale}/: dichiara l'inglese", 'lang="en"' in html_legale)
+        check(
+            f"/en/{percorso_legale}/: nessun testo italiano",
+            parola_italiana not in html_legale,
+        )
+        check(
+            f"/en/{percorso_legale}/: dice quale versione prevale",
+            "the Italian version prevails" in html_legale,
+        )
+
+    # La nota sulla prevalenza non deve comparire in italiano: è scritta per chi
+    # legge la traduzione, e sulla pagina italiana sarebbe rumore.
+    for percorso_legale in ["privacy", "cookie"]:
+        file_it = DIST / percorso_legale / "index.html"
+        if file_it.exists():
+            check(
+                f"/{percorso_legale}/: non ha la nota sulla prevalenza",
+                "fa fede la versione italiana" not in leggi(file_it),
+            )
+
     # --- Dati strutturati specifici delle pagine nuove ----------------------
     camere_html = leggi(DIST / "camere/index.html") if (DIST / "camere/index.html").exists() else ""
     check("camere: schema OfferCatalog presente", "OfferCatalog" in camere_html)
