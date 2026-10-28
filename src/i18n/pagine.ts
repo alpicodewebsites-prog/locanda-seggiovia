@@ -57,6 +57,28 @@ export interface TestiPagine {
     pulsanteCamere: string;
     pulsanteContatti: string;
   };
+  gnocchi: {
+    metaTitolo: string;
+    metaDescrizione: string;
+    etichetta: string;
+    altPiatto: string;
+    titoloStoria: string;
+    etichettaRicetta: string;
+    titoloRicetta: string;
+    testoRicetta: string;
+    altIngredienti: string;
+    didascaliaIngredienti: string;
+    titoloLavorazione: string;
+    titoloCondimento: string;
+    riconoscimenti: string;
+    pulsanteRistorante: string;
+    pulsantePrenota: string;
+    /** Come si compone un ingrediente per i dati strutturati. */
+    ingredienteSchema: string;
+    categoriaSchema: string;
+    cucinaSchema: string;
+    paroleChiaveSchema: string;
+  };
   sentiero: {
     /** «{nome} — Sentieri». */
     titoloDocumento: string;
@@ -214,6 +236,32 @@ const IT: TestiPagine = {
       'Le camere sono semplici e curate, il ristorante è aperto a pranzo e a cena. Scrivici e ti diciamo tutto quello che serve.',
     pulsanteCamere: 'Le camere',
     pulsanteContatti: 'Contatti',
+  },
+  gnocchi: {
+    metaTitolo: 'Gnocchi con la Fioreta — prodotto De.Co.',
+    metaDescrizione:
+      'Storia, ricetta De.Co. e lavorazione degli Gnocchi con la Fioreta di Recoaro Terme: 1,5 litri di fioreta, 1 kg di farina bianca, burro di malga rosolato.',
+    etichetta: 'Prodotto bandiera',
+    altPiatto:
+      'Gli gnocchi con la fioreta serviti nel piatto, conditi con il burro di malga rosolato',
+    titoloStoria: 'Da dove viene la fioreta',
+    etichettaRicetta: 'Ricetta De.Co.',
+    titoloRicetta: 'Due ingredienti, nessuna scorciatoia',
+    testoRicetta:
+      'La ricetta depositata è breve perché non c’è molto da aggiungere: quello che conta è la qualità della fioreta e la mano di chi impasta.',
+    altIngredienti:
+      'Gli ingredienti disposti sul tavolo di cucina: la fioreta, la farina, il burro e il formaggio di malga',
+    didascaliaIngredienti:
+      'Gli ingredienti sul tavolo di cucina: fioreta, farina bianca, burro e formaggio di malga.',
+    titoloLavorazione: 'La lavorazione',
+    titoloCondimento: 'Il condimento',
+    riconoscimenti: 'Riconoscimenti',
+    pulsanteRistorante: 'Il ristorante',
+    pulsantePrenota: 'Prenota un tavolo',
+    ingredienteSchema: '{quantita} di {ingrediente}',
+    categoriaSchema: 'Primi piatti',
+    cucinaSchema: 'Cucina alto-vicentina',
+    paroleChiaveSchema: 'gnocchi con la fioreta, De.Co., Recoaro Terme, cucina vicentina',
   },
   sentiero: {
     titoloDocumento: '{nome} — Sentieri',
@@ -419,6 +467,37 @@ const EN: TestiPagine = {
       'The rooms are simple and carefully kept, the restaurant is open at lunch and in the evening. Write to us and we will tell you everything you need.',
     pulsanteCamere: 'The rooms',
     pulsanteContatti: 'Contact',
+  },
+  gnocchi: {
+    metaTitolo: 'Gnocchi con la Fioreta — a De.Co. product',
+    metaDescrizione:
+      'The story, the De.Co. recipe and how Gnocchi con la Fioreta are made in Recoaro Terme: 1.5 litres of fioreta, 1 kg of white flour, browned malga butter.',
+    etichetta: 'Flagship product',
+    altPiatto: 'Gnocchi with fioreta served on the plate, dressed with browned malga butter',
+    titoloStoria: 'Where fioreta comes from',
+    etichettaRicetta: 'The De.Co. recipe',
+    titoloRicetta: 'Two ingredients, no shortcuts',
+    testoRicetta:
+      'The registered recipe is short because there is not much to add: what matters is the quality of the fioreta and the hand of the person mixing it.',
+    altIngredienti:
+      'The ingredients laid out on the kitchen table: fioreta, flour, butter and malga cheese',
+    didascaliaIngredienti:
+      'The ingredients on the kitchen table: fioreta, white flour, butter and malga cheese.',
+    titoloLavorazione: 'How it is made',
+    titoloCondimento: 'The dressing',
+    riconoscimenti: 'Recognition',
+    pulsanteRistorante: 'The restaurant',
+    pulsantePrenota: 'Book a table',
+    /*
+      In inglese «1.5 litres of fioreta» va bene ma «of salt: to taste» no: qui
+      l'ordine si rovescia e diventa «Salt: to taste». Il modello tiene conto
+      della lingua invece di concatenare parole.
+    */
+    ingredienteSchema: '{ingrediente}: {quantita}',
+    categoriaSchema: 'First courses',
+    cucinaSchema: 'Cooking of the upper Vicenza valleys',
+    paroleChiaveSchema:
+      'gnocchi with fioreta, De.Co., Recoaro Terme, cooking of the Vicenza valleys',
   },
   sentiero: {
     titoloDocumento: '{nome} — Trails',

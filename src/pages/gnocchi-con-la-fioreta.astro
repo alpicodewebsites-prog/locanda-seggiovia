@@ -5,19 +5,33 @@
  * È una sezione autonoma, non una sottosezione del ristorante: il piatto è un
  * prodotto bandiera De.Co. e ha una storia che sta in piedi da sola.
  * I contenuti si gestiscono dal pannello /admin (collezione `gnocchi`).
+ *
+ * Bilingue: i testi dell'interfaccia stanno in `src/i18n/pagine.ts`, la storia e
+ * la ricetta in `src/content/gnocchi/` (una per lingua), le fotografie sono
+ * comuni.
  */
 import { Image } from 'astro:assets';
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE_URL } from '../data/site';
 import { caricaGnocchi } from '../lib/pagine';
+import { linguaDaUrl, percorsoLocalizzato, riempi, type Lingua } from '../i18n';
+import { testiPagina } from '../i18n/pagine';
+
+export interface Props {
+  /** Forzata dal guscio inglese, che rende questa pagina come componente. */
+  lingua?: Lingua;
+}
+
+const lingua = Astro.props.lingua ?? linguaDaUrl(Astro.url);
+const t = testiPagina(lingua).gnocchi;
 
 /*
   Testi e fotografie arrivano da due voci distinte del pannello: «Testi e
   ricetta» e «Fotografie». Sono separate perché la libreria immagini chiama le
   cartelle con il nome della voce, e lì la parola «testi» non ha senso.
 */
-const { testi: d, foto } = await caricaGnocchi();
+const { testi: d, foto } = await caricaGnocchi(lingua);
 
 /** Le due fotografie, già risolte in immagini pronte per `Image`. */
 const fotoFioreta = foto.piatto;
@@ -28,15 +42,17 @@ const schema = {
   '@type': 'Recipe',
   name: d.titolo,
   description: d.storia,
-  url: `${SITE_URL}/gnocchi-con-la-fioreta`,
-  inLanguage: 'it-IT',
-  recipeCategory: 'Primi piatti',
-  recipeCuisine: 'Cucina alto-vicentina',
-  keywords: 'gnocchi con la fioreta, De.Co., Recoaro Terme, cucina vicentina',
+  url: `${SITE_URL}${percorsoLocalizzato('/gnocchi-con-la-fioreta', lingua)}`,
+  inLanguage: lingua === 'en' ? 'en' : 'it-IT',
+  recipeCategory: t.categoriaSchema,
+  recipeCuisine: t.cucinaSchema,
+  keywords: t.paroleChiaveSchema,
   author: { '@id': `${SITE_URL}/#locanda` },
   publisher: { '@id': `${SITE_URL}/#locanda` },
   image: `${SITE_URL}/og-default.jpg`,
-  recipeIngredient: d.ricetta.map((r) => `${r.quantita} di ${r.ingrediente.toLowerCase()}`),
+  recipeIngredient: d.ricetta.map((r) =>
+    riempi(t.ingredienteSchema, { quantita: r.quantita, ingrediente: r.ingrediente }),
+  ),
   recipeInstructions: d.lavorazione.map((fase) => ({
     '@type': 'HowToStep',
     name: fase.titolo,
@@ -46,9 +62,10 @@ const schema = {
 ---
 
 <BaseLayout
-  title="Gnocchi con la Fioreta — prodotto De.Co."
-  description="Storia, ricetta De.Co. e lavorazione degli Gnocchi con la Fioreta di Recoaro Terme: 1,5 litri di fioreta, 1 kg di farina bianca, burro di malga rosolato."
+  title={t.metaTitolo}
+  description={t.metaDescrizione}
   schema={schema}
+  lingua={lingua}
 >
   <!-- ==================================================================
        Apertura
@@ -56,7 +73,7 @@ const schema = {
   <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
     <div class="shell grid gap-10 md:grid-cols-12 md:items-end">
       <div class="md:col-span-7">
-        <p class="eyebrow">Prodotto bandiera</p>
+        <p class="eyebrow">{t.etichetta}</p>
         <h1 class="display-2 mt-5 max-w-[20ch] text-stone-900">{d.titolo}</h1>
         {d.sottotitolo && <p class="lede mt-6 max-w-[54ch]">{d.sottotitolo}</p>}
       </div>
@@ -67,7 +84,7 @@ const schema = {
             <div class="media aspect-4/3">
               <Image
                 src={fotoFioreta}
-                alt="Gli gnocchi con la fioreta serviti nel piatto, conditi con il burro di malga rosolato"
+                alt={t.altPiatto}
                 widths={[300, 420, 640]}
                 sizes="(min-width: 768px) 40vw, 92vw"
                 format="webp"
@@ -89,7 +106,7 @@ const schema = {
     <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
       <div class="md:col-span-4">
         <h2 id="titolo-storia" class="display-2 max-w-[16ch] text-stone-900">
-          Da dove viene la fioreta
+          {t.titoloStoria}
         </h2>
       </div>
       <div class="prose-body md:col-span-8">
@@ -106,13 +123,12 @@ const schema = {
   <section class="section-y sezione-legno" aria-labelledby="titolo-ricetta">
     <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
       <div class="md:col-span-5">
-        <p class="eyebrow">Ricetta De.Co.</p>
+        <p class="eyebrow">{t.etichettaRicetta}</p>
         <h2 id="titolo-ricetta" class="display-2 mt-4 max-w-[18ch] text-stone-900">
-          Due ingredienti, nessuna scorciatoia
+          {t.titoloRicetta}
         </h2>
         <p class="mt-6 max-w-[46ch] text-[0.95rem] leading-relaxed text-stone-600">
-          La ricetta depositata è breve perché non c'è molto da aggiungere: quello che
-          conta è la qualità della fioreta e la mano di chi impasta.
+          {t.testoRicetta}
         </p>
       </div>
 
@@ -134,7 +150,7 @@ const schema = {
               <div class="media aspect-3/4 max-w-[18rem]">
                 <Image
                   src={fotoPreparazione}
-                  alt="Gli ingredienti disposti sul tavolo di cucina: la fioreta, la farina, il burro e il formaggio di malga"
+                  alt={t.altIngredienti}
                   widths={[300, 420, 600]}
                   sizes="(min-width: 768px) 18rem, 60vw"
                   format="webp"
@@ -144,8 +160,7 @@ const schema = {
                 />
               </div>
               <figcaption class="mt-3 max-w-[42ch] text-[0.8rem] leading-relaxed text-stone-500">
-                Gli ingredienti sul tavolo di cucina: fioreta, farina bianca, burro e
-                formaggio di malga.
+                {t.didascaliaIngredienti}
               </figcaption>
             </figure>
           )
@@ -160,7 +175,7 @@ const schema = {
   <section class="section-y" aria-labelledby="titolo-lavorazione">
     <div class="shell">
       <h2 id="titolo-lavorazione" class="display-2 max-w-[22ch] text-stone-900">
-        La lavorazione
+        {t.titoloLavorazione}
       </h2>
 
       <ol class="mt-12 grid gap-px overflow-hidden bg-stone-300 md:grid-cols-3">
@@ -198,7 +213,7 @@ const schema = {
     <div class="shell grid gap-12 md:grid-cols-12 md:gap-10">
       <div class="md:col-span-7">
         <h2 id="titolo-condimento" class="display-2 max-w-[20ch] text-stone-50">
-          Il condimento
+          {t.titoloCondimento}
         </h2>
         <p class="mt-6 max-w-[56ch] text-[1.0625rem] leading-relaxed text-forest-300">
           {d.condimento}
@@ -208,7 +223,7 @@ const schema = {
       {
         d.riconoscimenti.length > 0 && (
           <div class="md:col-span-5">
-            <h3 class="eyebrow text-forest-300">Riconoscimenti</h3>
+            <h3 class="eyebrow text-forest-300">{t.riconoscimenti}</h3>
             <ul class="mt-4 space-y-3 border-t border-stone-50/20 pt-4">
               {d.riconoscimenti.map((r) => (
                 <li class="font-[family-name:var(--font-display)] text-lg leading-snug text-stone-50">
@@ -223,8 +238,12 @@ const schema = {
 
     <div class="shell mt-14">
       <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
-        <a href="/ristorante" class="btn btn--onDark">Il ristorante</a>
-        <a href="/contatti" class="btn btn--onDark">Prenota un tavolo</a>
+        <a href={percorsoLocalizzato('/ristorante', lingua)} class="btn btn--onDark">
+          {t.pulsanteRistorante}
+        </a>
+        <a href={percorsoLocalizzato('/contatti', lingua)} class="btn btn--onDark">
+          {t.pulsantePrenota}
+        </a>
       </div>
     </div>
   </section>

@@ -203,8 +203,32 @@ export function percorsoAlternativo(percorso: string, lingua: Lingua): string {
  * due versioni come due pagine che si fanno concorrenza, e sceglie lui quale
  * mostrare. Con, capisce che sono la stessa pagina in due lingue.
  */
+/**
+ * Vero se la pagina esiste in entrambe le lingue.
+ *
+ * La 404 e la conferma di invio no: la prima è una pagina sola servita per
+ * qualunque indirizzo sbagliato, la seconda ha una versione inglese ma non è una
+ * pagina di contenuto da collegare. Serve a non annunciare e non collegare
+ * indirizzi che non esistono.
+ */
+export function paginaBilingue(percorso: string): boolean {
+  const logico = percorsoLogico(percorso);
+  return PERCORSI[logico] !== undefined || /^\/sentieri\/[^/]+$/.test(logico);
+}
+
 export function alternativeLinguistiche(percorso: string) {
   const logico = percorsoLogico(percorso);
+
+  /*
+    Solo per le pagine che esistono davvero in entrambe le lingue.
+
+    La 404 è una pagina sola, servita per qualunque indirizzo sbagliato: non ha
+    una versione inglese e non deve dichiararne una. Senza questo controllo
+    annunciava `/404/` e `/en/404/`, due indirizzi che non esistono — e il
+    controllo dei collegamenti interni lo ha segnalato.
+  */
+  if (!paginaBilingue(percorso)) return [];
+
   return [
     ...LINGUE.map((l) => ({
       hreflang: l.html,

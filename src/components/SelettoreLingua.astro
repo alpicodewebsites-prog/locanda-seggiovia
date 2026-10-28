@@ -1,0 +1,123 @@
+---
+/**
+ * Il selettore di lingua della barra.
+ *
+ * ----------------------------------------------------------------------------
+ * DUE COLLEGAMENTI, NON UNA TENDINA
+ *
+ * Con due lingue una tendina costa un clic in più e nasconde l'altra scelta:
+ * si apre, si guarda, si sceglie. Due collegamenti affiancati fanno la stessa
+ * cosa in un tocco e mostrano sempre dove si può andare.
+ *
+ * Sono `<a>` veri con `hreflang`, quindi: funzionano senza JavaScript, si
+ * possono aprire in una nuova scheda, e i motori di ricerca li leggono come
+ * quello che sono — i collegamenti fra le due versioni della stessa pagina.
+ *
+ * Ogni voce punta alla STESSA pagina nell'altra lingua, non alla home: chi sta
+ * leggendo un sentiero e passa all'inglese resta su quel sentiero.
+ * ----------------------------------------------------------------------------
+ */
+import { LINGUE, linguaDaUrl, paginaBilingue, percorsoLocalizzato } from '../i18n';
+
+const lingua = linguaDaUrl(Astro.url);
+const percorso = Astro.url.pathname;
+
+/*
+  Se la pagina corrente non esiste nell'altra lingua — la 404, per esempio —
+  il selettore porta alla home di quella lingua invece che a un indirizzo
+  inesistente. Un collegamento che funziona è meglio di uno corretto.
+*/
+const nota = paginaBilingue(percorso);
+
+const voci = LINGUE.map((l) => ({
+  ...l,
+  href: percorsoLocalizzato(nota ? percorso : '/', l.codice),
+  attiva: l.codice === lingua,
+}));
+---
+
+{/*
+  L'etichetta è bilingue perché il selettore deve essere comprensibile a chi non
+  capisce la lingua in cui è scritta la pagina: è tutto il suo scopo.
+*/}
+<nav class="lingue" aria-label="Lingua · Language">
+  <ul>
+    {
+      voci.map((voce) => (
+        <li>
+          <a
+            href={voce.href}
+            hreflang={voce.html}
+            lang={voce.html}
+            class:list={['lingue__voce', voce.attiva && 'lingue__voce--attiva']}
+            aria-current={voce.attiva ? 'true' : undefined}
+            title={voce.nome}
+          >
+            {voce.breve}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .lingue ul {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /*
+    Un filetto sottile fra le due sigle: separa senza disegnare due pulsanti.
+    La voce della lingua in cui si sta leggendo è piena, l'altra è spenta —
+    così si capisce a colpo d'occhio dove si è.
+  */
+  .lingue li + li::before {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 0.7rem;
+    margin-inline: 0.35rem;
+    vertical-align: middle;
+    background-color: color-mix(in oklab, currentColor 35%, transparent);
+  }
+
+  .lingue li {
+    display: flex;
+    align-items: center;
+  }
+
+  .lingue__voce {
+    display: inline-block;
+    padding: 0.25rem 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: inherit;
+    opacity: 0.65;
+    transition: opacity 180ms ease-out;
+  }
+
+  .lingue__voce:hover,
+  .lingue__voce:focus-visible {
+    opacity: 1;
+  }
+
+  .lingue__voce--attiva {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.3em;
+  }
+
+  .lingue__voce:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+</style>
