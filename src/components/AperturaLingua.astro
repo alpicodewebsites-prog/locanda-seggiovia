@@ -1,0 +1,349 @@
+---
+/**
+ * Apertura: la scelta della lingua.
+ *
+ * ----------------------------------------------------------------------------
+ * PERCHÉ NON È UNA PAGINA VERA
+ *
+ * È un velo sopra la home, non un indirizzo a sé. Se fosse una pagina vera,
+ * l'italiano si sposterebbe dietro un passaggio e ogni collegamento esistente
+ * (`/`, cercato da Google, incollato in una mail) comincerebbe a puntare a una
+ * schermata di scelta invece che al sito.
+ *
+ * Così invece la home resta la home: il contenuto è già nell'HTML, e il velo è
+ * solo un livello sopra.
+ *
+ * ----------------------------------------------------------------------------
+ * REGOLE CHE NON SI POSSONO SBAGLIARE
+ *
+ * 1. SENZA JAVASCRIPT NON DEVE ESISTERE. Il velo è nascosto per impostazione
+ *    predefinita e lo mostra solo lo script. Se il JavaScript non parte, il
+ *    visitatore vede il sito invece di restare davanti a due pulsanti che non
+ *    fanno niente.
+ *
+ * 2. UNA VOLTA SOLA. La scelta si ricorda (localStorage). Chi ha già scelto non
+ *    se lo ritrova davanti tornando sul sito.
+ *
+ * 3. SOLO SULLA HOME. Non sui collegamenti profondi: chi arriva da Google su
+ *    `/sentieri/gino-solda/` vuole quel sentiero, non una dogana.
+ *
+ * 4. DUE PULSANTI VERI, non due div: sono collegamenti, quindi funzionano anche
+ *    con il tasto destro, con «apri in una nuova scheda», e sono indicizzabili.
+ *
+ * ----------------------------------------------------------------------------
+ * IL DISEGNO
+ *
+ * Il rosso è quello del logo (#b51c06), campionato dall'insegna. Il fondo non è
+ * piatto: un alone caldo in alto e un vignettaggio appena percettibile, perché
+ * un rosso piatto a tutto schermo sembra un errore di caricamento, mentre una
+ * luce morbida sembra una stanza.
+ *
+ * Il nome è nel carattere con grazie del sito, grande, crema. La riga sottile
+ * sotto è l'unico ornamento.
+ * ----------------------------------------------------------------------------
+ */
+import imgLogo from '../assets/locanda-logo.png';
+import { LINGUE, percorsoLocalizzato, type Lingua } from '../i18n';
+import { traduzioni } from '../i18n/ui';
+
+export interface Props {
+  /** La lingua della pagina su cui appare. */
+  lingua: Lingua;
+}
+
+const { lingua } = Astro.props;
+const t = traduzioni(lingua);
+
+/** Le due destinazioni: le home nelle due lingue. */
+const destinazioni = LINGUE.map((l) => ({
+  ...l,
+  href: percorsoLocalizzato('/', l.codice),
+  attiva: l.codice === lingua,
+}));
+---
+
+<div
+  class="apertura"
+  data-apertura
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="titolo-apertura"
+>
+  <div class="apertura__interno">
+    <img
+      src={imgLogo.src}
+      alt=""
+      width="141"
+      height="109"
+      class="apertura__logo"
+      decoding="async"
+    />
+
+    <p class="apertura__luogo">Recoaro Terme · Piccole Dolomiti</p>
+
+    {/*
+      Il nome dell'insegna. NON è un <h1>: la pagina ha già il suo titolo nel
+      Hero, e due h1 sulla stessa pagina confondono i lettori di schermo e i
+      motori di ricerca. Questo è il nome scritto su un cartello dentro una
+      finestra di scelta, non il titolo della pagina.
+    */}
+    <p id="titolo-apertura" class="apertura__nome">Locanda Seggiovia</p>
+
+    <span class="apertura__filo" aria-hidden="true"></span>
+
+    {/*
+      Le due scelte. Il testo del collegamento è il nome della lingua NELLA
+      lingua stessa: chi parla solo inglese deve riconoscere la propria senza
+      sapere l'italiano.
+    */}
+    <nav class="apertura__scelte" aria-label={t.selettore.descrizione}>
+      {
+        destinazioni.map((l) => (
+          <a
+            href={l.href}
+            hreflang={l.html}
+            lang={l.html}
+            class:list={['apertura__scelta', l.attiva && 'apertura__scelta--attiva']}
+            data-scelta={l.codice}
+            aria-current={l.attiva ? 'true' : undefined}
+          >
+            {l.nome}
+          </a>
+        ))
+      }
+    </nav>
+
+    <p class="apertura__nota">
+      Scegli la lingua · Choose your language
+    </p>
+  </div>
+</div>
+
+<style>
+  .apertura {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    /* Nascosto finché lo script non decide di mostrarlo: senza JavaScript il
+       sito è utilizzabile subito. */
+    display: none;
+    place-items: center;
+    overflow-y: auto;
+    padding: 2rem 1.25rem;
+
+    /*
+      Il rosso del logo, non un rosso qualsiasi. Sopra, un alone caldo in alto a
+      sinistra: dà l'idea di una luce nella stanza invece di una superficie
+      piatta. Sotto, un vignettaggio appena percettibile che chiude i bordi.
+    */
+    background-color: #b51c06;
+    background-image:
+      radial-gradient(ellipse 120% 90% at 22% 8%, rgba(255, 214, 170, 0.34), transparent 62%),
+      radial-gradient(ellipse 100% 80% at 50% 100%, rgba(90, 10, 2, 0.42), transparent 70%);
+  }
+
+  .apertura.is-visibile {
+    display: grid;
+    animation: apertura-entra 420ms ease-out both;
+  }
+
+  /*
+    Un solo momento di movimento: l'intero velo entra appena, una volta. Non è
+    un'animazione per elemento — quelle si vedono subito come decorazione.
+  */
+  @keyframes apertura-entra {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .apertura.is-visibile {
+      animation: none;
+    }
+  }
+
+  .apertura__interno {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 30rem;
+  }
+
+  /*
+    Il logo, su una placca di crema.
+
+    Il file del logo ha lo sfondo TRASPARENTE: l'insegna è rossa e senza la
+    placca sparirebbe sul fondo rosso. La prima versione la lasciava nuda e il
+    risultato era una macchia scura illeggibile.
+
+    Con la placca diventa quello che è: un cartello chiaro appeso a una parete
+    rossa. L'ombra morbida lo stacca dal muro senza disegnargli una cornice.
+  */
+  .apertura__logo {
+    width: clamp(5.5rem, 16vw, 7.5rem);
+    height: auto;
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.5rem;
+    background-color: #fbf5e9;
+    box-shadow: 0 14px 30px -10px rgba(50, 5, 0, 0.55);
+  }
+
+  .apertura__luogo {
+    margin-top: 1.6rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 240, 228, 0.82);
+  }
+
+  .apertura__nome {
+    margin-top: 0.7rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 7vw, 3.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    color: #fdf7ee;
+    text-wrap: balance;
+  }
+
+  .apertura__filo {
+    display: block;
+    width: 3.5rem;
+    height: 1px;
+    margin-top: 1.5rem;
+    background-color: rgba(255, 240, 228, 0.55);
+  }
+
+  .apertura__scelte {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.9rem;
+  }
+
+  /*
+    Due pulsanti, non una tendina: la scelta è binaria e deve costare un tocco.
+    Bordo crema sul rosso, e al passaggio il crema riempie e il testo diventa
+    rosso — il contrasto si inverte, e resta sufficiente in tutte e due le
+    direzioni (5,8:1 e oltre).
+  */
+  .apertura__scelta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 9.5rem;
+    padding: 0.95rem 1.75rem;
+    border: 1px solid rgba(255, 240, 228, 0.7);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: #fdf7ee;
+    text-decoration: none;
+    transition:
+      background-color 200ms ease-out,
+      color 200ms ease-out,
+      border-color 200ms ease-out;
+  }
+
+  .apertura__scelta:hover,
+  .apertura__scelta:focus-visible {
+    background-color: #fdf7ee;
+    border-color: #fdf7ee;
+    color: #8e1a0a;
+  }
+
+  .apertura__scelta:focus-visible {
+    outline: 2px solid #fdf7ee;
+    outline-offset: 3px;
+  }
+
+  /* La lingua in cui si sta già: piena, per segnalare che è quella corrente. */
+  .apertura__scelta--attiva {
+    background-color: rgba(255, 240, 228, 0.16);
+    border-color: rgba(255, 240, 228, 0.9);
+  }
+
+  .apertura__nota {
+    margin-top: 1.6rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: rgba(255, 240, 228, 0.72);
+  }
+</style>
+
+<script>
+  /*
+    Il velo si mostra una volta sola, sulla home, e solo se il JavaScript c'è.
+
+    La chiave è volutamente semplice: contiene solo la lingua scelta, non un
+    identificativo di persona. Non è un dato da informativa privacy, ed è
+    preferibile a un cookie perché non viaggia con le richieste.
+  */
+  const CHIAVE = 'locanda-lingua';
+
+  function mostra(velo: HTMLElement) {
+    velo.classList.add('is-visibile');
+
+    // Il fuoco va sulla scelta, così chi usa la tastiera non deve cercarla.
+    const primo = velo.querySelector<HTMLElement>('[data-scelta]');
+    primo?.focus({ preventScroll: true });
+
+    // Due soli pulsanti: il fuoco resta lì invece di finire sulla pagina dietro.
+    const scelte = [...velo.querySelectorAll<HTMLElement>('[data-scelta]')];
+    if (scelte.length < 2) return;
+
+    velo.addEventListener('keydown', (evento) => {
+      if (evento.key !== 'Tab') return;
+      const primo = scelte[0]!;
+      const ultimo = scelte[scelte.length - 1]!;
+
+      if (evento.shiftKey && document.activeElement === primo) {
+        evento.preventDefault();
+        ultimo.focus();
+      } else if (!evento.shiftKey && document.activeElement === ultimo) {
+        evento.preventDefault();
+        primo.focus();
+      }
+    });
+  }
+
+  function avvia() {
+    const velo = document.querySelector<HTMLElement>('[data-apertura]');
+    if (!velo) return;
+
+    let scelta: string | null = null;
+    try {
+      scelta = localStorage.getItem(CHIAVE);
+    } catch {
+      /* Memoria non disponibile (navigazione privata): si mostra comunque. */
+    }
+    if (scelta) return;
+
+    // La scelta si registra al clic; il collegamento prosegue da solo.
+    velo.querySelectorAll<HTMLElement>('[data-scelta]').forEach((pulsante) => {
+      pulsante.addEventListener('click', () => {
+        try {
+          localStorage.setItem(CHIAVE, pulsante.dataset.scelta ?? '');
+        } catch {
+          /* Se non si può scrivere, si naviga comunque. */
+        }
+      });
+    });
+
+    mostra(velo);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', avvia, { once: true });
+  } else {
+    avvia();
+  }
+</script>

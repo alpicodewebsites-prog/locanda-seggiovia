@@ -1,4 +1,16 @@
 ---
+/**
+ * Home — pagina di apertura.
+ *
+ * Struttura: quattro fasce a piena larghezza con logiche di impaginazione
+ * diverse (non quattro schede identiche). L'unico elemento che si ripete è
+ * la riga sottile di separazione, che dà il ritmo.
+ *
+ * Bilingue: i testi dell'interfaccia stanno in `src/i18n/pagine.ts`, quelli
+ * modificabili in `src/content/home/` (uno per lingua). Le fotografie e le
+ * schede di menù e sentieri si leggono dalla lingua corrente, con ripiego
+ * sull'italiano per le voci non ancora tradotte.
+ */
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
@@ -6,17 +18,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Segnavia from '../components/Segnavia.astro';
 import RichiestaPrenotazione from '../components/RichiestaPrenotazione.astro';
+import AperturaLingua from '../components/AperturaLingua.astro';
 import { site } from '../data/site';
 import { caricaHome } from '../lib/pagine';
-import { risolviImmagine } from '../lib/immagini';
+import { idBase, schedeLingua } from '../lib/contenuti';
+import { linguaDaUrl, percorsoLocalizzato, type Lingua } from '../i18n';
+import { testiPagina } from '../i18n/pagine';
+import { traduzioni } from '../i18n/ui';
+
+export interface Props {
+  /** Forzata dal guscio inglese, che rende questa pagina come componente. */
+  lingua?: Lingua;
+}
+
+const lingua = Astro.props.lingua ?? linguaDaUrl(Astro.url);
+const t = testiPagina(lingua).home;
+const u = traduzioni(lingua);
 
 /**
  * Testi e fotografie della home, modificabili dal pannello.
- *
- * Arrivano da `src/content/home/pagina.md`: cambiarli lì cambia questa pagina.
- * La voce si chiama «Home Page» nel pannello.
+ * La voce si chiama «Home Page» nei contenuti.
  */
-const home = await caricaHome();
+const home = await caricaHome(lingua);
 const foto = home.foto;
 const testi = home.testi;
 
@@ -31,25 +54,20 @@ const imgLocanda = foto.facciata;
  */
 const menu = await getCollection('menu');
 
-const specialita = menu
+const specialita = schedeLingua(menu, lingua)
   .filter((piatto) => piatto.data.specialita)
   .sort((a, b) => a.data.ordine - b.data.ordine)
-  .map((piatto) => ({
-    nome: piatto.data.nome,
-    descrizione: piatto.data.descrizione,
+  .map((piatto) => {
+    const base = idBase(piatto.id);
     // Gli gnocchi hanno una pagina tutta loro; gli altri portano al ristorante.
-    href: piatto.id === 'gnocchi-con-la-fioreta' ? '/gnocchi-con-la-fioreta' : '/ristorante',
-    etichetta:
-      piatto.id === 'gnocchi-con-la-fioreta' ? 'La storia e la ricetta' : 'Vedi il menù',
-  }));
-
-/**
- * Home — pagina di apertura.
- *
- * Struttura: quattro fasce a piena larghezza con logiche di impaginazione
- * diverse (non quattro schede identiche). L'unico elemento che si ripete è
- * la riga sottile di separazione, che dà il ritmo.
- */
+    const gnocchi = base === 'gnocchi-con-la-fioreta';
+    return {
+      nome: piatto.data.nome,
+      descrizione: piatto.data.descrizione,
+      href: percorsoLocalizzato(gnocchi ? '/gnocchi-con-la-fioreta' : '/ristorante', lingua),
+      etichetta: gnocchi ? t.invitoGnocchi : t.invitoPiatto,
+    };
+  });
 
 /** Descrizione per i motori di ricerca: si modifica dal pannello. */
 const description = testi.descrizione;
@@ -59,24 +77,21 @@ const webPageSchema = {
   '@type': 'WebSite',
   name: site.nome,
   url: site.url,
-  inLanguage: 'it-IT',
+  inLanguage: lingua === 'en' ? 'en' : 'it-IT',
   publisher: { '@id': `${site.url}/#locanda` },
 };
 
 /**
- * I sei itinerari della scheda «Territorio».
+ * I sette itinerari della scheda «Territorio».
  *
- * Si leggono dalla collezione, non sono più scritti qui: prima erano duplicati
- * nel codice, e bastava correggere un sentiero nel pannello perché la home
- * restasse indietro.
- *
- * I dati tecnici si mostrano SOLO se compilati. Un sentiero senza distanza
- * dichiarata non mostra «Distanza: —»: mostra le voci che esistono.
+ * Si leggono dalla collezione, non sono più scritti qui. I dati tecnici si
+ * mostrano SOLO se compilati: un sentiero senza distanza dichiarata non mostra
+ * «Distanza: —», mostra le voci che esistono.
  */
-const sentieri = (await getCollection('sentieri'))
+const sentieri = schedeLingua(await getCollection('sentieri'), lingua)
   .sort((a, b) => a.data.ordine - b.data.ordine)
   .map((sentiero) => ({
-    id: sentiero.id,
+    id: idBase(sentiero.id),
     nome: sentiero.data.nome,
     sommario: sentiero.data.sommario,
     difficolta: sentiero.data.difficolta,
@@ -84,19 +99,24 @@ const sentieri = (await getCollection('sentieri'))
     // stampa solo la cifra, come sui cartelli veri.
     numero: sentiero.data.segnavia?.replace(/^CAI\s*/i, '').trim(),
     dati: [
-      sentiero.data.distanza && { etichetta: 'Distanza', valore: sentiero.data.distanza },
-      sentiero.data.dislivello && { etichetta: 'Dislivello', valore: sentiero.data.dislivello },
-      sentiero.data.durata && { etichetta: 'Durata', valore: sentiero.data.durata },
+      sentiero.data.distanza && { etichetta: u.sentieri.distanza, valore: sentiero.data.distanza },
+      sentiero.data.dislivello && { etichetta: u.sentieri.dislivello, valore: sentiero.data.dislivello },
+      sentiero.data.durata && { etichetta: u.sentieri.durata, valore: sentiero.data.durata },
     ].filter((voce): voce is { etichetta: string; valore: string } => Boolean(voce)),
   }));
 ---
 
 <BaseLayout
-  title={`${site.nome} — ${site.tagline}`}
+  title={`${site.nome} — ${lingua === 'en' ? site.taglineEn : site.tagline}`}
   description={description}
   schema={webPageSchema}
   headerTrasparente={true}
+  lingua={lingua}
 >
+  {/* La scelta della lingua, solo qui: chi arriva su un sentiero da Google
+      vuole quel sentiero, non una dogana. */}
+  <AperturaLingua lingua={lingua} />
+
   {/* Il testo alternativo dell'apertura è quello predefinito del componente:
       dichiara che l'immagine è un disegno, non uno scatto reale. Non va
       sovrascritto con una descrizione del paesaggio finché la fotografia vera
@@ -108,9 +128,8 @@ const sentieri = (await getCollection('sentieri'))
     accessi={testi.accessi}
     invitoSentieri={testi.invitoSentieri}
     invitoGnocchi={testi.pulsanteGnocchi}
+    lingua={lingua}
   />
-
-
 
   <!-- ==================================================================
        1. La Locanda — impaginazione editoriale asimmetrica
@@ -123,7 +142,7 @@ const sentieri = (await getCollection('sentieri'))
             <div class="media aspect-4/5">
               <Image
                 src={imgLocanda}
-                alt="La Locanda Seggiovia in piazza a Recoaro Terme, con i balconi in legno e le Piccole Dolomiti sullo sfondo"
+                alt={t.altFacciata}
                 widths={[420, 600, 900]}
                 sizes="(min-width: 768px) 40vw, 92vw"
                 format="webp"
@@ -152,7 +171,7 @@ const sentieri = (await getCollection('sentieri'))
         </div>
 
         <p class="mt-8">
-          <a href="/la-locanda" class="link-arrow">
+          <a href={percorsoLocalizzato('/la-locanda', lingua)} class="link-arrow">
             {testi.locandaCollegamento}
             <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
               <path
@@ -171,8 +190,8 @@ const sentieri = (await getCollection('sentieri'))
   <!-- ==================================================================
        2. Territorio — il tabellone dei sentieri
        ------------------------------------------------------------------
-       Sei schede, una per itinerario. Ogni scheda porta il cartello CAI con
-       il numero del sentiero (dove esiste), il nome, il sommario e i dati
+       Una scheda per itinerario. Ogni scheda porta il cartello CAI con il
+       numero del sentiero (dove esiste), il nome, il sommario e i dati
        tecnici ETICHETTATI: «Distanza: 12 km» invece di «12 km» buttato a
        destra, che non diceva niente a chi non lo sapeva già.
        ================================================================== -->
@@ -195,7 +214,7 @@ const sentieri = (await getCollection('sentieri'))
         {
           sentieri.map((s) => (
             <li class="scheda-sentiero">
-              <a href={`/sentieri/${s.id}`} class="scheda-sentiero__link">
+              <a href={percorsoLocalizzato(`/sentieri/${s.id}`, lingua)} class="scheda-sentiero__link">
                 <Segnavia numero={s.numero} nome={s.nome} />
 
                 <h3 class="scheda-sentiero__nome">{s.nome}</h3>
@@ -210,7 +229,7 @@ const sentieri = (await getCollection('sentieri'))
                     </div>
                   ))}
                   <div class="scheda-sentiero__dato">
-                    <dt>Difficoltà</dt>
+                    <dt>{u.sentieri.difficolta}</dt>
                     <dd>{s.difficolta}</dd>
                   </div>
                 </dl>
@@ -223,27 +242,14 @@ const sentieri = (await getCollection('sentieri'))
       <!-- Legenda CAI: in un riquadro, così si trova senza cercarla. -->
       <div class="mt-14 rounded-[var(--raggio-media)] border border-forest-300/60 bg-forest-100/60 p-6 md:p-8">
         <h3 class="font-[family-name:var(--font-display)] text-xl text-stone-900">
-          Come si leggono le difficoltà
+          {t.titoloLegenda}
         </h3>
         <p class="mt-2 max-w-[62ch] text-[0.9rem] leading-relaxed text-stone-600">
-          È la scala del Club Alpino Italiano, quella che si trova sui cartelli lungo i
-          sentieri.
+          {t.testoLegenda}
         </p>
         <dl class="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-3">
           {
-            [
-              { sigla: 'T', nome: 'Turistico', nota: 'Sentieri pianeggianti o poco ripidi, adatti a tutti.' },
-              {
-                sigla: 'E',
-                nome: 'Escursionistico',
-                nota: 'Serve allenamento e scarpe adatte. Sentieri su terreno anche ripido.',
-              },
-              {
-                sigla: 'EE',
-                nome: 'Escursionisti esperti',
-                nota: 'Terreno impervio, a tratti esposto. Serve esperienza e passo sicuro.',
-              },
-            ].map((voce) => (
+            t.legenda.map((voce) => (
               <div class="border-t border-forest-300/70 pt-4">
                 <dt class="flex items-baseline gap-2">
                   <span class="font-[family-name:var(--font-display)] text-lg font-semibold text-stone-900">
@@ -259,11 +265,12 @@ const sentieri = (await getCollection('sentieri'))
       </div>
 
       <div class="mt-10">
-        <a href="/sentieri" class="btn btn--primary">Tutti i sentieri</a>
+        <a href={percorsoLocalizzato('/sentieri', lingua)} class="btn btn--primary">
+          {t.pulsanteTuttiSentieri}
+        </a>
       </div>
     </div>
   </section>
-
 
   <!-- ==================================================================
        3. Gastronomia — fascia scura a piena larghezza
@@ -271,17 +278,18 @@ const sentieri = (await getCollection('sentieri'))
   <section class="section-y bg-forest-900 text-stone-200" aria-labelledby="titolo-cucina">
     <div class="shell grid gap-12 md:grid-cols-2 md:gap-14 lg:gap-20">
       <div>
-        <p class="eyebrow text-glow-300">Cucina</p>
+        <p class="eyebrow text-glow-300">{t.etichettaCucina}</p>
         <h2 id="titolo-cucina" class="display-2 mt-4 text-stone-50">
-          Quello che si cucina in vallata
+          {t.titoloCucina}
         </h2>
         <span class="filo-accento filo-accento--alba" aria-hidden="true"></span>
         <p class="mt-7 max-w-[46ch] text-[0.95rem] leading-relaxed text-forest-300">
-          Il menù segue le stagioni e le malghe, non le mode. Il bacalà arriva da una
-          tradizione lunga, la sopressa si fa in casa.
+          {t.testoCucina}
         </p>
         <p class="mt-8">
-          <a href="/ristorante" class="link-arrow text-stone-100">Il ristorante</a>
+          <a href={percorsoLocalizzato('/ristorante', lingua)} class="link-arrow text-stone-100">
+            {t.linkRistorante}
+          </a>
         </p>
       </div>
 
@@ -323,31 +331,24 @@ const sentieri = (await getCollection('sentieri'))
 
   <!-- ==================================================================
        4. Richiesta di disponibilità
-       ------------------------------------------------------------------
-       Prima dell'ultima fascia: quando chi guarda ha visto le camere, i
-       sentieri e la cucina, e ha una domanda da fare.
        ================================================================== -->
-  <RichiestaPrenotazione />
+  <RichiestaPrenotazione lingua={lingua} />
 
   <!-- ==================================================================
        5. Chiusura
-       ------------------------------------------------------------------
-       Era una fascia scura a piena larghezza con un'immagine di sfondo.
-       Faceva da tappo a metà pagina e, finché la fotografia vera non c'è,
-       ci si vedeva dentro l'etichetta di segnaposto. Ora è una chiusura
-       sobria sul fondo della pagina: lo spazio e la tipografia bastano.
        ================================================================== -->
   <section class="section-y" aria-labelledby="titolo-chiusura">
     <div class="shell text-center">
       <h2 id="titolo-chiusura" class="display-2 mx-auto max-w-[24ch] text-stone-900">
-        Ti aspettiamo in piazza
+        {t.titoloChiusura}
       </h2>
       <p class="mx-auto mt-6 max-w-[52ch] text-[1.0625rem] leading-relaxed text-stone-600">
-        Per prenotare una camera, un tavolo o per chiedere informazioni su un sentiero,
-        scrivici o chiamaci. Rispondiamo noi.
+        {t.testoChiusura}
       </p>
       <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-        <a href="/contatti" class="btn btn--primary">Scrivici</a>
+        <a href={percorsoLocalizzato('/contatti', lingua)} class="btn btn--primary">
+          {t.pulsanteScrivici}
+        </a>
         <a href={site.telefonoLink} class="btn btn--ghost">{site.telefono}</a>
       </div>
     </div>
@@ -360,18 +361,11 @@ const sentieri = (await getCollection('sentieri'))
 
     Il piatto è tutto cliccabile: portare il puntatore su un punto qualsiasi
     della scheda la rende una meta, e su un telefono la superficie da toccare
-    è grande. Il movimento è minimo e serve a dire «questa si può aprire»:
-
-      - la linea sotto il nome si allunga da sinistra (250 ms, ease-out)
-      - la freccia scorre dentro e compare
-      - lo sfondo si scalda di poco
+    è grande. Il movimento è minimo e serve a dire «questa si può aprire».
 
     Niente zoom dell'immagine: le schede non hanno fotografia, perché al momento
     solo gli gnocchi ne hanno una e una foto su quattro schede squilibrerebbe la
-    griglia. Lo zoom è invece sulla pagina Ristorante, dove le foto ci sono.
-
-    Informazioni utili restano sempre visibili: qui non si nasconde nulla dietro
-    al passaggio del mouse, che su un telefono non esiste.
+    griglia.
   */
   .scheda-piatto {
     position: relative;
@@ -399,7 +393,6 @@ const sentieri = (await getCollection('sentieri'))
     color: var(--color-stone-900);
   }
 
-  /* La linea che si allunga da sinistra sotto il nome. */
   .scheda-piatto__nome::after {
     content: '';
     position: absolute;
@@ -461,7 +454,6 @@ const sentieri = (await getCollection('sentieri'))
     outline-offset: 2px;
   }
 
-  /* Chi ha chiesto meno movimento vede gli stati finali, senza transizione. */
   @media (prefers-reduced-motion: reduce) {
     .scheda-piatto,
     .scheda-piatto__nome::after,

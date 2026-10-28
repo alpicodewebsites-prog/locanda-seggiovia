@@ -65,6 +65,23 @@ export interface TestiInterfaccia {
     privacy: string;
     cookie: string;
   };
+  prenotazione: {
+    titolo: string;
+    descrizione: string;
+    arrivo: string;
+    partenza: string;
+    ospiti: string;
+    camera: string;
+    nome: string;
+    note: string;
+    notaLabel: string;
+    placeholderNome: string;
+    invia: string;
+    /** Etichette delle due camere e dell'opzione «non so ancora». */
+    tipiCamera: { singola: string; doppia: string; indifferente: string };
+    /** «1 persona», «2 persone», … «5 o più». */
+    conteggi: string[];
+  };
   grazie: {
     etichetta: string;
     titolo: string;
@@ -80,6 +97,16 @@ export interface TestiInterfaccia {
     metaTitolo: string;
     metaDescrizione: string;
     torna: string;
+  };
+  sentieri: {
+    distanza: string;
+    dislivello: string;
+    durata: string;
+    difficolta: string;
+    quotaMassima: string;
+    partenza: string;
+    segnavia: string;
+    tutti: string;
   };
   meteo: {
     etichetta: string;
@@ -135,6 +162,36 @@ const IT: TestiInterfaccia = {
     tuttiIGiorni: 'Tutti i giorni (da confermare)',
     privacy: 'Privacy Policy',
     cookie: 'Cookie Policy',
+  },
+  sentieri: {
+    distanza: 'Distanza',
+    dislivello: 'Dislivello',
+    durata: 'Durata',
+    difficolta: 'Difficoltà',
+    quotaMassima: 'Quota massima',
+    partenza: 'Partenza',
+    segnavia: 'Segnavia',
+    tutti: 'Tutti i sentieri',
+  },
+  prenotazione: {
+    titolo: 'Chiedi la disponibilità',
+    descrizione:
+      'Scrivi quando vorresti arrivare. Ti rispondiamo noi, di solito entro un giorno.',
+    arrivo: 'Arrivo',
+    partenza: 'Partenza',
+    ospiti: 'Ospiti',
+    camera: 'Camera',
+    nome: 'Nome e cognome',
+    note: 'Note',
+    notaLabel: 'Note',
+    placeholderNome: 'Come ti chiami',
+    invia: 'Invia la richiesta',
+    tipiCamera: {
+      singola: 'Camera singola',
+      doppia: 'Camera doppia',
+      indifferente: 'Non so ancora',
+    },
+    conteggi: ['1 persona', '2 persone', '3 persone', '4 persone', '5 o più'],
   },
   grazie: {
     etichetta: 'Messaggio inviato',
@@ -239,6 +296,36 @@ const EN: TestiInterfaccia = {
     tuttiIGiorni: 'Every day (to be confirmed)',
     privacy: 'Privacy Policy',
     cookie: 'Cookie Policy',
+  },
+  sentieri: {
+    distanza: 'Distance',
+    dislivello: 'Ascent',
+    durata: 'Time',
+    difficolta: 'Grade',
+    quotaMassima: 'Highest point',
+    partenza: 'Starting point',
+    segnavia: 'Waymark',
+    tutti: 'All trails',
+  },
+  prenotazione: {
+    titolo: 'Check availability',
+    descrizione:
+      'Tell us when you would like to arrive. We answer ourselves, usually within a day.',
+    arrivo: 'Arrival',
+    partenza: 'Departure',
+    ospiti: 'Guests',
+    camera: 'Room',
+    nome: 'Full name',
+    note: 'Notes',
+    notaLabel: 'Anything we should know',
+    placeholderNome: 'Your name',
+    invia: 'Send the request',
+    tipiCamera: {
+      singola: 'Single room',
+      doppia: 'Double room',
+      indifferente: 'Not sure yet',
+    },
+    conteggi: ['1 guest', '2 guests', '3 guests', '4 guests', '5 or more'],
   },
   grazie: {
     etichetta: 'Message sent',

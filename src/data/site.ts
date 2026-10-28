@@ -25,6 +25,8 @@ export const site = {
   nome: 'Locanda Seggiovia',
   nomeLegale: 'Locanda Seggiovia',
   tagline: 'Rifugio alpino a Recoaro Terme',
+  /** La stessa frase in inglese: compare nel titolo della home inglese. */
+  taglineEn: 'Alpine inn in Recoaro Terme',
 
   // TODO: sostituire con il dominio definitivo (usato da canonical, OG, sitemap).
   url: SITE_URL,

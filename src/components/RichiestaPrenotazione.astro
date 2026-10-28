@@ -16,6 +16,9 @@
  */
 import { SITE_URL, site } from '../data/site';
 
+import { percorsoLocalizzato, linguaDaUrl, type Lingua } from '../i18n';
+import { traduzioni } from '../i18n/ui';
+
 export interface Props {
   /** Titolo del riquadro. Cambia fra la home e la pagina Camere. */
   titolo?: string;
@@ -23,13 +26,18 @@ export interface Props {
   descrizione?: string;
   /** Identificativo del modulo: serve se in pagina ce n'è più d'uno. */
   id?: string;
+  /** La lingua della pagina. */
+  lingua?: Lingua;
 }
 
 const {
-  titolo = 'Chiedi la disponibilità',
-  descrizione = 'Scrivi quando vorresti arrivare. Ti rispondiamo noi, di solito entro un giorno.',
   id = 'modulo-prenotazione',
+  lingua = linguaDaUrl(Astro.url),
 } = Astro.props;
+
+const t = traduzioni(lingua).prenotazione;
+const titolo = Astro.props.titolo ?? t.titolo;
+const descrizione = Astro.props.descrizione ?? t.descrizione;
 
 /**
  * Chiave di accesso Web3Forms.
@@ -43,15 +51,15 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY || DEMO_KEY;
 const chiaveConfigurata = accessKey !== DEMO_KEY;
 
 /** Pagina di ringraziamento, con URL assoluto come richiede Web3Forms. */
-const redirectUrl = new URL('/grazie', SITE_URL).href;
+const redirectUrl = new URL(percorsoLocalizzato('/grazie', lingua), SITE_URL).href;
 
 /** Oggi, per impedire di chiedere date già passate. */
 const oggi = new Date().toISOString().slice(0, 10);
 
 const tipiCamera = [
-  { value: 'singola', label: 'Camera singola' },
-  { value: 'doppia', label: 'Camera doppia' },
-  { value: 'indifferente', label: 'Non so ancora' },
+  { value: 'singola', label: t.tipiCamera.singola },
+  { value: 'doppia', label: t.tipiCamera.doppia },
+  { value: 'indifferente', label: t.tipiCamera.indifferente },
 ];
 ---
 
@@ -94,17 +102,17 @@ const tipiCamera = [
 
           <div class="prenotazione__campi">
             <label class="campo">
-              <span class="campo__etichetta">Arrivo</span>
+              <span class="campo__etichetta">{t.arrivo}</span>
               <input type="date" name="arrivo" class="input" min={oggi} required />
             </label>
 
             <label class="campo">
-              <span class="campo__etichetta">Partenza</span>
+              <span class="campo__etichetta">{t.partenza}</span>
               <input type="date" name="partenza" class="input" min={oggi} required />
             </label>
 
             <label class="campo">
-              <span class="campo__etichetta">Ospiti</span>
+              <span class="campo__etichetta">{t.ospiti}</span>
               <select name="ospiti" class="select" required>
                 <option value="1">1 persona</option>
                 <option value="2" selected>2 persone</option>
@@ -115,7 +123,7 @@ const tipiCamera = [
             </label>
 
             <label class="campo">
-              <span class="campo__etichetta">Camera</span>
+              <span class="campo__etichetta">{t.camera}</span>
               <select name="tipologia" class="select" required>
                 {tipiCamera.map((tipo) => <option value={tipo.value}>{tipo.label}</option>)}
               </select>
@@ -123,7 +131,7 @@ const tipiCamera = [
 
             <label class="campo prenotazione__largo">
               <span class="campo__etichetta">
-                Nome e cognome <span class="campo__obbligatorio" aria-hidden="true">*</span>
+                {t.nome} <span class="campo__obbligatorio" aria-hidden="true">*</span>
               </span>
               <input
                 type="text"
@@ -131,7 +139,7 @@ const tipiCamera = [
                 class="input"
                 autocomplete="name"
                 required
-                placeholder="Come ti chiami"
+                placeholder={t.placeholderNome}
               />
             </label>
 
@@ -150,7 +158,7 @@ const tipiCamera = [
             </label>
 
             <label class="campo prenotazione__tutto">
-              <span class="campo__etichetta">Note</span>
+              <span class="campo__etichetta">{t.note}</span>
               <textarea
                 name="note"
                 class="textarea"
@@ -161,7 +169,7 @@ const tipiCamera = [
           </div>
 
           <div class="prenotazione__invio">
-            <button type="submit" class="btn btn--primary">Invia la richiesta</button>
+            <button type="submit" class="btn btn--primary">{t.invia}</button>
             <p class="text-[0.8rem] leading-relaxed text-stone-500">
               Nessun pagamento, nessun impegno: è una richiesta di disponibilità. Oppure
               chiama il{' '}

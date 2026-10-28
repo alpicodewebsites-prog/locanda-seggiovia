@@ -57,6 +57,23 @@ export interface TestiPagine {
     pulsanteCamere: string;
     pulsanteContatti: string;
   };
+  home: {
+    altFacciata: string;
+    etichettaCucina: string;
+    titoloCucina: string;
+    testoCucina: string;
+    linkRistorante: string;
+    /** Invito nelle schede delle specialità. */
+    invitoGnocchi: string;
+    invitoPiatto: string;
+    titoloLegenda: string;
+    testoLegenda: string;
+    legenda: { sigla: string; nome: string; nota: string }[];
+    pulsanteTuttiSentieri: string;
+    titoloChiusura: string;
+    testoChiusura: string;
+    pulsanteScrivici: string;
+  };
 }
 
 const IT: TestiPagine = {
@@ -114,6 +131,38 @@ const IT: TestiPagine = {
     pulsanteCamere: 'Le camere',
     pulsanteContatti: 'Contatti',
   },
+  home: {
+    altFacciata:
+      'La Locanda Seggiovia in piazza a Recoaro Terme, con i balconi in legno e le Piccole Dolomiti sullo sfondo',
+    etichettaCucina: 'Cucina',
+    titoloCucina: 'Quello che si cucina in vallata',
+    testoCucina:
+      'Il menù segue le stagioni e le malghe, non le mode. Il bacalà arriva da una tradizione lunga, la sopressa si fa in casa.',
+    linkRistorante: 'Il ristorante',
+    invitoGnocchi: 'La storia e la ricetta',
+    invitoPiatto: 'Vedi il menù',
+    titoloLegenda: 'Come si leggono le difficoltà',
+    testoLegenda:
+      'È la scala del Club Alpino Italiano, quella che si trova sui cartelli lungo i sentieri.',
+    legenda: [
+      { sigla: 'T', nome: 'Turistico', nota: 'Sentieri pianeggianti o poco ripidi, adatti a tutti.' },
+      {
+        sigla: 'E',
+        nome: 'Escursionistico',
+        nota: 'Serve allenamento e scarpe adatte. Sentieri su terreno anche ripido.',
+      },
+      {
+        sigla: 'EE',
+        nome: 'Escursionisti esperti',
+        nota: 'Terreno impervio, a tratti esposto. Serve esperienza e passo sicuro.',
+      },
+    ],
+    pulsanteTuttiSentieri: 'Tutti i sentieri',
+    titoloChiusura: 'Ti aspettiamo in piazza',
+    testoChiusura:
+      'Per prenotare una camera, un tavolo o per chiedere informazioni su un sentiero, scrivici o chiamaci. Rispondiamo noi.',
+    pulsanteScrivici: 'Scrivici',
+  },
 };
 
 const EN: TestiPagine = {
@@ -169,6 +218,38 @@ const EN: TestiPagine = {
       'The rooms are simple and carefully kept, the restaurant is open at lunch and in the evening. Write to us and we will tell you everything you need.',
     pulsanteCamere: 'The rooms',
     pulsanteContatti: 'Contact',
+  },
+  home: {
+    altFacciata:
+      'Locanda Seggiovia on the square in Recoaro Terme, with its wooden balconies and the Piccole Dolomiti behind',
+    etichettaCucina: 'Kitchen',
+    titoloCucina: 'What is cooked in the valley',
+    testoCucina:
+      'The menu follows the seasons and the malghe, not fashions. The bacalà comes from a long tradition, the sopressa is made at home.',
+    linkRistorante: 'The restaurant',
+    invitoGnocchi: 'The story and the recipe',
+    invitoPiatto: 'See the menu',
+    titoloLegenda: 'How to read the difficulty grades',
+    testoLegenda:
+      'It is the scale of the Club Alpino Italiano, the one you find on the signs along the trails.',
+    legenda: [
+      { sigla: 'T', nome: 'Tourist', nota: 'Level or gently sloping paths, suitable for everyone.' },
+      {
+        sigla: 'E',
+        nome: 'Hiking',
+        nota: 'You need fitness and proper boots. Paths on ground that may be steep.',
+      },
+      {
+        sigla: 'EE',
+        nome: 'Experienced hikers',
+        nota: 'Rough ground, exposed in places. You need experience and a sure foot.',
+      },
+    ],
+    pulsanteTuttiSentieri: 'All trails',
+    titoloChiusura: 'We will see you on the square',
+    testoChiusura:
+      'To book a room, a table, or to ask about a trail, write to us or give us a ring. We answer ourselves.',
+    pulsanteScrivici: 'Write to us',
   },
 };
 

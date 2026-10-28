@@ -205,6 +205,47 @@ def main() -> int:
     check("grazie en: è noindex", "noindex" in html_en)
     check("grazie it: è noindex", "noindex" in html_grazie)
 
+    # --- L'apertura della lingua -------------------------------------------
+    #
+    # La scelta della lingua è un velo sulla home, non un indirizzo: la home
+    # resta la pagina che Google conosce. Deve essere NASCosta nell'HTML, perché
+    # sia lo script a mostrarla — senza JavaScript il sito deve restare usabile.
+    check("home: comando di apertura presente", "data-apertura" in html_home)
+    check("home: apertura nascosta senza JavaScript", 'class="apertura"' in html_home)
+    check(
+        "home: le due lingue sono collegate",
+        'data-scelta="it"' in html_home and 'data-scelta="en"' in html_home,
+    )
+    # Un solo h1 per pagina: il nome nell'apertura non è un titolo.
+    check("home: un solo h1, l'apertura non ne aggiunge", html_home.count("<h1") == 1)
+
+    # --- La home inglese ----------------------------------------------------
+    percorso_home_en = DIST / "en" / "index.html"
+    check("home en: generata", percorso_home_en.exists())
+    html_en_home = leggi(percorso_home_en) if percorso_home_en.exists() else ""
+    check("home en: dichiara l'inglese", 'lang="en"' in html_en_home)
+    check("home en: apertura presente", "data-apertura" in html_en_home)
+    check(
+        "home en: i testi sono in inglese",
+        "Explore the trails" in html_en_home and "Check availability" in html_en_home,
+    )
+    # Le stringhe che si traducono per ultime: se una ricompare, qualcosa è
+    # rimasto scritto in italiano dentro il codice.
+    check(
+        "home en: nessun testo italiano residuo",
+        not any(
+            frase in html_en_home
+            for frase in (
+                "Scopri i sentieri",
+                "Chiedi la disponibilità",
+                "Invia la richiesta",
+                "Tutti i sentieri",
+                "Come si leggono le difficoltà",
+            )
+        ),
+    )
+    check("home en: rimanda all'italiano con hreflang", 'hreflang="it-IT"' in html_en_home)
+
     # --- Dati strutturati specifici delle pagine nuove ----------------------
     camere_html = leggi(DIST / "camere/index.html") if (DIST / "camere/index.html").exists() else ""
     check("camere: schema OfferCatalog presente", "OfferCatalog" in camere_html)

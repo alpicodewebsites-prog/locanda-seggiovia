@@ -27,6 +27,8 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
+import { percorsoLocalizzato, linguaDaUrl, type Lingua } from '../i18n';
+
 export interface Props {
   /** Fotografia di apertura. Se manca, resta il fondo scuro. */
   immagine?: ImageMetadata | null;
@@ -42,6 +44,8 @@ export interface Props {
   invitoSentieri?: string;
   /** L'invito secondario agli gnocchi, accanto a quello dei sentieri. */
   invitoGnocchi?: string;
+  /** La lingua della pagina: decide dove portano i collegamenti. */
+  lingua?: Lingua;
 }
 
 const {
@@ -58,6 +62,7 @@ const {
   accessi = [],
   invitoSentieri = 'Scopri i sentieri',
   invitoGnocchi = 'Scopri la nostra produzione di gnocchi con la Fioreta',
+  lingua = linguaDaUrl(Astro.url),
 } = Astro.props;
 
 /*
@@ -127,7 +132,7 @@ const accessiMostrati = accessi.length
         {
           accessiMostrati.map((accesso) => (
             <li>
-              <a href={accesso.collegamento} class="accesso">
+              <a href={percorsoLocalizzato(accesso.collegamento, lingua)} class="accesso">
                 <span class="accesso__eyebrow">{accesso.etichetta}</span>
                 <span class="accesso__riga">
                   <span class="accesso__titolo">{accesso.titolo}</span>
@@ -170,7 +175,7 @@ const accessiMostrati = accessi.length
       -->
       <ul class="mt-7 grid gap-x-14 gap-y-3 sm:grid-cols-2">
         <li>
-          <a href="/sentieri" class="link-arrow accesso-secondario">
+          <a href={percorsoLocalizzato('/sentieri', lingua)} class="link-arrow accesso-secondario">
             {invitoSentieri}
             <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
               <path
@@ -183,7 +188,7 @@ const accessiMostrati = accessi.length
           </a>
         </li>
         <li>
-          <a href="/gnocchi-con-la-fioreta" class="link-arrow accesso-secondario">
+          <a href={percorsoLocalizzato('/gnocchi-con-la-fioreta', lingua)} class="link-arrow accesso-secondario">
             {invitoGnocchi}
             <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
               <path
