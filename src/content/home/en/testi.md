@@ -55,10 +55,6 @@ carosello:
     testo: Bacalà alla vicentina, house-made sopressa, trout smoked here. The menu follows the malghe, not fashions.
     immagine: /assets/ristorante/piatti/02-polenta-e-coniglio.webp
     collegamento: /ristorante
-  - titolo: Gnocchi with fioreta
-    testo: A De.Co. product, two ingredients and no shortcuts. The registered recipe, step by step.
-    immagine: /assets/gnocchi/dettagli/1-gnocchi.jpg
-    collegamento: /gnocchi-con-la-fioreta
   - titolo: The trails
     testo: Seven itineraries starting in the centre of the village, with distances, ascents and CAI difficulty grades.
     immagine: /assets/sentieri/06-strada-52-gallerie.jpg

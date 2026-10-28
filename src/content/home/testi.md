@@ -38,10 +38,6 @@ carosello:
     testo: Bacalà alla vicentina, sopressa di casa, trota affumicata qui. Il menù segue le malghe, non le mode.
     immagine: /assets/ristorante/piatti/02-polenta-e-coniglio.webp
     collegamento: /ristorante
-  - titolo: Gli gnocchi con la fioreta
-    testo: Prodotto De.Co., due ingredienti e nessuna scorciatoia. La ricetta depositata, passo per passo.
-    immagine: /assets/gnocchi/dettagli/1-gnocchi.jpg
-    collegamento: /gnocchi-con-la-fioreta
   - titolo: I sentieri
     testo: Sette itinerari che partono dal centro del paese, con distanze, dislivelli e difficoltà CAI.
     immagine: /assets/sentieri/06-strada-52-gallerie.jpg
