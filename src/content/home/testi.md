@@ -21,5 +21,5 @@ locandaParagrafi:
 locandaCollegamento: La locanda e la famiglia
 territorioEtichetta: Territorio
 territorioTitolo: I sentieri cominciano dal centro del paese
-territorioTesto: Sei itinerari fra Piccole Dolomiti, Gruppo del Carega e Pasubio. Difficoltà dal turistico all'escursionistico esposto, tutti documentati con dati tecnici reali.
+territorioTesto: Sette itinerari fra Piccole Dolomiti, Gruppo del Carega e Pasubio. Difficoltà dal turistico all'escursionistico esposto, tutti documentati con dati tecnici reali.
 ---

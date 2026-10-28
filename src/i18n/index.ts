@@ -161,3 +161,19 @@ export function alternativeLinguistiche(percorso: string) {
 export function datiLingua(codice: Lingua) {
   return LINGUE.find((l) => l.codice === codice) ?? LINGUE[0];
 }
+
+/**
+ * Riempie i segnaposto di un testo: `{gestori}` diventa il valore passato.
+ *
+ * Serve alle frasi che contengono dati della struttura. In italiano una frase
+ * come «La locanda la portano {gestori}» funziona; in inglese la stessa
+ * informazione va in un punto diverso della frase. Se si concatenasse a mano
+ * («The inn is run by » + gestori), ogni lingua dovrebbe portarsi dietro la
+ * propria impalcatura. Con i segnaposto, l'ordine lo decide la traduzione.
+ *
+ * Se un segnaposto non ha un valore resta visibile com'è: meglio una scritta
+ * evidente in pagina che una frase muta che nessuno nota.
+ */
+export function riempi(modello: string, valori: Record<string, string>): string {
+  return modello.replace(/\{(\w+)\}/g, (intero, chiave: string) => valori[chiave] ?? intero);
+}

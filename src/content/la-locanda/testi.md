@@ -1,18 +1,5 @@
 ---
-# ==========================================================================
-# PAGINA LA LOCANDA
-# --------------------------------------------------------------------------
-# Si modifica dal pannello, alla voce «Pagina La Locanda».
-# ==========================================================================
-
-
-
-# Le due fotografie di questa pagina. Stanno in una cartella propria, così nel
-# pannello si trovano senza cercarle fra quelle di tutto il sito.
-
-titolo: La locanda e la famiglia
+titolo: Una casa di pietra in piazza, ai piedi delle Piccole Dolomiti
 sottotitolo: >-
-  Una casa di pietra e legno in piazza a Recoaro Terme, tenuta dalla stessa
-  famiglia. Chi cucina, chi accoglie e chi consiglia il sentiero sono le stesse
-  persone.
+  La Locanda Seggiovia non è nata come albergo e non lo è diventata. È la casa di una famiglia che ha scelto di restare in montagna e di aprirla a chi la montagna la viene a cercare.
 ---

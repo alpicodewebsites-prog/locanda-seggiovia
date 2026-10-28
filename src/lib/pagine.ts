@@ -19,6 +19,8 @@
  * riquadro rotto. È il comportamento voluto quando si svuota un campo.
  */
 import { getEntry } from 'astro:content';
+import type { Lingua } from '../i18n';
+import { idTradotto } from './contenuti';
 import type { ImageMetadata } from 'astro';
 
 import { risolviImmagine } from './immagini';
@@ -79,8 +81,11 @@ export interface ContenutoHome {
   foto: FotoHome;
 }
 
-export async function caricaHome(): Promise<ContenutoHome> {
-  const testi = await getEntry('home', 'testi');
+export async function caricaHome(lingua: Lingua = 'it'): Promise<ContenutoHome> {
+  // Si cerca la versione tradotta; se manca, si ripiega sull'italiano.
+  const testi =
+    (await getEntry('home', idTradotto('testi', lingua))) ??
+    (await getEntry('home', 'testi'));
   const foto = await getEntry('home', 'foto');
 
   const d = testi?.data;
@@ -121,8 +126,11 @@ export interface ContenutoLocanda {
   foto: { facciata: ImageMetadata | null; cucina: ImageMetadata | null };
 }
 
-export async function caricaLocanda(): Promise<ContenutoLocanda> {
-  const testi = await getEntry('paginaLocanda', 'testi');
+export async function caricaLocanda(lingua: Lingua = 'it'): Promise<ContenutoLocanda> {
+  // Si cerca la versione tradotta; se manca, si ripiega sull'italiano.
+  const testi =
+    (await getEntry('paginaLocanda', idTradotto('testi', lingua))) ??
+    (await getEntry('paginaLocanda', 'testi'));
   const foto = await getEntry('paginaLocanda', 'foto');
 
   return {
@@ -146,8 +154,11 @@ export interface ContenutoSentieri {
   foto: { montagne: ImageMetadata | null; panorama: ImageMetadata | null };
 }
 
-export async function caricaSentieri(): Promise<ContenutoSentieri> {
-  const testi = await getEntry('paginaSentieri', 'testi');
+export async function caricaSentieri(lingua: Lingua = 'it'): Promise<ContenutoSentieri> {
+  // Si cerca la versione tradotta; se manca, si ripiega sull'italiano.
+  const testi =
+    (await getEntry('paginaSentieri', idTradotto('testi', lingua))) ??
+    (await getEntry('paginaSentieri', 'testi'));
   const foto = await getEntry('paginaSentieri', 'foto');
 
   return {
@@ -179,8 +190,11 @@ export interface ContenutoGnocchi {
   foto: { piatto: ImageMetadata | null; preparazione: ImageMetadata | null };
 }
 
-export async function caricaGnocchi(): Promise<ContenutoGnocchi> {
-  const testi = await getEntry('gnocchi', 'testi');
+export async function caricaGnocchi(lingua: Lingua = 'it'): Promise<ContenutoGnocchi> {
+  // Si cerca la versione tradotta; se manca, si ripiega sull'italiano.
+  const testi =
+    (await getEntry('gnocchi', idTradotto('testi', lingua))) ??
+    (await getEntry('gnocchi', 'testi'));
   const foto = await getEntry('gnocchi', 'foto');
 
   return {

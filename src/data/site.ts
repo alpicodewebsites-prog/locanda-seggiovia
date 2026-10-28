@@ -36,6 +36,26 @@ export const site = {
   gestione: 'Famiglia Asnicar Bertoldi',
   gestori: 'Loris Asnicar e famiglia',
 
+  /*
+    Le stesse due informazioni in inglese.
+
+    Stanno qui e non nel dizionario dell'interfaccia perché sono DATI della
+    struttura, come l'indirizzo e il telefono: un nome di famiglia non è un testo
+    di interfaccia. Tenerli accanto agli originali evita che, cambiando il nome
+    in un posto, resti vecchio nell'altro.
+  */
+  gestioneEn: 'The Asnicar Bertoldi family',
+  gestoriEn: 'Loris Asnicar and family',
+
+  /*
+    Il solo cognome, senza «famiglia» davanti.
+
+    Serve perché il titolo di una sezione si compone diversamente nelle due
+    lingue: «La famiglia Rossi» e «The Rossi family». Con il cognome a parte, la
+    frase intera sta nella traduzione e non va ricostruita tagliando stringhe.
+  */
+  cognome: 'Asnicar Bertoldi',
+
   indirizzo: {
     via: 'Piazza A. Savoia Duca Aosta 7',
     cap: '36076',
