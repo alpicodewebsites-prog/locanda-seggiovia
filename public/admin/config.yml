@@ -95,13 +95,6 @@ output:
 
 # ============================================================================
 collections:
-  # ==========================================================================
-  # 1. LE PAGINE
-  # ==========================================================================
-
-  # --------------------------------------------------------------------------
-  # HOME PAGE
-  # --------------------------------------------------------------------------
   - name: home
     label: Home Page
     description: I testi e le quattro fotografie della prima pagina del sito.
@@ -511,6 +504,352 @@ collections:
       I piatti del ristorante. Il prezzo si può lasciare vuoto: in quel caso il
       piatto compare senza cifra.
     folder: src/content/menu
+    media_folder: /src/assets/ristorante/piatti
+    public_folder: /assets/ristorante/piatti
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: ristorante
+    sortable_fields: [categoria, ordine, nome]
+    summary: '{{nome}} — {{categoria}}'
+    fields:
+      - { label: Nome del piatto, name: nome, widget: string }
+      - label: Categoria
+        name: categoria
+        widget: select
+        options:
+          - { label: Antipasti, value: antipasti }
+          - { label: Primi, value: primi }
+          - { label: Secondi, value: secondi }
+          - { label: Dolci, value: dolci }
+      - label: Ordine dentro la categoria
+        name: ordine
+        widget: number
+        default: 1
+        value_type: int
+        min: 0
+      - { label: Descrizione, name: descrizione, widget: text }
+      - label: Prezzo (€)
+        name: prezzo
+        widget: number
+        required: false
+        value_type: float
+        hint: Lasciare vuoto se il prezzo non è ancora definito.
+      - label: È una specialità della casa
+        name: specialita
+        widget: boolean
+        default: false
+        hint: Le specialità vengono messe in evidenza nella pagina.
+      - label: Fotografia del piatto
+        name: foto
+        widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
+        required: false
+        hint: 'Facoltativa. Se c''è, il piatto compare anche in galleria.'
+
+# ==========================================================================
+# LE VERSIONI INGLESI
+# --------------------------------------------------------------------------
+# Ogni collezione qui sotto è la stessa di sopra, ma legge e scrive i file
+# della cartella `en/`. Le etichette dei campi restano in italiano: è la
+# lingua in cui lavora chi gestisce il sito. Il contenuto è in inglese.
+# --------------------------------------------------------------------------
+
+  # ------------------------------------------------------------------------
+  - name: home-en
+    label: Home Page — English
+    description: La stessa pagina in inglese.
+    files:
+      # --- I testi ---------------------------------------------------------
+      - name: testi
+        label: Testi e paragrafi
+        file: src/content/home/en/testi.md
+        fields:
+          - label: Titolo principale
+            name: titolo
+            widget: string
+            hint: 'La frase grande della prima schermata. È testo vero, non un''immagine: resta leggibile e indicizzabile.'
+
+          - label: Testo sotto il titolo
+            name: sottotitolo
+            widget: text
+            hint: Due righe. Dice cosa si trova qui e a chi serve.
+
+          - label: Descrizione per i motori di ricerca
+            name: descrizione
+            widget: text
+            required: false
+            hint: 'Non si vede in pagina: compare su Google e quando il sito viene condiviso in un messaggio.'
+
+          - label: I due accessi dell'apertura
+            name: accessi
+            label_singular: Accesso
+            widget: list
+            required: false
+            hint: 'Le due scelte in fondo alla prima schermata. Se la lista è vuota, tornano quelle predefinite (Dormire e Mangiare).'
+            fields:
+              - { label: Parola piccola sopra, name: etichetta, widget: string }
+              - { label: Titolo, name: titolo, widget: string }
+              - { label: Riga di spiegazione, name: nota, widget: string }
+              - label: Dove porta
+                name: collegamento
+                widget: select
+                options:
+                  - { label: Camere, value: /camere }
+                  - { label: Ristorante, value: /ristorante }
+                  - { label: Gnocchi con la Fioreta, value: /gnocchi-con-la-fioreta }
+                  - { label: Sentieri, value: /sentieri }
+                  - { label: La Locanda, value: /la-locanda }
+                  - { label: Contatti, value: /contatti }
+
+          - label: Invito ai sentieri
+            name: invitoSentieri
+            widget: string
+            hint: Il collegamento piccolo sotto i due accessi.
+
+          - label: Invito agli gnocchi, sotto l'apertura
+            name: pulsanteGnocchi
+            widget: string
+            hint: >-
+              Il collegamento in fondo all'apertura, accanto a quello dei
+              sentieri. Si comporta allo stesso modo: apri la pagina degli
+              gnocchi con la Fioreta.
+
+          - { label: 'Sezione «La locanda» — etichetta piccola', name: locandaEtichetta, widget: string }
+          - { label: 'Sezione «La locanda» — titolo', name: locandaTitolo, widget: string }
+          - label: 'Sezione «La locanda» — paragrafi'
+            name: locandaParagrafi
+            label_singular: Paragrafo
+            widget: list
+            required: false
+            hint: Un paragrafo per voce. Vanno a capo da soli.
+          - { label: 'Sezione «La locanda» — testo del collegamento', name: locandaCollegamento, widget: string }
+          - { label: 'Sezione «Territorio» — etichetta piccola', name: territorioEtichetta, widget: string }
+          - { label: 'Sezione «Territorio» — titolo', name: territorioTitolo, widget: string }
+          - { label: 'Sezione «Territorio» — introduzione', name: territorioTesto, widget: text }
+
+      # --- Le fotografie ---------------------------------------------------
+
+  # ------------------------------------------------------------------------
+  - name: pagina-locanda-en
+    label: Pagina La Locanda — English
+    description: La stessa pagina in inglese.
+    files:
+      - name: testi
+        label: Testi e paragrafi
+        file: src/content/la-locanda/en/testi.md
+        fields:
+          - { label: Titolo, name: titolo, widget: string }
+          - { label: Testo introduttivo, name: sottotitolo, widget: text, required: false }
+
+
+  # ------------------------------------------------------------------------
+  - name: pagina-sentieri-en
+    label: Pagina Sentieri — English
+    description: La stessa pagina in inglese.
+    files:
+      - name: testi
+        label: Testi e paragrafi
+        file: src/content/sentieri-pagina/en/testi.md
+        fields:
+          - { label: Titolo, name: titolo, widget: string }
+          - { label: Testo introduttivo, name: sottotitolo, widget: text, required: false }
+
+
+  # ------------------------------------------------------------------------
+  - name: gnocchi-en
+    label: Gnocchi con la Fioreta — English
+    description: La stessa pagina in inglese.
+    files:
+      - name: testi
+        label: Testi e ricetta
+        file: src/content/gnocchi/en/testi.md
+        fields:
+          - { label: Titolo, name: titolo, widget: string }
+          - { label: Sottotitolo, name: sottotitolo, widget: string, required: false }
+          - label: Storia del piatto
+            name: storia
+            widget: text
+            hint: Da dove viene la fioreta e perché è legata a Recoaro.
+          - label: Ricetta De.Co.
+            name: ricetta
+            label_singular: Ingrediente
+            widget: list
+            fields:
+              - { label: Ingrediente, name: ingrediente, widget: string }
+              - { label: Quantità, name: quantita, widget: string }
+          - label: Lavorazione
+            name: lavorazione
+            label_singular: Fase
+            widget: list
+            fields:
+              - { label: Titolo della fase, name: titolo, widget: string }
+              - { label: Descrizione, name: testo, widget: text }
+          - { label: Condimento, name: condimento, widget: text }
+          - label: Riconoscimenti
+            name: riconoscimenti
+            label_singular: Riconoscimento
+            widget: list
+            required: false
+
+
+  # ------------------------------------------------------------------------
+  - name: sentieri-en
+    label: Sentieri (elenco) — English
+    label_singular: Sentiero
+    description: La stessa pagina in inglese.
+    folder: src/content/sentieri/en
+    media_folder: /src/assets/sentieri
+    public_folder: /assets/sentieri
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: sentieri
+    sortable_fields: [ordine, nome]
+    summary: '{{nome}} — {{difficolta}}'
+    fields:
+      - { label: Nome del sentiero, name: nome, widget: string }
+      - label: Ordine di comparsa
+        name: ordine
+        widget: number
+        default: 1
+        value_type: int
+        min: 0
+      - label: Sommario
+        name: sommario
+        widget: text
+        hint: Una o due righe, per gli elenchi.
+      - { label: Descrizione del percorso, name: descrizione, widget: text }
+      - label: Difficoltà CAI
+        name: difficolta
+        widget: select
+        options:
+          - { label: 'T — Turistico', value: T }
+          - { label: 'E — Escursionistico', value: E }
+          - { label: 'EE — Escursionisti esperti', value: EE }
+      - { label: Distanza, name: distanza, widget: string, required: false, hint: 'Esempio: 12 km (solo andata)' }
+      - { label: Dislivello, name: dislivello, widget: string, required: false, hint: 'Esempio: 400-550 m' }
+      - { label: Durata, name: durata, widget: string, required: false, hint: 'Esempio: 4 ore' }
+      - { label: Punto di partenza, name: partenza, widget: string, required: false }
+      - { label: Segnaletica CAI, name: segnavia, widget: string, required: false, hint: 'Esempio: CAI 151/144' }
+      - { label: Quota massima (metri), name: quota, widget: number, required: false, value_type: int, min: 0, hint: 'Il punto piu alto del percorso. Solo il numero, senza la m.' }
+
+      # --- Meteo ------------------------------------------------------------
+      # Le coordinate NON sono quelle del sentiero: un percorso e' lungo
+      # chilometri e la temperatura cambia con la quota. Sono quelle del punto
+      # dove si misura, di solito il parcheggio di partenza.
+      - label: Meteo, localita
+        name: meteoLocalita
+        widget: string
+        required: false
+        hint: >-
+          Il luogo dove si misura il meteo, per esempio «Bocchetta Campiglia».
+          Si mostra accanto ai dati: senza, il numero sembrerebbe riferito a
+          tutto il percorso. Se lasci vuoto questo campo, la scheda non mostra
+          il meteo.
+      - label: Meteo, latitudine
+        name: meteoLatitudine
+        widget: number
+        required: false
+        hint: 'Esempio: 45.778657. Con il punto, non con la virgola.'
+      - label: Meteo, longitudine
+        name: meteoLongitudine
+        widget: number
+        required: false
+        hint: 'Esempio: 11.227940. Con il punto, non con la virgola.'
+
+      # --- Webcam -----------------------------------------------------------
+      - label: Webcam, indirizzo della pagina
+        name: webcam
+        widget: string
+        required: false
+        hint: >-
+          L'indirizzo della PAGINA della webcam, non dell'immagine: le immagini
+          cambiano indirizzo e non sono pensate per essere incorporate da altri
+          siti. La scheda rimanda alla fonte, che mostra lei l'immagine
+          aggiornata.
+      - label: Webcam, nome
+        name: webcamEtichetta
+        widget: string
+        required: false
+        hint: 'Esempio: Rifugio Campogrosso'
+
+      - label: Fotografia di copertina
+        name: immagine
+        widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
+        required: false
+        hint: 'Se manca, la scheda usa un segnaposto neutro.'
+
+  # --------------------------------------------------------------------------
+  # CAMERE
+  # --------------------------------------------------------------------------
+
+  # ------------------------------------------------------------------------
+  - name: camere-en
+    label: Camere (elenco) — English
+    label_singular: Camera
+    description: La stessa pagina in inglese.
+    folder: src/content/camere/en
+    media_folder: /src/assets/camere
+    public_folder: /assets/camere
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: camere
+    sortable_fields: [ordine, titolo]
+    summary: '{{titolo}} — B&B {{tariffe.bnb}} €'
+    fields:
+      - { label: Nome della camera, name: titolo, widget: string }
+      - label: Ordine di comparsa
+        name: ordine
+        widget: number
+        default: 1
+        hint: Numero più basso = compare prima nella pagina.
+        value_type: int
+        min: 0
+      - label: Descrizione
+        name: descrizione
+        widget: text
+        hint: Due o tre righe. Descrive la camera, non la vende.
+      - label: Numero di ospiti
+        name: occupanti
+        widget: string
+        required: false
+        hint: 'Esempio: 2 persone'
+      - label: Tariffe (€ per persona, per giorno)
+        name: tariffe
+        widget: object
+        fields:
+          - { label: 'Solo pernottamento e colazione', name: bnb, widget: number, value_type: float }
+          - { label: 'Mezza pensione', name: mezzaPensione, widget: number, value_type: float }
+          - { label: 'Pensione completa', name: pensioneCompleta, widget: number, value_type: float }
+      - label: Servizi in camera
+        name: servizi
+        label_singular: Servizio
+        widget: list
+        required: false
+        hint: 'Un servizio per riga. Il Wi-Fi è negli spazi comuni, non in camera: non va elencato qui.'
+      - label: Fotografia della camera
+        name: foto
+        widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
+        required: false
+        hint: 'Facoltativa. Se manca, la camera compare senza foto.'
+
+  # --------------------------------------------------------------------------
+  # MENÙ DEL RISTORANTE
+  # --------------------------------------------------------------------------
+
+  # ------------------------------------------------------------------------
+  - name: menu-en
+    label: Menù del ristorante — English
+    label_singular: Piatto
+    description: La stessa pagina in inglese.
+    folder: src/content/menu/en
     media_folder: /src/assets/ristorante/piatti
     public_folder: /assets/ristorante/piatti
     extension: md

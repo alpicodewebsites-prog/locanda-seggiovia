@@ -120,27 +120,26 @@ def main() -> int:
         if not cartella.is_dir():
             continue
 
-        italiani = sorted(
-            p for p in cartella.glob("*.md") if not p.stem.endswith("-en") and p.name not in SENZA_TESTO
-        )
-        inglesi = {p.stem for p in cartella.glob("*-en.md")}
+        # Le versioni inglesi stanno nella sottocartella `en/`, con lo stesso
+        # nome dell'originale: `camere/doppia.md` <-> `camere/en/doppia.md`.
+        italiani = sorted(p for p in cartella.glob("*.md") if p.name not in SENZA_TESTO)
+        inglesi = {p.name for p in (cartella / "en").glob("*.md")}
 
         for italiano in italiani:
             coppie += 1
-            atteso = f"{italiano.stem}-en"
-            if atteso not in inglesi:
+            if italiano.name not in inglesi:
                 mancanti.append(f"{collezione}/{italiano.name}")
                 continue
 
             # Il file esiste: si guarda se dentro è rimasto italiano.
-            testo_inglese = (cartella / f"{atteso}.md").read_text(encoding="utf-8").lower()
+            testo_inglese = (cartella / "en" / italiano.name).read_text(encoding="utf-8").lower()
             trovate = [
                 parola
                 for parola in PAROLE_ITALIANE
                 if parola not in CONSENTITE and re.search(rf"\b{parola}\b", testo_inglese)
             ]
             if trovate:
-                sospetti.append((f"{collezione}/{atteso}.md", trovate))
+                sospetti.append((f"{collezione}/en/{italiano.name}", trovate))
 
     print(f"  schede di contenuto: {coppie}")
     print(f"  tradotte: {coppie - len(mancanti)}")
