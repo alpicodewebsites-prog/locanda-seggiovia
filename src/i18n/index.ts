@@ -153,7 +153,13 @@ export function percorsoLogico(percorso: string): string {
   const pulito = normalizza(percorso);
 
   for (const [logico, voci] of Object.entries(PERCORSI)) {
-    if (voci.it === pulito || voci.en === pulito) return logico;
+    /*
+      Le due parti vanno confrontate nella stessa forma: `normalizza` toglie lo
+      slash finale dalla richiesta, ma i valori della mappa lo hanno (`/en/`).
+      Senza questa normalizzazione la home inglese non veniva riconosciuta, e le
+      due home non si dichiaravano a vicenda.
+    */
+    if (normalizza(voci.it) === pulito || normalizza(voci.en) === pulito) return logico;
   }
 
   /*
