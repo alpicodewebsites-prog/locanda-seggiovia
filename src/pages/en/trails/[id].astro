@@ -1,0 +1,26 @@
+---
+/**
+ * La scheda di un sentiero, in inglese.
+ *
+ * Ha il proprio `getStaticPaths` perché le pagine inglesi hanno un indirizzo
+ * diverso (`/en/trails/<slug>/`) e uno slug senza il suffisso `-en`. Il disegno
+ * resta nella pagina italiana, che si rende qui come componente: una correzione
+ * al layout vale per tutte e due le lingue.
+ */
+import { getCollection } from 'astro:content';
+
+import Scheda from '../../sentieri/[id].astro';
+import { idBase, schedeLingua } from '../../../lib/contenuti';
+
+export async function getStaticPaths() {
+  const sentieri = schedeLingua(await getCollection('sentieri'), 'en');
+  return sentieri.map((sentiero) => ({
+    params: { id: idBase(sentiero.id) },
+    props: { sentiero },
+  }));
+}
+
+const { sentiero } = Astro.props;
+---
+
+<Scheda sentiero={sentiero} lingua="en" />

@@ -122,8 +122,15 @@ const DISPONIBILI_EN = new Set<string>(
     ),
 );
 
-/** Le schede dei sentieri hanno una pagina inglese solo quando il file c'è. */
-const SCHEDE_EN = Object.keys(FILE_EN_SCHEDE).length > 0;
+/**
+ * Le schede dei sentieri hanno una pagina inglese solo quando esiste il file
+ * della scheda. `index.astro` è l'ELENCO, non una scheda: contarlo qui faceva
+ * puntare i collegamenti a `/en/trails/<slug>/` prima che quelle pagine
+ * esistessero.
+ */
+const SCHEDE_EN = Object.keys(FILE_EN_SCHEDE).some(
+  (percorsoFile) => !percorsoFile.endsWith('/index.astro'),
+);
 
 /** Toglie lo slash finale, tranne sulla radice. */
 function normalizza(percorso: string): string {

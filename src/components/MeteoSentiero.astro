@@ -43,6 +43,9 @@
  *  - Nessuna animazione, quindi niente da disattivare con `prefers-reduced-motion`.
  * ----------------------------------------------------------------------------
  */
+import { linguaDaUrl, type Lingua } from '../i18n';
+import { traduzioni } from '../i18n/ui';
+
 export interface Props {
   /** Latitudine del punto in cui si misura il meteo. */
   latitudine: number;
@@ -52,9 +55,13 @@ export interface Props {
   localita: string;
   /** Quota del punto, in metri. Facoltativa. */
   quota?: number;
+  /** La lingua della pagina. */
+  lingua?: Lingua;
 }
 
-const { latitudine, longitudine, localita, quota } = Astro.props;
+const { latitudine, longitudine, localita, quota, lingua = linguaDaUrl(Astro.url) } =
+  Astro.props;
+const t = traduzioni(lingua).meteo;
 ---
 
 <div
@@ -63,27 +70,27 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
   data-lat={latitudine}
   data-lon={longitudine}
   data-luogo={localita}
+  data-lingua={lingua}
 >
   <div class="meteo__testa">
-    <p class="meteo__etichetta">Meteo</p>
+    <p class="meteo__etichetta">{t.etichetta}</p>
     <p class="meteo__luogo">
       {localita}{quota && <span class="meteo__quota"> · {quota} m</span>}
     </p>
   </div>
 
   <div class="meteo__corpo" data-meteo-corpo aria-busy="true">
-    <p class="meteo__attesa">Caricamento del meteo…</p>
+    <p class="meteo__attesa">{t.caricamento}</p>
   </div>
 
   <p class="meteo__fonte">
-    Dati <a href="https://open-meteo.com/" rel="noopener" target="_blank">Open-Meteo</a>,
-    aggiornati a ogni apertura della pagina.
+    {t.fonte} <a href="https://open-meteo.com/" rel="noopener" target="_blank">{t.fonteLink}</a>.
   </p>
 
   <noscript>
     <p class="meteo__fonte">
-      Il meteo si carica con JavaScript attivo. Senza, resta il
-      <a href="https://www.ilmeteo.it/meteo/Recoaro+Terme">bollettino di Recoaro Terme</a>.
+      {t.senzaJavaScript}
+      <a href="https://www.ilmeteo.it/meteo/Recoaro+Terme">{t.bollettino}</a>.
     </p>
   </noscript>
 </div>
@@ -400,44 +407,62 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
 
 <script>
   /*
-    Codici meteo WMO → parole italiane, e → cielo da disegnare.
-    Open-Meteo restituisce un numero; senza questa tabella il riquadro
-    mostrerebbe «61», che non dice niente a nessuno.
+    I testi arrivano dal dizionario, che va importato QUI e non nel frontmatter:
+    questo blocco è un modulo a sé, eseguito dal browser, e non vede le
+    variabili del modello. Senza questo import `traduzioni` non esiste nel
+    browser, la chiamata fallisce e il riquadro resta su «Caricamento…».
   */
-  const CONDIZIONI: Record<number, { testo: string; cielo: string }> = {
-    0: { testo: 'Sereno', cielo: 'sereno' },
-    1: { testo: 'Prevalentemente sereno', cielo: 'sereno' },
-    2: { testo: 'Parzialmente nuvoloso', cielo: 'poco-nuvoloso' },
-    3: { testo: 'Nuvoloso', cielo: 'nuvoloso' },
-    45: { testo: 'Nebbia', cielo: 'nebbia' },
-    48: { testo: 'Nebbia con brina', cielo: 'nebbia' },
-    51: { testo: 'Pioviggine debole', cielo: 'pioggia' },
-    53: { testo: 'Pioviggine moderata', cielo: 'pioggia' },
-    55: { testo: 'Pioviggine intensa', cielo: 'pioggia' },
-    56: { testo: 'Pioviggine gelata', cielo: 'pioggia' },
-    57: { testo: 'Pioviggine gelata intensa', cielo: 'pioggia' },
-    61: { testo: 'Pioggia debole', cielo: 'pioggia' },
-    63: { testo: 'Pioggia moderata', cielo: 'pioggia' },
-    65: { testo: 'Pioggia forte', cielo: 'pioggia' },
-    66: { testo: 'Pioggia gelata', cielo: 'pioggia' },
-    67: { testo: 'Pioggia gelata forte', cielo: 'pioggia' },
-    71: { testo: 'Neve debole', cielo: 'neve' },
-    73: { testo: 'Neve moderata', cielo: 'neve' },
-    75: { testo: 'Neve forte', cielo: 'neve' },
-    77: { testo: 'Granelli di neve', cielo: 'neve' },
-    80: { testo: 'Rovesci deboli', cielo: 'rovesci' },
-    81: { testo: 'Rovesci moderati', cielo: 'rovesci' },
-    82: { testo: 'Rovesci forti', cielo: 'rovesci' },
-    85: { testo: 'Rovesci di neve', cielo: 'neve' },
-    86: { testo: 'Rovesci di neve forti', cielo: 'neve' },
-    95: { testo: 'Temporale', cielo: 'temporale' },
-    96: { testo: 'Temporale con grandine', cielo: 'temporale' },
-    99: { testo: 'Temporale con grandine forte', cielo: 'temporale' },
+  import { traduzioni } from '../i18n/ui';
+
+  /*
+    Codici meteo WMO → cielo da disegnare. Restano qui, e non nel dizionario,
+    perché sono classi CSS: non hanno lingua.
+  */
+  const CIELI: Record<number, string> = {
+    0: 'sereno',
+    1: 'sereno',
+    2: 'poco-nuvoloso',
+    3: 'nuvoloso',
+    45: 'nebbia',
+    48: 'nebbia',
+    51: 'pioggia',
+    53: 'pioggia',
+    55: 'pioggia',
+    56: 'pioggia',
+    57: 'pioggia',
+    61: 'pioggia',
+    63: 'pioggia',
+    65: 'pioggia',
+    66: 'pioggia',
+    67: 'pioggia',
+    71: 'neve',
+    73: 'neve',
+    75: 'neve',
+    77: 'neve',
+    80: 'rovesci',
+    81: 'rovesci',
+    82: 'rovesci',
+    85: 'neve',
+    86: 'neve',
+    95: 'temporale',
+    96: 'temporale',
+    99: 'temporale',
   };
 
-  /** Un codice sconosciuto non deve diventare «undefined» in pagina. */
-  function condizione(codice: number) {
-    return CONDIZIONI[codice] ?? { testo: 'Condizioni variabili', cielo: 'nuvoloso' };
+  /*
+    I testi vengono dal dizionario della lingua: qui resta solo il cielo da
+    disegnare, che è una classe CSS e non ha lingua.
+  */
+  let m: ReturnType<typeof traduzioni>['meteo'];
+
+  /** Il cielo da disegnare per un codice. */
+  function cielo(codice: number): string {
+    return CIELI[codice] ?? 'nuvoloso';
+  }
+
+  /** La condizione a parole. Un codice sconosciuto non diventa «undefined». */
+  function testo(codice: number): string {
+    return m.condizioni[codice] ?? m.condizioniVariabili;
   }
 
   /*
@@ -466,14 +491,13 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
       '<path d="M6.5 13h10.5a3.3 3.3 0 0 0 .3-6.6 5 5 0 0 0-9.4-1.2A3.3 3.3 0 0 0 6.5 13z"/><path d="M13.4 15l-3 4.2h2.4l-.9 3.4 3.2-4.6h-2.3z"/>',
   };
 
-  const GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
 
   /** «Oggi», «Domani», poi il nome del giorno. */
   function etichettaGiorno(indice: number, data: string): string {
-    if (indice === 0) return 'Oggi';
-    if (indice === 1) return 'Domani';
+    if (indice === 0) return m.oggi;
+    if (indice === 1) return m.domani;
     const d = new Date(`${data}T12:00:00`);
-    return GIORNI[d.getDay()] ?? data;
+    return m.giorni[d.getDay()] ?? data;
   }
 
   /** Il simbolo in linea, dimensionato come il testo che accompagna. */
@@ -494,7 +518,7 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
 
   /** Dipinge il cielo del riquadro secondo la condizione. */
   function dipingiCielo(el: HTMLElement, codice: number) {
-    el.dataset.cielo = condizione(codice).cielo;
+    el.dataset.cielo = cielo(codice);
   }
 
   /** Il riquadro quando il meteo non arriva: niente spazio vuoto. */
@@ -502,10 +526,9 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
     el.dataset.cielo = 'nuvoloso';
     corpo.setAttribute('aria-busy', 'false');
     corpo.innerHTML =
-      '<p class="meteo__attesa">Il meteo non è disponibile in questo momento. ' +
-      'Riprova più tardi, oppure consulta il ' +
+      `<p class="meteo__attesa">${m.errore} ` +
       '<a href="https://www.ilmeteo.it/meteo/Recoaro+Terme" rel="noopener" target="_blank">' +
-      'bollettino di Recoaro Terme</a>.</p>';
+      `${m.riprova}</a>.</p>`;
   }
 
   type Risposta = {
@@ -527,7 +550,7 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
         <li>
           <span class="meteo__giorno">${etichettaGiorno(i, data)}</span>
           <span class="meteo__valori">${gradi(oggi.temperature_2m_max[i])} / ${gradi(oggi.temperature_2m_min[i])}</span>
-          <span class="meteo__vento">${condizione(oggi.weather_code[i]).testo}${
+          <span class="meteo__vento">${testo(oggi.weather_code[i])}${
             typeof pioggia === 'number' ? ` · ${pioggia}%` : ''
           }</span>
         </li>`;
@@ -538,16 +561,16 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
     corpo.innerHTML = `
       <div class="meteo__adesso">
         <span class="meteo__gradi">${gradi(d.current.temperature_2m)}</span>
-        ${simbolo(condizione(d.current.weather_code).cielo)}
-        <span class="meteo__condizione">${condizione(d.current.weather_code).testo}</span>
+        ${simbolo(cielo(d.current.weather_code))}
+        <span class="meteo__condizione">${testo(d.current.weather_code)}</span>
       </div>
       <dl class="meteo__dati">
         <div>
-          <dt>Oggi</dt>
+          <dt>${m.oggi}</dt>
           <dd>${gradi(oggi.temperature_2m_max[0])} / ${gradi(oggi.temperature_2m_min[0])}</dd>
         </div>
         <div>
-          <dt>Vento</dt>
+          <dt>${m.vento}</dt>
           <dd>${Math.round(d.current.wind_speed_10m)} km/h</dd>
         </div>
       </dl>
@@ -624,6 +647,8 @@ const { latitudine, longitudine, localita, quota } = Astro.props;
 
   function avvia() {
     document.querySelectorAll<HTMLElement>('[data-meteo]').forEach((el) => {
+      const codice = el.dataset.lingua === 'en' ? 'en' : 'it';
+      m = traduzioni(codice).meteo;
       void carica(el);
     });
   }

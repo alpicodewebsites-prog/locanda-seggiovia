@@ -4,6 +4,10 @@
  *
  * Una pagina per itinerario, generata dalla collezione `sentieri`: i contenuti
  * si gestiscono dal pannello /admin, non da questo file.
+ *
+ * Bilingue: la stessa pagina serve `/sentieri/<slug>/` e `/en/trails/<slug>/`.
+ * Il guscio inglese (`src/pages/en/trails/[id].astro`) ha il proprio
+ * `getStaticPaths` e passa la scheda già scelta.
  */
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
@@ -12,17 +16,38 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import MeteoSentiero from '../../components/MeteoSentiero.astro';
 import { SITE_URL } from '../../data/site';
 import { risolviImmagine } from '../../lib/immagini';
+import { idBase, inLingua } from '../../lib/contenuti';
+import { linguaDaUrl, percorsoLocalizzato, riempi, type Lingua } from '../../i18n';
+import { testiPagina } from '../../i18n/pagine';
+import { traduzioni } from '../../i18n/ui';
 
 export async function getStaticPaths() {
-  const sentieri = await getCollection('sentieri');
+  /*
+    SOLO le schede italiane.
+
+    `getCollection()` restituisce anche le versioni inglesi (`gino-solda-en`).
+    Senza questo filtro il sito generava in più `/sentieri/gino-solda-en/`,
+    `/sentieri/ponte-tibetano-en/` e così via: pagine doppie, con un indirizzo
+    brutto, che finivano anche nella sitemap e facevano concorrenza a quelle
+    vere. Le pagine inglesi stanno sotto `/en/trails/`, e le costruisce il guscio.
+  */
+  const sentieri = (await getCollection('sentieri')).filter((s) => inLingua(s.id, 'it'));
   return sentieri.map((sentiero) => ({
-    params: { id: sentiero.id },
-    props: { sentiero },
+    params: { id: idBase(sentiero.id) },
+    props: { sentiero, lingua: 'it' as Lingua },
   }));
 }
 
-const { sentiero } = Astro.props;
+interface Props {
+  sentiero: Awaited<ReturnType<typeof getCollection<'sentieri'>>>[number];
+  /** Forzata dal guscio inglese. */
+  lingua?: Lingua;
+}
+
+const { sentiero, lingua = linguaDaUrl(Astro.url) } = Astro.props;
 const d = sentiero.data;
+const t = testiPagina(lingua).sentiero;
+const u = traduzioni(lingua);
 
 /**
  * Copertina: risolta dal valore scritto nel contenuto, che il pannello salva
@@ -33,13 +58,13 @@ const copertina = risolviImmagine(d.immagine);
 
 /** Dati tecnici: si mostrano solo quelli effettivamente compilati. */
 const datiTecnici = [
-  { voce: 'Difficoltà', valore: d.difficolta, sempre: true },
-  { voce: 'Distanza', valore: d.distanza },
-  { voce: 'Dislivello', valore: d.dislivello },
-  { voce: 'Durata', valore: d.durata },
-  { voce: 'Quota massima', valore: d.quota ? `${d.quota} m` : undefined },
-  { voce: 'Partenza', valore: d.partenza },
-  { voce: 'Segnavia', valore: d.segnavia },
+  { voce: u.sentieri.difficolta, valore: d.difficolta, sempre: true },
+  { voce: u.sentieri.distanza, valore: d.distanza },
+  { voce: u.sentieri.dislivello, valore: d.dislivello },
+  { voce: u.sentieri.durata, valore: d.durata },
+  { voce: u.sentieri.quotaMassima, valore: d.quota ? `${d.quota} m` : undefined },
+  { voce: u.sentieri.partenza, valore: d.partenza },
+  { voce: u.sentieri.segnavia, valore: d.segnavia },
 ].filter((riga) => riga.sempre || Boolean(riga.valore));
 
 /**
@@ -65,13 +90,16 @@ const meteo =
 const descrizioneBreve =
   d.sommario.length > 155 ? `${d.sommario.slice(0, 152).trimEnd()}…` : d.sommario;
 
+const indirizzo = `${SITE_URL}${percorsoLocalizzato(`/sentieri/${idBase(sentiero.id)}`, lingua)}`;
+
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'TouristAttraction',
   name: d.nome,
   description: d.sommario,
-  url: `${SITE_URL}/sentieri/${sentiero.id}`,
-  touristType: 'Escursionismo',
+  url: indirizzo,
+  inLanguage: lingua === 'en' ? 'en' : 'it-IT',
+  touristType: lingua === 'en' ? 'Hiking' : 'Escursionismo',
   isAccessibleForFree: true,
   // Il sentiero non è "presso" la locanda: si dichiara il legame reale,
   // cioè che è un'attrattiva del territorio in cui si trova la struttura.
@@ -84,21 +112,22 @@ const schema = {
   // La difficoltà CAI non è un campo standard: si dichiara come proprietà
   // aggiuntiva, leggibile, invece di forzarla in un campo che non le appartiene.
   additionalProperty: [
-    { '@type': 'PropertyValue', name: 'Difficoltà CAI', value: d.difficolta },
-    ...(d.distanza
-      ? [{ '@type': 'PropertyValue', name: 'Distanza', value: d.distanza }]
-      : []),
+    { '@type': 'PropertyValue', name: u.sentieri.difficolta, value: d.difficolta },
+    ...(d.distanza ? [{ '@type': 'PropertyValue', name: u.sentieri.distanza, value: d.distanza }] : []),
     ...(d.dislivello
-      ? [{ '@type': 'PropertyValue', name: 'Dislivello', value: d.dislivello }]
+      ? [{ '@type': 'PropertyValue', name: u.sentieri.dislivello, value: d.dislivello }]
       : []),
-    ...(d.segnavia
-      ? [{ '@type': 'PropertyValue', name: 'Segnavia CAI', value: d.segnavia }]
-      : []),
+    ...(d.segnavia ? [{ '@type': 'PropertyValue', name: u.sentieri.segnavia, value: d.segnavia }] : []),
   ],
 };
 ---
 
-<BaseLayout title={`${d.nome} — Sentieri`} description={descrizioneBreve} schema={schema}>
+<BaseLayout
+  title={riempi(t.titoloDocumento, { nome: d.nome })}
+  description={descrizioneBreve}
+  schema={schema}
+  lingua={lingua}
+>
   <!-- ==================================================================
        Intestazione con immagine di copertina
        ================================================================== -->
@@ -107,7 +136,7 @@ const schema = {
       copertina ? (
         <Image
           src={copertina}
-          alt={`Segnaposto grafico in attesa della fotografia del ${d.nome}`}
+          alt={riempi(t.altCopertina, { nome: d.nome })}
           widths={[640, 960, 1280, 1600, 1920]}
           sizes="100vw"
           format="webp"
@@ -124,9 +153,8 @@ const schema = {
       Velo per la leggibilità.
 
       Attenzione al valore in alto (`to-stone-900/15`): con un velo pesante
-      anche in alto — com'era prima, al 40% — la fotografia sparisce e la
-      fascia sembra un blocco scuro vuoto. Il velo serve dove c'è il testo,
-      cioè in basso, e deve lasciar respirare l'immagine dove non c'è.
+      anche in alto la fotografia sparisce e la fascia sembra un blocco scuro
+      vuoto. Il velo serve dove c'è il testo, cioè in basso.
     -->
     <div
       class="absolute inset-0 -z-10 bg-gradient-to-t from-stone-900/85 via-stone-900/45 to-stone-900/15"
@@ -137,9 +165,13 @@ const schema = {
     <div class="hero-apertura__sopra" aria-hidden="true"></div>
 
     <div class="hero-apertura__sotto shell">
-      <nav aria-label="Percorso di navigazione" class="mb-6">
+      <nav aria-label={u.nav.percorsoDiNavigazione} class="mb-6">
         <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8rem] text-stone-300">
-          <li><a href="/sentieri" class="transition-colors hover:text-stone-50">Sentieri</a></li>
+          <li>
+            <a href={percorsoLocalizzato('/sentieri', lingua)} class="transition-colors hover:text-stone-50">
+              {t.briciola}
+            </a>
+          </li>
           <li aria-hidden="true">/</li>
           <li aria-current="page" class="text-stone-100">{d.nome}</li>
         </ol>
@@ -156,16 +188,12 @@ const schema = {
        I dati, in una fascia a tutta larghezza
        ------------------------------------------------------------------
        Difficoltà, distanza, dislivello, durata, quota, partenza e segnavia:
-       sono le cose che si cercano per prime, prima ancora di leggere di cosa
-       si tratta. Prima stavano in una colonna stretta a destra, con accanto
-       tre righe di testo e tanto vuoto.
-
-       Il numero è grande e in carattere con grazie, l'etichetta piccola sopra:
-       si scorre la fila e si è già deciso se il percorso è alla propria portata.
+       sono le cose che si cercano per prime. Il numero è grande e in carattere
+       con grazie, l'etichetta piccola sopra.
        ================================================================== -->
   <section class="dati-sentiero" aria-labelledby="titolo-dati">
     <div class="shell">
-      <h2 id="titolo-dati" class="sr-only">Dati tecnici del percorso</h2>
+      <h2 id="titolo-dati" class="sr-only">{t.etichettaDati}</h2>
 
       <dl class="dati-sentiero__fila">
         {
@@ -179,31 +207,25 @@ const schema = {
       </dl>
 
       <p class="dati-sentiero__nota">
-        Difficoltà secondo la scala del CAI. I dati sono indicativi: prima di partire
-        verifica le condizioni del sentiero.
+        {t.notaDati}
       </p>
     </div>
   </section>
 
   <!-- ==================================================================
        Il racconto e le condizioni
-       ------------------------------------------------------------------
-       Due colonne che si corrispondono: il racconto a sinistra, meteo e
-       webcam a destra. Fra le due resta una colonna di griglia vuota — è
-       spazio, non un buco: tiene il racconto a una lunghezza leggibile e
-       stacca la colonna delle condizioni.
        ================================================================== -->
   <section class="section-y" aria-labelledby="titolo-percorso">
     <div class="shell grid gap-10 md:grid-cols-12">
       <div class="md:col-span-6">
-        <h2 id="titolo-percorso" class="display-2 text-stone-900">Il percorso</h2>
+        <h2 id="titolo-percorso" class="display-2 text-stone-900">{t.titoloPercorso}</h2>
         <p class="mt-6 max-w-[62ch] text-[1.0625rem] leading-relaxed text-stone-600">
           {d.descrizione}
         </p>
 
         <p class="mt-8">
-          <a href="/sentieri" class="link-arrow">
-            Tutti i sentieri
+          <a href={percorsoLocalizzato('/sentieri', lingua)} class="link-arrow">
+            {u.sentieri.tutti}
             <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
               <path
                 d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
@@ -217,7 +239,7 @@ const schema = {
       </div>
 
       <aside class="flex flex-col gap-5 md:col-span-5 md:col-start-8" aria-labelledby="titolo-condizioni">
-        <h2 id="titolo-condizioni" class="sr-only">Condizioni</h2>
+        <h2 id="titolo-condizioni" class="sr-only">{t.titoloCondizioni}</h2>
 
         {
           meteo && (
@@ -226,23 +248,17 @@ const schema = {
               longitudine={meteo.longitudine}
               localita={meteo.localita}
               quota={meteo.quota}
+              lingua={lingua}
             />
           )
         }
 
         {
           d.webcam && (
-            <a
-              href={d.webcam}
-              rel="noopener external"
-              target="_blank"
-              class="webcam"
-            >
-              <span class="webcam__voce">Webcam</span>
-              <span class="webcam__nome">{d.webcamEtichetta ?? 'Guarda la webcam'}</span>
-              <span class="webcam__nota">
-                Immagine aggiornata dalla fonte, in una nuova scheda ↗
-              </span>
+            <a href={d.webcam} rel="noopener external" target="_blank" class="webcam">
+              <span class="webcam__voce">{t.webcamVoce}</span>
+              <span class="webcam__nome">{d.webcamEtichetta ?? t.webcamDefault}</span>
+              <span class="webcam__nota">{t.webcamNota}</span>
             </a>
           )
         }
@@ -256,15 +272,18 @@ const schema = {
   <section class="section-y-tight bg-forest-900 text-stone-200">
     <div class="shell flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
       <div>
-        <h2 class="display-2 max-w-[22ch] text-stone-50">Hai bisogno di informazioni?</h2>
+        <h2 class="display-2 max-w-[22ch] text-stone-50">{t.titoloChiusura}</h2>
         <p class="mt-4 max-w-[48ch] text-[1rem] leading-relaxed text-forest-300">
-          Se ci scrivi ti diciamo com'è il sentiero in questo periodo e dove conviene
-          lasciare l'auto.
+          {t.testoChiusura}
         </p>
       </div>
       <div class="flex shrink-0 flex-col gap-3 sm:flex-row">
-        <a href="/contatti" class="btn btn--onDark">Scrivici</a>
-        <a href="/camere" class="btn btn--onDark">Le camere</a>
+        <a href={percorsoLocalizzato('/contatti', lingua)} class="btn btn--onDark">
+          {t.pulsanteScrivici}
+        </a>
+        <a href={percorsoLocalizzato('/camere', lingua)} class="btn btn--onDark">
+          {t.pulsanteCamere}
+        </a>
       </div>
     </div>
   </section>

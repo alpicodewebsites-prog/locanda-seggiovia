@@ -246,6 +246,40 @@ def main() -> int:
     )
     check("home en: rimanda all'italiano con hreflang", 'hreflang="it-IT"' in html_en_home)
 
+    # --- Le schede dei sentieri, in inglese ---------------------------------
+    #
+    # Un tempo il sito generava ANCHE `/sentieri/<slug>-en/`: pagine doppie, con
+    # un indirizzo brutto, che finivano nella sitemap e facevano concorrenza a
+    # quelle vere. Il filtro sta in getStaticPaths, e questo controllo lo tiene
+    # fermo.
+    cartelle_it = sorted(
+        p.name for p in (DIST / "sentieri").iterdir() if p.is_dir()
+    )
+    check(
+        "sentieri: nessuna pagina doppia con suffisso -en",
+        not [nome for nome in cartelle_it if nome.endswith("-en")],
+    )
+
+    cartelle_en = sorted(
+        p.name for p in (DIST / "en" / "trails").iterdir() if p.is_dir()
+    )
+    check(
+        "sentieri en: una pagina inglese per ogni sentiero",
+        cartelle_it == cartelle_en,
+    )
+
+    percorso_scheda_en = DIST / "en" / "trails" / "gino-solda" / "index.html"
+    scheda_en = leggi(percorso_scheda_en) if percorso_scheda_en.exists() else ""
+    check("sentiero en: dichiara l'inglese", 'lang="en"' in scheda_en)
+    check(
+        "sentiero en: rimanda all'italiano con hreflang",
+        'hreflang="it-IT"' in scheda_en and "/sentieri/gino-solda/" in scheda_en,
+    )
+    check(
+        "sentiero en: i dati tecnici sono in inglese",
+        "Distance" in scheda_en and "Ascent" in scheda_en,
+    )
+
     # --- Dati strutturati specifici delle pagine nuove ----------------------
     camere_html = leggi(DIST / "camere/index.html") if (DIST / "camere/index.html").exists() else ""
     check("camere: schema OfferCatalog presente", "OfferCatalog" in camere_html)

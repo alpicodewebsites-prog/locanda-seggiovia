@@ -57,6 +57,46 @@ export interface TestiPagine {
     pulsanteCamere: string;
     pulsanteContatti: string;
   };
+  sentiero: {
+    /** «{nome} — Sentieri». */
+    titoloDocumento: string;
+    altCopertina: string;
+    briciola: string;
+    etichettaDati: string;
+    notaDati: string;
+    titoloPercorso: string;
+    titoloCondizioni: string;
+    webcamVoce: string;
+    webcamDefault: string;
+    webcamNota: string;
+    titoloChiusura: string;
+    testoChiusura: string;
+    pulsanteScrivici: string;
+    pulsanteCamere: string;
+  };
+  sentieriPagina: {
+    metaTitolo: string;
+    metaDescrizione: string;
+    etichetta: string;
+    titolo: string;
+    lede: string;
+    etichettaElenco: string;
+    etichettaDifficolta: string;
+    titoloScala: string;
+    testoScala: string;
+    scala: { sigla: string; nome: string; nota: string }[];
+    altMontagne: string;
+    didascaliaMontagne: string;
+    etichettaTerritorio: string;
+    titoloMontagna: string;
+    testoMontagna: string;
+    linkConsiglio: string;
+    altPanorama: string;
+    titoloChiusura: string;
+    testoChiusura: string;
+    pulsanteCamere: string;
+    pulsanteInfo: string;
+  };
   camere: {
     metaTitolo: string;
     metaDescrizione: string;
@@ -174,6 +214,69 @@ const IT: TestiPagine = {
       'Le camere sono semplici e curate, il ristorante è aperto a pranzo e a cena. Scrivici e ti diciamo tutto quello che serve.',
     pulsanteCamere: 'Le camere',
     pulsanteContatti: 'Contatti',
+  },
+  sentiero: {
+    titoloDocumento: '{nome} — Sentieri',
+    altCopertina: 'Segnaposto grafico in attesa della fotografia del {nome}',
+    briciola: 'Sentieri',
+    etichettaDati: 'Dati tecnici del percorso',
+    notaDati:
+      'Difficoltà secondo la scala del CAI. I dati sono indicativi: prima di partire verifica le condizioni del sentiero.',
+    titoloPercorso: 'Il percorso',
+    titoloCondizioni: 'Condizioni',
+    webcamVoce: 'Webcam',
+    webcamDefault: 'Guarda la webcam',
+    webcamNota: 'Immagine aggiornata dalla fonte, in una nuova scheda ↗',
+    titoloChiusura: 'Hai bisogno di informazioni?',
+    testoChiusura:
+      'Se ci scrivi ti diciamo com’è il sentiero in questo periodo e dove conviene lasciare l’auto.',
+    pulsanteScrivici: 'Scrivici',
+    pulsanteCamere: 'Le camere',
+  },
+  sentieriPagina: {
+    metaTitolo: 'Sentieri',
+    metaDescrizione:
+      'Sette itinerari escursionistici da Recoaro Terme: Piccole Dolomiti, Gruppo del Carega e Pasubio, con distanze, dislivelli e difficoltà CAI.',
+    etichetta: 'Territorio e sentieri',
+    titolo: 'I sentieri cominciano dal centro del paese',
+    lede:
+      'Sette itinerari fra Piccole Dolomiti, Gruppo del Carega e Pasubio. Difficoltà dal turistico all’escursionistico esposto, con i dati tecnici di ciascuno.',
+    etichettaElenco: 'Elenco degli itinerari',
+    etichettaDifficolta: 'Difficoltà',
+    titoloScala: 'Come si leggono le difficoltà',
+    testoScala:
+      'Le sigle sono la classificazione ufficiale del Club Alpino Italiano. Non sono un giudizio: dicono cosa aspettarsi dal terreno.',
+    scala: [
+      {
+        sigla: 'T',
+        nome: 'Turistico',
+        nota: 'Sentieri facili, adatti anche alle famiglie.',
+      },
+      {
+        sigla: 'E',
+        nome: 'Escursionistico',
+        nota: 'Serve un minimo di allenamento e scarpe adatte.',
+      },
+      {
+        sigla: 'EE',
+        nome: 'Escursionisti esperti',
+        nota: 'Terreno impervio, attrezzatura adeguata.',
+      },
+    ],
+    altMontagne:
+      'Le creste delle Piccole Dolomiti sopra Recoaro Terme, con il tricolore',
+    didascaliaMontagne: 'Il gruppo delle Piccole Dolomiti sopra Recoaro Terme.',
+    etichettaTerritorio: 'Il territorio',
+    titoloMontagna: 'Un gruppo montuoso a misura d’uomo',
+    testoMontagna:
+      'Le Piccole Dolomiti non hanno l’altezza delle grandi, ed è proprio questo il loro pregio: si cammina tutto il giorno e si torna in paese la sera. Il Gruppo del Carega e il Pasubio sono a pochi chilometri.',
+    linkConsiglio: 'Chiedi un consiglio sul percorso',
+    altPanorama: 'Disegno di creste montuose con foschia nelle valli',
+    titoloChiusura: 'Dove si dorme, prima di partire',
+    testoChiusura:
+      'La Locanda è in piazza a Recoaro Terme: colazione presto, consigli su misura, e i sentieri che cominciano fuori dalla porta.',
+    pulsanteCamere: 'Le camere',
+    pulsanteInfo: 'Chiedi informazioni',
   },
   camere: {
     metaTitolo: 'Camere e tariffe',
@@ -316,6 +419,69 @@ const EN: TestiPagine = {
       'The rooms are simple and carefully kept, the restaurant is open at lunch and in the evening. Write to us and we will tell you everything you need.',
     pulsanteCamere: 'The rooms',
     pulsanteContatti: 'Contact',
+  },
+  sentiero: {
+    titoloDocumento: '{nome} — Trails',
+    altCopertina: 'Placeholder drawing, waiting for a photograph of {nome}',
+    briciola: 'Trails',
+    etichettaDati: 'Technical data for the route',
+    notaDati:
+      'Difficulty according to the CAI scale. The figures are indicative: check the condition of the trail before you set off.',
+    titoloPercorso: 'The route',
+    titoloCondizioni: 'Conditions',
+    webcamVoce: 'Webcam',
+    webcamDefault: 'Open the webcam',
+    webcamNota: 'The image is updated by the source, in a new tab ↗',
+    titoloChiusura: 'Do you need information?',
+    testoChiusura:
+      'Write to us and we will tell you how the trail is at this time of year, and where it is best to leave the car.',
+    pulsanteScrivici: 'Write to us',
+    pulsanteCamere: 'The rooms',
+  },
+  sentieriPagina: {
+    metaTitolo: 'Trails',
+    metaDescrizione:
+      'Seven hiking itineraries from Recoaro Terme: the Piccole Dolomiti, the Carega group and Monte Pasubio, with distances, ascents and CAI difficulty grades.',
+    etichetta: 'The area and its trails',
+    titolo: 'The trails begin in the centre of the village',
+    lede:
+      'Seven itineraries between the Piccole Dolomiti, the Carega group and Monte Pasubio. Grades from easy walking to exposed mountain paths, with the technical data for each.',
+    etichettaElenco: 'List of itineraries',
+    etichettaDifficolta: 'Difficulty',
+    titoloScala: 'How to read the difficulty grades',
+    testoScala:
+      'These letters are the official classification of the Club Alpino Italiano. They are not a judgement: they tell you what to expect from the ground.',
+    scala: [
+      {
+        sigla: 'T',
+        nome: 'Tourist',
+        nota: 'Easy paths, suitable for families too.',
+      },
+      {
+        sigla: 'E',
+        nome: 'Hiking',
+        nota: 'You need some fitness and proper boots.',
+      },
+      {
+        sigla: 'EE',
+        nome: 'Experienced hikers',
+        nota: 'Rough ground, proper equipment.',
+      },
+    ],
+    altMontagne:
+      'The ridges of the Piccole Dolomiti above Recoaro Terme, with the Italian flag',
+    didascaliaMontagne: 'The Piccole Dolomiti group above Recoaro Terme.',
+    etichettaTerritorio: 'The area',
+    titoloMontagna: 'A mountain group on a human scale',
+    testoMontagna:
+      'The Piccole Dolomiti do not have the height of the great ranges, and that is precisely their virtue: you walk all day and you are back in the village by evening. The Carega group and Monte Pasubio are a few kilometres away.',
+    linkConsiglio: 'Ask us about a route',
+    altPanorama: 'Drawing of mountain ridges with haze in the valleys',
+    titoloChiusura: 'Where you sleep, before you set off',
+    testoChiusura:
+      'The inn is on the square in Recoaro Terme: breakfast early, advice to suit you, and the trails beginning outside the door.',
+    pulsanteCamere: 'The rooms',
+    pulsanteInfo: 'Ask for information',
   },
   camere: {
     metaTitolo: 'Rooms and rates',
