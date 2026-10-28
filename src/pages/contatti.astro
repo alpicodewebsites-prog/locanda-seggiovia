@@ -1,13 +1,23 @@
 ---
 /**
- * Contatti — versione minima della settimana 2.
+ * Contatti.
  *
- * Contiene solo ciò che serve a far funzionare e collaudare il form:
- * dati essenziali di contatto e modulo Web3Forms.
- * La versione completa (mappa, orari, dati strutturati) arriva nella settimana 3.
+ * Bilingue: i testi dell'interfaccia stanno in `src/i18n/pagine.ts`. Il modulo
+ * invia a Web3Forms, che non sa niente della lingua: il campo `subject` resta
+ * in italiano perché è l'oggetto dell'email che arriva ai gestori.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site, mappaLinkUrl, mappaEmbedUrl, SITE_URL } from '../data/site';
+import { linguaDaUrl, percorsoLocalizzato, type Lingua } from '../i18n';
+import { testiPagina } from '../i18n/pagine';
+
+export interface Props {
+  /** Forzata dal guscio inglese, che rende questa pagina come componente. */
+  lingua?: Lingua;
+}
+
+const lingua = Astro.props.lingua ?? linguaDaUrl(Astro.url);
+const t = testiPagina(lingua).contatti;
 
 /**
  * Chiave di accesso Web3Forms.
@@ -25,52 +35,51 @@ const chiaveConfigurata = accessKey !== DEMO_KEY;
  * Su Web3Forms la verifica reCAPTCHA è una funzione dei piani a pagamento. Se il
  * modulo invia un campo `recaptcha_response` senza un token valido, l'invio viene
  * RIFIUTATO: per questo il campo e lo script compaiono solo quando la site key è
- * impostata. Con il piano gratuito il modulo funziona comunque, protetto dal
- * campo esca e dal filtro antispam di Web3Forms.
+ * impostata.
  */
 const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY;
 const recaptchaAttivo = Boolean(recaptchaSiteKey);
 
 /** Pagina di ringraziamento, con URL assoluto come richiede Web3Forms. */
-const redirectUrl = new URL('/grazie', SITE_URL).href;
+const redirectUrl = new URL(percorsoLocalizzato('/grazie', lingua), SITE_URL).href;
+
+/** Gli orari nella lingua della pagina. */
+const orari = lingua === 'en' ? site.orariEn : site.orari;
 
 /**
  * Dati strutturati della pagina contatti.
  *
- * La scheda completa della struttura (indirizzo, telefono, geo, servizi) è già
- * emessa da BaseLayout su ogni pagina con @id `#locanda`: qui si aggiunge il
- * collegamento a quella scheda, senza duplicarla. Gli orari sono volutamente
- * omessi perché non sono ancora confermati: dichiarare orari inventati sarebbe
- * peggio che non dichiararli.
+ * La scheda completa della struttura è già emessa da BaseLayout su ogni pagina
+ * con @id `#locanda`: qui si aggiunge il collegamento a quella scheda, senza
+ * duplicarla. Gli orari sono volutamente omessi perché non sono ancora
+ * confermati: dichiarare orari inventati sarebbe peggio che non dichiararli.
  */
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'ContactPage',
-  name: `Contatti — ${site.nome}`,
-  url: `${SITE_URL}/contatti`,
-  inLanguage: 'it-IT',
+  name: `${t.metaTitolo} — ${site.nome}`,
+  url: `${SITE_URL}${percorsoLocalizzato('/contatti', lingua)}`,
+  inLanguage: lingua === 'en' ? 'en' : 'it-IT',
   mainEntity: { '@id': `${SITE_URL}/#locanda` },
   about: { '@id': `${SITE_URL}/#locanda` },
-  significantLink: [
-    `${SITE_URL}/camere`,
-    `${SITE_URL}/ristorante`,
-    `${SITE_URL}/sentieri`,
-  ],
+  significantLink: ['/camere', '/ristorante', '/sentieri'].map(
+    (percorso) => `${SITE_URL}${percorsoLocalizzato(percorso, lingua)}`,
+  ),
 };
 ---
 
 <BaseLayout
-  title="Contatti"
-  description="Scrivi o chiama la Locanda Seggiovia a Recoaro Terme per prenotare una camera, un tavolo al ristorante o chiedere informazioni sui sentieri delle Piccole Dolomiti."
+  title={t.metaTitolo}
+  description={t.metaDescrizione}
   schema={schema}
+  lingua={lingua}
 >
   <section class="pt-16 pb-12 md:pt-24 md:pb-16">
     <div class="shell">
-      <p class="eyebrow">Contatti</p>
-      <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">Scrivici</h1>
+      <p class="eyebrow">{t.etichetta}</p>
+      <h1 class="display-2 mt-5 max-w-[22ch] text-stone-900">{t.titolo}</h1>
       <p class="lede mt-6 max-w-[58ch]">
-        Per prenotare una camera, un tavolo o per chiedere informazioni su un sentiero.
-        Rispondiamo noi, di solito entro la giornata.
+        {t.lede}
       </p>
     </div>
   </section>
@@ -87,10 +96,7 @@ const schema = {
               class="mb-8 border-l-4 border-glow-500 bg-glow-300/20 px-5 py-4 text-[0.9rem] leading-relaxed text-stone-700"
               role="status"
             >
-              <strong class="font-medium">Modulo in modalità dimostrativa.</strong> La chiave
-              di Web3Forms non è ancora configurata, quindi l'invio non recapita email.
-              Impostare la variabile <code class="text-[0.85em]">PUBLIC_WEB3FORMS_KEY</code> per
-              attivarlo.
+              <strong class="font-medium">{t.avvisoDemoTitolo}</strong> {t.avvisoDemoTesto}
             </p>
           )
         }
@@ -102,9 +108,12 @@ const schema = {
           class="space-y-6"
           data-redirect={redirectUrl}
         >
-          <!-- Chiave di accesso: è pubblica per progetto, non è un segreto. -->
           <input type="hidden" name="access_key" value={accessKey} />
 
+          {/*
+            Oggetto e mittente dell'email restano in italiano: li legge chi
+            gestisce la locanda, non il visitatore.
+          */}
           <input type="hidden" name="subject" value={`Nuovo messaggio dal sito — ${site.nome}`} />
           <input type="hidden" name="from_name" value={`Sito ${site.nome}`} />
           <input type="hidden" name="redirect" value={redirectUrl} />
@@ -125,7 +134,7 @@ const schema = {
           <div class="grid gap-6 sm:grid-cols-2">
             <label class="campo">
               <span class="campo__etichetta">
-                Nome e cognome <span class="campo__obbligatorio" aria-hidden="true">*</span>
+                {t.nome} <span class="campo__obbligatorio" aria-hidden="true">*</span>
               </span>
               <input
                 type="text"
@@ -133,13 +142,13 @@ const schema = {
                 class="input"
                 required
                 autocomplete="name"
-                placeholder="Maria Rossi"
+                placeholder={t.placeholderNome}
               />
             </label>
 
             <label class="campo">
               <span class="campo__etichetta">
-                Email <span class="campo__obbligatorio" aria-hidden="true">*</span>
+                {t.email} <span class="campo__obbligatorio" aria-hidden="true">*</span>
               </span>
               <input
                 type="email"
@@ -147,48 +156,46 @@ const schema = {
                 class="input"
                 required
                 autocomplete="email"
-                placeholder="maria.rossi@esempio.it"
+                placeholder={t.placeholderEmail}
               />
             </label>
           </div>
 
           <label class="campo">
-            <span class="campo__etichetta">Telefono</span>
+            <span class="campo__etichetta">{t.telefono}</span>
             <input
               type="tel"
               name="telefono"
               class="input"
               autocomplete="tel"
-              placeholder="+39 333 000 0000"
+              placeholder={t.placeholderTelefono}
             />
-            <span class="campo__aiuto">Facoltativo, ma utile se preferisci essere richiamato.</span>
+            <span class="campo__aiuto">{t.telefonoAiuto}</span>
           </label>
 
           <label class="campo">
             <span class="campo__etichetta">
-              Messaggio <span class="campo__obbligatorio" aria-hidden="true">*</span>
+              {t.messaggio} <span class="campo__obbligatorio" aria-hidden="true">*</span>
             </span>
             <textarea
               name="messaggio"
               class="textarea"
               required
-              placeholder="Vorrei prenotare una camera doppia per il fine settimana del..."
-            ></textarea>
+              placeholder={t.placeholderMessaggio}></textarea>
           </label>
 
           <div class="consenso">
             <input type="checkbox" id="privacy" name="privacy" required />
             <label for="privacy" class="text-[0.85rem] leading-relaxed text-stone-600">
-              Ho letto l'informativa e acconsento al trattamento dei dati per rispondere alla
-              mia richiesta. I dati non vengono usati per altro.
+              {t.consenso}
               <span class="campo__obbligatorio" aria-hidden="true">*</span>
             </label>
           </div>
 
           <div class="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
-            <button type="submit" class="btn btn--primary">Invia il messaggio</button>
+            <button type="submit" class="btn btn--primary">{t.invia}</button>
             <p class="text-[0.8rem] leading-relaxed text-stone-500">
-              I campi con <span class="campo__obbligatorio">*</span> sono obbligatori.
+              {t.campiObbligatori}
             </p>
           </div>
 
@@ -205,8 +212,7 @@ const schema = {
         {
           recaptchaAttivo && (
             <p class="mt-6 max-w-[60ch] text-[0.78rem] leading-relaxed text-stone-500">
-              Questo modulo è protetto da reCAPTCHA v3 di Google. L'uso di reCAPTCHA è
-              soggetto all'informativa sulla privacy e ai termini di servizio di Google.
+              {t.recaptcha}
             </p>
           )
         }
@@ -217,7 +223,7 @@ const schema = {
            ============================================================== -->
       <aside class="md:col-span-5" aria-labelledby="titolo-recapiti">
         <h2 id="titolo-recapiti" class="eyebrow border-b border-stone-300 pb-3 text-stone-500">
-          Dove siamo
+          {t.titoloRecapiti}
         </h2>
 
         <address class="mt-6 not-italic">
@@ -237,7 +243,9 @@ const schema = {
 
         <dl class="mt-8 space-y-5 border-t border-stone-200 pt-8">
           <div>
-            <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Telefono</dt>
+            <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">
+              {t.etichettaTelefono}
+            </dt>
             <dd class="mt-1.5">
               <a
                 href={site.telefonoLink}
@@ -248,7 +256,9 @@ const schema = {
             </dd>
           </div>
           <div>
-            <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">Email</dt>
+            <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">
+              {t.etichettaEmail}
+            </dt>
             <dd class="mt-1.5">
               <a
                 href={`mailto:${site.email}`}
@@ -261,10 +271,12 @@ const schema = {
         </dl>
 
         <!-- Orari -->
-        <h3 class="eyebrow mt-10 border-b border-stone-300 pb-3 text-stone-500">Orari</h3>
+        <h3 class="eyebrow mt-10 border-b border-stone-300 pb-3 text-stone-500">
+          {t.etichettaOrari}
+        </h3>
         <dl class="mt-4">
           {
-            site.orari.map((riga) => (
+            orari.map((riga) => (
               <div class="border-b border-stone-200 py-4">
                 <dt class="text-[0.8rem] tracking-[0.1em] text-stone-500 uppercase">
                   {riga.giorno}
@@ -275,8 +287,7 @@ const schema = {
           }
         </dl>
         <p class="mt-4 text-[0.8rem] leading-relaxed text-stone-500">
-          Gli orari sono indicativi e possono cambiare in stagione. Per un tavolo conviene
-          sempre una telefonata.
+          {t.notaOrari}
         </p>
       </aside>
     </div>
@@ -291,7 +302,7 @@ const schema = {
   <section class="pb-[var(--spacing-section)]" aria-labelledby="titolo-mappa">
     <div class="shell">
       <h2 id="titolo-mappa" class="eyebrow text-forest-500">
-        Come raggiungerci
+        {t.titoloMappa}
       </h2>
       <span class="filo-accento mt-4!" aria-hidden="true"></span>
 
@@ -315,13 +326,12 @@ const schema = {
           </div>
 
           <p class="max-w-[46ch] text-[0.85rem] leading-relaxed text-stone-600">
-            La mappa è fornita da Google. Caricandola accetti i termini di Google e i
-            suoi cookie. Se preferisci, puoi aprirla in una nuova scheda.
+            {t.notaMappa}
           </p>
 
           <div class="flex flex-wrap items-center justify-center gap-3">
             <button type="button" id="carica-mappa" class="btn btn--primary">
-              Carica la mappa
+              {t.caricaMappa}
             </button>
             <a
               href={mappaLinkUrl}
@@ -329,7 +339,7 @@ const schema = {
               rel="noopener noreferrer"
               class="btn btn--ghost"
             >
-              Apri in Google Maps
+              {t.apriMaps}
             </a>
           </div>
         </div>

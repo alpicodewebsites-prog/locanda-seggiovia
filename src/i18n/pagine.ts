@@ -57,6 +57,59 @@ export interface TestiPagine {
     pulsanteCamere: string;
     pulsanteContatti: string;
   };
+  contatti: {
+    metaTitolo: string;
+    metaDescrizione: string;
+    etichetta: string;
+    titolo: string;
+    lede: string;
+    avvisoDemoTitolo: string;
+    avvisoDemoTesto: string;
+    nome: string;
+    email: string;
+    telefono: string;
+    telefonoAiuto: string;
+    messaggio: string;
+    placeholderNome: string;
+    placeholderEmail: string;
+    placeholderTelefono: string;
+    placeholderMessaggio: string;
+    consenso: string;
+    invia: string;
+    campiObbligatori: string;
+    recaptcha: string;
+    titoloRecapiti: string;
+    etichettaTelefono: string;
+    etichettaEmail: string;
+    etichettaOrari: string;
+    notaOrari: string;
+    titoloMappa: string;
+    notaMappa: string;
+    caricaMappa: string;
+    apriMaps: string;
+  };
+  ristorante: {
+    metaTitolo: string;
+    metaDescrizione: string;
+    etichetta: string;
+    titolo: string;
+    lede: string;
+    altSala: string;
+    segnapostoTitolo: string;
+    segnapostoSoggetto: string;
+    etichettaSpecialita: string;
+    titoloSpecialita: string;
+    testoSpecialita: string;
+    linkRicettaGnocchi: string;
+    titoloMenu: string;
+    testoMenu: string;
+    notaPrezzi: string;
+    /** Le quattro categorie, nell'ordine in cui si mangiano. */
+    categorie: { antipasti: string; primi: string; secondi: string; dolci: string };
+    titoloOrari: string;
+    testoOrari: string;
+    pulsantePrenota: string;
+  };
   gnocchi: {
     metaTitolo: string;
     metaDescrizione: string;
@@ -236,6 +289,76 @@ const IT: TestiPagine = {
       'Le camere sono semplici e curate, il ristorante è aperto a pranzo e a cena. Scrivici e ti diciamo tutto quello che serve.',
     pulsanteCamere: 'Le camere',
     pulsanteContatti: 'Contatti',
+  },
+  contatti: {
+    metaTitolo: 'Contatti',
+    metaDescrizione:
+      'Scrivi o chiama la Locanda Seggiovia a Recoaro Terme per prenotare una camera, un tavolo al ristorante o chiedere informazioni sui sentieri delle Piccole Dolomiti.',
+    etichetta: 'Contatti',
+    titolo: 'Scrivici',
+    lede:
+      'Per prenotare una camera, un tavolo o per chiedere informazioni su un sentiero. Rispondiamo noi, di solito entro la giornata.',
+    avvisoDemoTitolo: 'Modulo in modalità dimostrativa.',
+    avvisoDemoTesto:
+      'La chiave di Web3Forms non è ancora configurata, quindi l’invio non recapita email. Impostare la variabile PUBLIC_WEB3FORMS_KEY per attivarlo.',
+    nome: 'Nome e cognome',
+    email: 'Email',
+    telefono: 'Telefono',
+    telefonoAiuto: 'Facoltativo, ma utile se preferisci essere richiamato.',
+    messaggio: 'Messaggio',
+    placeholderNome: 'Maria Rossi',
+    placeholderEmail: 'maria.rossi@esempio.it',
+    placeholderTelefono: '+39 333 000 0000',
+    placeholderMessaggio: 'Vorrei prenotare una camera doppia per il fine settimana del…',
+    consenso:
+      'Ho letto l’informativa e acconsento al trattamento dei dati per rispondere alla mia richiesta. I dati non vengono usati per altro.',
+    invia: 'Invia il messaggio',
+    campiObbligatori: 'I campi con * sono obbligatori.',
+    recaptcha:
+      'Questo modulo è protetto da reCAPTCHA v3 di Google. L’uso di reCAPTCHA è soggetto all’informativa sulla privacy e ai termini di servizio di Google.',
+    titoloRecapiti: 'Dove siamo',
+    etichettaTelefono: 'Telefono',
+    etichettaEmail: 'Email',
+    etichettaOrari: 'Orari',
+    notaOrari:
+      'Gli orari sono indicativi e possono cambiare in stagione. Per un tavolo conviene sempre una telefonata.',
+    titoloMappa: 'Come raggiungerci',
+    notaMappa:
+      'La mappa è fornita da Google. Caricandola accetti i termini di Google e i suoi cookie. Se preferisci, puoi aprirla in una nuova scheda.',
+    caricaMappa: 'Carica la mappa',
+    apriMaps: 'Apri in Google Maps',
+  },
+  ristorante: {
+    metaTitolo: 'Ristorante',
+    metaDescrizione:
+      'Cucina tradizionale alto-vicentina a Recoaro Terme: bacalà alla vicentina, sopressa fatta in casa, trota affumicata e gnocchi con la fioreta De.Co.',
+    etichetta: 'Ristorante',
+    titolo: 'La cucina di queste valli',
+    lede:
+      'Il menù segue le stagioni e le malghe, non le mode. Il bacalà arriva da una tradizione lunga, la sopressa si fa in casa, la trota si affumica qui.',
+    altSala: 'Fotografia in arrivo: la sala del ristorante apparecchiata',
+    segnapostoTitolo: 'Foto in arrivo',
+    segnapostoSoggetto: 'La sala del ristorante',
+    etichettaSpecialita: 'Le specialità',
+    titoloSpecialita: 'Quello che ci identifica',
+    testoSpecialita:
+      'Pochi piatti, sempre gli stessi, perché sono quelli che sappiamo fare. Il resto del menù cambia con le stagioni.',
+    linkRicettaGnocchi: 'La storia e la ricetta',
+    titoloMenu: 'Il menù',
+    testoMenu:
+      'Il menù cambia con le stagioni e con quello che le malghe hanno da offrire. Questi sono i piatti che trovate tutto l’anno.',
+    notaPrezzi:
+      'I prezzi non sono ancora pubblicati: chiediceli direttamente, oppure consultali in locanda.',
+    categorie: {
+      antipasti: 'Antipasti',
+      primi: 'Primi',
+      secondi: 'Secondi',
+      dolci: 'Dolci',
+    },
+    titoloOrari: 'Orari e prenotazioni',
+    testoOrari:
+      'Il tavolo si prenota per tempo, soprattutto nei fine settimana e in stagione. Per gruppi e per esigenze particolari, chiamateci.',
+    pulsantePrenota: 'Prenota un tavolo',
   },
   gnocchi: {
     metaTitolo: 'Gnocchi con la Fioreta — prodotto De.Co.',
@@ -467,6 +590,76 @@ const EN: TestiPagine = {
       'The rooms are simple and carefully kept, the restaurant is open at lunch and in the evening. Write to us and we will tell you everything you need.',
     pulsanteCamere: 'The rooms',
     pulsanteContatti: 'Contact',
+  },
+  contatti: {
+    metaTitolo: 'Contact',
+    metaDescrizione:
+      'Write to or call Locanda Seggiovia in Recoaro Terme to book a room, a table in the restaurant, or to ask about the trails of the Piccole Dolomiti.',
+    etichetta: 'Contact',
+    titolo: 'Write to us',
+    lede:
+      'To book a room, a table, or to ask about a trail. We answer ourselves, usually within the day.',
+    avvisoDemoTitolo: 'The form is in demonstration mode.',
+    avvisoDemoTesto:
+      'The Web3Forms key is not configured yet, so sending it does not deliver any email. Set the PUBLIC_WEB3FORMS_KEY variable to enable it.',
+    nome: 'Full name',
+    email: 'Email',
+    telefono: 'Phone',
+    telefonoAiuto: 'Optional, but useful if you would rather be called back.',
+    messaggio: 'Message',
+    placeholderNome: 'Maria Rossi',
+    placeholderEmail: 'maria.rossi@example.com',
+    placeholderTelefono: '+39 333 000 0000',
+    placeholderMessaggio: 'I would like to book a double room for the weekend of…',
+    consenso:
+      'I have read the privacy notice and I agree to my data being used to answer my enquiry. The data are not used for anything else.',
+    invia: 'Send the message',
+    campiObbligatori: 'Fields marked * are required.',
+    recaptcha:
+      'This form is protected by Google reCAPTCHA v3. Use of reCAPTCHA is subject to Google’s privacy notice and terms of service.',
+    titoloRecapiti: 'Where we are',
+    etichettaTelefono: 'Phone',
+    etichettaEmail: 'Email',
+    etichettaOrari: 'Opening hours',
+    notaOrari:
+      'These hours are indicative and may change with the season. For a table, a phone call is always best.',
+    titoloMappa: 'How to find us',
+    notaMappa:
+      'The map is provided by Google. Loading it means accepting Google’s terms and cookies. If you prefer, you can open it in a new tab.',
+    caricaMappa: 'Load the map',
+    apriMaps: 'Open in Google Maps',
+  },
+  ristorante: {
+    metaTitolo: 'Restaurant',
+    metaDescrizione:
+      'Traditional cooking from the upper Vicenza valleys in Recoaro Terme: bacalà alla vicentina, house-made sopressa, smoked trout and gnocchi with fioreta De.Co.',
+    etichetta: 'Restaurant',
+    titolo: 'The cooking of these valleys',
+    lede:
+      'The menu follows the seasons and the malghe, not fashions. The bacalà comes from a long tradition, the sopressa is made at home, the trout is smoked here.',
+    altSala: 'Photograph to come: the restaurant dining room, laid for service',
+    segnapostoTitolo: 'Photo to come',
+    segnapostoSoggetto: 'The dining room',
+    etichettaSpecialita: 'Our specialities',
+    titoloSpecialita: 'What sets us apart',
+    testoSpecialita:
+      'A few dishes, always the same, because they are the ones we know how to cook. The rest of the menu changes with the seasons.',
+    linkRicettaGnocchi: 'The story and the recipe',
+    titoloMenu: 'The menu',
+    testoMenu:
+      'The menu changes with the seasons and with what the malghe have to offer. These are the dishes you will find all year.',
+    notaPrezzi:
+      'Prices are not published yet: ask us directly, or look at them when you are here.',
+    categorie: {
+      antipasti: 'Starters',
+      primi: 'First courses',
+      secondi: 'Main courses',
+      dolci: 'Desserts',
+    },
+    titoloOrari: 'Opening hours and bookings',
+    testoOrari:
+      'Tables are best booked ahead, especially at weekends and in season. For groups and particular needs, give us a ring.',
+    pulsantePrenota: 'Book a table',
   },
   gnocchi: {
     metaTitolo: 'Gnocchi con la Fioreta — a De.Co. product',
