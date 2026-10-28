@@ -96,7 +96,7 @@ output:
 # ============================================================================
 collections:
   - name: home
-    label: Home Page
+    label: IT · Home Page
     description: I testi e le quattro fotografie della prima pagina del sito.
     files:
       # --- I testi ---------------------------------------------------------
@@ -167,6 +167,24 @@ collections:
           - { label: 'Sezione «Territorio» — titolo', name: territorioTitolo, widget: string }
           - { label: 'Sezione «Territorio» — introduzione', name: territorioTesto, widget: text }
 
+          # --- Il carosello ---------------------------------------------------
+          # Le diapositive che scorrono in cima alla home. Ognuna porta a una
+          # pagina: la fotografia è l'invito, la pagina è dove si va.
+          - label: Carosello della home
+            name: carosello
+            widget: list
+            required: false
+            label_singular: Diapositiva
+            summary: '{{fields.titolo}}'
+            fields:
+              - { label: Titolo, name: titolo, widget: string }
+              - { label: Testo (due righe), name: testo, widget: text }
+              - { label: Fotografia, name: immagine, widget: image, required: false }
+              - label: Collegamento
+                name: collegamento
+                widget: string
+                hint: 'La pagina a cui porta il clic, per esempio /camere'
+
       # --- Le fotografie ---------------------------------------------------
       - name: foto
         label: Fotografie
@@ -205,7 +223,7 @@ collections:
   # PAGINA LA LOCANDA
   # --------------------------------------------------------------------------
   - name: pagina-locanda
-    label: Pagina La Locanda
+    label: IT · Pagina La Locanda
     description: Testi e fotografie della pagina «La locanda e la famiglia».
     files:
       - name: testi
@@ -238,7 +256,7 @@ collections:
   # PAGINA SENTIERI
   # --------------------------------------------------------------------------
   - name: pagina-sentieri
-    label: Pagina Sentieri
+    label: IT · Pagina Sentieri
     description: Testi e fotografie dell'elenco dei sentieri.
     files:
       - name: testi
@@ -272,7 +290,7 @@ collections:
   # GNOCCHI CON LA FIORETA
   # --------------------------------------------------------------------------
   - name: gnocchi
-    label: Gnocchi con la Fioreta
+    label: IT · Gnocchi con la Fioreta
     description: La pagina del piatto bandiera. È un contenuto unico.
     files:
       - name: testi
@@ -349,7 +367,7 @@ collections:
   # SENTIERI
   # --------------------------------------------------------------------------
   - name: sentieri
-    label: Sentieri (elenco)
+    label: IT · Sentieri (elenco)
     label_singular: Sentiero
     description: >-
       Gli itinerari escursionistici. Compilare solo i dati tecnici che si
@@ -442,7 +460,7 @@ collections:
   # CAMERE
   # --------------------------------------------------------------------------
   - name: camere
-    label: Camere (elenco)
+    label: IT · Camere (elenco)
     label_singular: Camera
     description: >-
       Tipi di camera e relative tariffe. Le tariffe sono per persona, per giorno.
@@ -498,7 +516,7 @@ collections:
   # MENÙ DEL RISTORANTE
   # --------------------------------------------------------------------------
   - name: menu
-    label: Menù del ristorante
+    label: IT · Menù del ristorante
     label_singular: Piatto
     description: >-
       I piatti del ristorante. Il prezzo si può lasciare vuoto: in quel caso il
@@ -557,8 +575,11 @@ collections:
 # --------------------------------------------------------------------------
 
   # ------------------------------------------------------------------------
+  # --- Da qui in giù, le stesse collezioni in inglese -------------------
+  - divider: true
+
   - name: home-en
-    label: Home Page — English
+    label: EN · Home Page
     description: La stessa pagina in inglese.
     files:
       # --- I testi ---------------------------------------------------------
@@ -629,11 +650,29 @@ collections:
           - { label: 'Sezione «Territorio» — titolo', name: territorioTitolo, widget: string }
           - { label: 'Sezione «Territorio» — introduzione', name: territorioTesto, widget: text }
 
+          # --- Il carosello ---------------------------------------------------
+          # Le diapositive che scorrono in cima alla home. Ognuna porta a una
+          # pagina: la fotografia è l'invito, la pagina è dove si va.
+          - label: Carosello della home
+            name: carosello
+            widget: list
+            required: false
+            label_singular: Diapositiva
+            summary: '{{fields.titolo}}'
+            fields:
+              - { label: Titolo, name: titolo, widget: string }
+              - { label: Testo (due righe), name: testo, widget: text }
+              - { label: Fotografia, name: immagine, widget: image, required: false }
+              - label: Collegamento
+                name: collegamento
+                widget: string
+                hint: 'La pagina a cui porta il clic, per esempio /camere'
+
       # --- Le fotografie ---------------------------------------------------
 
   # ------------------------------------------------------------------------
   - name: pagina-locanda-en
-    label: Pagina La Locanda — English
+    label: EN · Pagina La Locanda
     description: La stessa pagina in inglese.
     files:
       - name: testi
@@ -646,7 +685,7 @@ collections:
 
   # ------------------------------------------------------------------------
   - name: pagina-sentieri-en
-    label: Pagina Sentieri — English
+    label: EN · Pagina Sentieri
     description: La stessa pagina in inglese.
     files:
       - name: testi
@@ -659,7 +698,7 @@ collections:
 
   # ------------------------------------------------------------------------
   - name: gnocchi-en
-    label: Gnocchi con la Fioreta — English
+    label: EN · Gnocchi con la Fioreta
     description: La stessa pagina in inglese.
     files:
       - name: testi
@@ -696,7 +735,7 @@ collections:
 
   # ------------------------------------------------------------------------
   - name: sentieri-en
-    label: Sentieri (elenco) — English
+    label: EN · Sentieri (elenco)
     label_singular: Sentiero
     description: La stessa pagina in inglese.
     folder: src/content/sentieri/en
@@ -789,7 +828,7 @@ collections:
 
   # ------------------------------------------------------------------------
   - name: camere-en
-    label: Camere (elenco) — English
+    label: EN · Camere (elenco)
     label_singular: Camera
     description: La stessa pagina in inglese.
     folder: src/content/camere/en
@@ -846,7 +885,7 @@ collections:
 
   # ------------------------------------------------------------------------
   - name: menu-en
-    label: Menù del ristorante — English
+    label: EN · Menù del ristorante
     label_singular: Piatto
     description: La stessa pagina in inglese.
     folder: src/content/menu/en

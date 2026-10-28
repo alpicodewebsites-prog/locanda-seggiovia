@@ -39,4 +39,28 @@ territorioTesto: >-
   Seven itineraries between the Piccole Dolomiti, the Carega group and Monte
   Pasubio. Grades from easy walking to exposed mountain paths, each documented
   with real technical data.
+# ---------------------------------------------------------------------------
+# THE CAROUSEL
+# Four slides that scroll at the top of the home page. Each one leads to a
+# dedicated page: the photograph is the invitation, the page is where you go.
+# `collegamento` holds the Italian address on purpose: the site translates it
+# itself, so it always points at the English twin page.
+# ---------------------------------------------------------------------------
+carosello:
+  - titolo: The inn
+    testo: A house of stone and wood on the square, kept by the same family as always.
+    immagine: /assets/home/02-locanda-esterno.jpg
+    collegamento: /la-locanda
+  - titolo: The cooking of the valleys
+    testo: Bacalà alla vicentina, house-made sopressa, trout smoked here. The menu follows the malghe, not fashions.
+    immagine: /assets/ristorante/piatti/02-polenta-e-coniglio.webp
+    collegamento: /ristorante
+  - titolo: Gnocchi with fioreta
+    testo: A De.Co. product, two ingredients and no shortcuts. The registered recipe, step by step.
+    immagine: /assets/gnocchi/dettagli/1-gnocchi.jpg
+    collegamento: /gnocchi-con-la-fioreta
+  - titolo: The trails
+    testo: Seven itineraries starting in the centre of the village, with distances, ascents and CAI difficulty grades.
+    immagine: /assets/sentieri/06-strada-52-gallerie.jpg
+    collegamento: /sentieri
 ---

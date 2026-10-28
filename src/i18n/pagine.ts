@@ -286,6 +286,12 @@ export interface TestiPagine {
     pulsanteScrivici: string;
   };
   home: {
+    /** Titolo per i lettori di schermo del carosello. */
+    titoloCarosello: string;
+    /** Il verbo del collegamento sotto ogni diapositiva. */
+    invitoCarosello: string;
+    precedente: string;
+    successiva: string;
     altFacciata: string;
     etichettaCucina: string;
     titoloCucina: string;
@@ -703,6 +709,10 @@ const IT: TestiPagine = {
     pulsanteScrivici: 'Scrivici',
   },
   home: {
+    titoloCarosello: 'Cosa trovi qui',
+    invitoCarosello: 'Scopri di più',
+    precedente: 'Diapositiva precedente',
+    successiva: 'Diapositiva successiva',
     altFacciata:
       'La Locanda Seggiovia in piazza a Recoaro Terme, con i balconi in legno e le Piccole Dolomiti sullo sfondo',
     etichettaCucina: 'Cucina',
@@ -1139,6 +1149,10 @@ const EN: TestiPagine = {
     pulsanteScrivici: 'Write to us',
   },
   home: {
+    titoloCarosello: 'What you will find here',
+    invitoCarosello: 'Find out more',
+    precedente: 'Previous slide',
+    successiva: 'Next slide',
     altFacciata:
       'Locanda Seggiovia on the square in Recoaro Terme, with its wooden balconies and the Piccole Dolomiti behind',
     etichettaCucina: 'Kitchen',

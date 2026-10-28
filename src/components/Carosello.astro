@@ -1,0 +1,437 @@
+---
+/**
+ * Carosello della home.
+ *
+ * ----------------------------------------------------------------------------
+ * COME È FATTO, E PERCHÉ COSÌ
+ *
+ * Senza JavaScript mostra le diapositive una sotto l'altra: quattro immagini con
+ * il loro titolo e il loro collegamento, perfettamente usabili. Lo script, se
+ * c'è, aggiunge `data-carosello="attivo"` e da quel momento se ne vede una per
+ * volta. Non è un ripiego di fortuna: è che il contenuto debba esistere anche
+ * prima che il codice si svegli.
+ *
+ * Le immagini cambiano ogni 5 secondi. Si fermano quando il puntatore entra, su
+ * fuoco da tastiera, e quando la scheda non è visibile: un carosello che scorre
+ * mentre nessuno guarda consuma batteria e basta.
+ *
+ * Con `prefers-reduced-motion` non parte da solo: chi ha chiesto al sistema di
+ * ridurre il movimento non deve vedersi scorrere qualcosa sotto gli occhi. Restano
+ * i comandi per andare avanti a mano.
+ *
+ * LA LARGHEZZA NON È UN CAPRICCIO: max 42rem. Le fotografie vere della locanda
+ * sono al massimo 600 px di lato: ingrandirle su una fascia a tutta pagina le
+ * renderebbe sfocate. A questa misura restano nitide.
+ * ----------------------------------------------------------------------------
+ */
+import { Image } from 'astro:assets';
+
+import { risolviImmagine } from '../lib/immagini';
+import { percorsoLocalizzato, type Lingua } from '../i18n';
+
+export interface Props {
+  diapositive: {
+    titolo: string;
+    testo: string;
+    immagine?: string;
+    collegamento: string;
+  }[];
+  lingua: Lingua;
+  /** Titolo per i lettori di schermo: in pagina non si vede. */
+  etichetta: string;
+  /** «Vai a» — il verbo davanti al nome della pagina. */
+  invito: string;
+  /** Etichette dei comandi, per chi usa un lettore di schermo. */
+  precedente: string;
+  successiva: string;
+}
+
+const { diapositive, lingua, etichetta, invito, precedente, successiva } = Astro.props;
+
+/** Solo le diapositive con un'immagine utilizzabile. */
+const voci = diapositive
+  .map((voce) => ({ ...voce, img: risolviImmagine(voce.immagine) }))
+  .filter((voce) => voce.img !== null);
+
+if (voci.length === 0) {
+  throw new Error('Carosello: nessuna diapositiva con un\'immagine valida.');
+}
+---
+
+<section class="carosello-sezione" aria-labelledby="titolo-carosello">
+  <div class="shell">
+    <h2 id="titolo-carosello" class="sr-only">{etichetta}</h2>
+  </div>
+
+  <div
+    class="carosello"
+    data-carosello
+    aria-roledescription="carosello"
+    aria-label={etichetta}
+  >
+    <ul class="carosello__pista">
+      {
+        voci.map((voce, i) => (
+          <li
+            class="diapositiva"
+            data-diapositiva
+            data-attiva={i === 0 ? '' : undefined}
+            aria-roledescription="diapositiva"
+            aria-label={`${i + 1} / ${voci.length}`}
+          >
+            <a
+              href={percorsoLocalizzato(voce.collegamento, lingua)}
+              class="diapositiva__foto"
+              tabindex={i === 0 ? undefined : -1}
+            >
+              <Image
+                src={voce.img!}
+                /* Un'immagine che è solo decorazione accanto a un titolo che la
+                   ripete non ha bisogno di un alt lungo: ma se l'immagine è
+                   cliccabile, un alt serve. Qui descrive quello che si vede. */
+                alt={voce.titolo}
+                widths={[420, 768, 1024]}
+                sizes="(min-width: 48rem) 48rem, 92vw"
+                format="webp"
+                quality={82}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            </a>
+
+            <div class="diapositiva__testo">
+              <h3 class="diapositiva__titolo">{voce.titolo}</h3>
+              <p class="diapositiva__frase">{voce.testo}</p>
+              <p class="diapositiva__invito">
+                <a href={percorsoLocalizzato(voce.collegamento, lingua)} class="link-arrow" tabindex={i === 0 ? undefined : -1}>
+                  {invito}
+                </a>
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      voci.length > 1 && (
+        <div class="carosello__comandi">
+          <button type="button" class="carosello__freccia" data-indietro aria-label={precedente}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M13 8H3m0 0 4-4M3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <ol class="carosello__punti">
+            {voci.map((voce, i) => (
+              <li>
+                <button
+                  type="button"
+                  class:list={['carosello__punto', i === 0 && 'carosello__punto--attivo']}
+                  data-punto={i}
+                  aria-label={voce.titolo}
+                  aria-current={i === 0 ? 'true' : undefined}
+                />
+              </li>
+            ))}
+          </ol>
+
+          <button type="button" class="carosello__freccia" data-avanti aria-label={successiva}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10m0 0-4-4m4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .carosello-sezione {
+    padding-block: var(--spacing-section);
+  }
+
+  .carosello {
+    max-width: 48rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  .carosello__pista {
+    display: grid;
+    gap: 3.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /*
+    Senza JavaScript si vedono tutte: è la lettura normale di un elenco di
+    fotografie. `data-carosello` senza valore è presente nell'HTML; è lo script
+    ad aggiungere la parola «attivo», e solo allora si nasconde il resto.
+  */
+  .carosello[data-carosello='attivo'] .carosello__pista {
+    display: block;
+    position: relative;
+  }
+
+  .carosello[data-carosello='attivo'] .diapositiva {
+    display: none;
+  }
+
+  .carosello[data-carosello='attivo'] .diapositiva[data-attiva] {
+    display: block;
+    animation: diapositiva-entra 420ms ease-out both;
+  }
+
+  @keyframes diapositiva-entra {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .diapositiva__foto {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--raggio);
+    background-color: var(--color-stone-200);
+    /*
+      Un'ombra morbida stacca la fotografia dal fondo grigio della pagina,
+      che altrimenti la inghiotte: senza, il riquadro sembra incollato.
+    */
+    box-shadow: 0 18px 40px -22px rgba(28, 27, 25, 0.45);
+  }
+
+  .diapositiva__foto img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    transition: transform 600ms ease-out;
+  }
+
+  /* Un ingrandimento appena percepibile: dice che la fotografia è cliccabile
+     senza farla sembrare instabile. */
+  .diapositiva__foto:hover img,
+  .diapositiva__foto:focus-visible img {
+    transform: scale(1.02);
+  }
+
+  .diapositiva__testo {
+    max-width: 34rem;
+    margin-top: 1.6rem;
+  }
+
+  .diapositiva__titolo {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+    line-height: 1.15;
+    color: var(--color-stone-900);
+  }
+
+  .diapositiva__frase {
+    margin-top: 0.7rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-stone-600);
+  }
+
+  .diapositiva__invito {
+    margin-top: 1.1rem;
+  }
+
+  .carosello__comandi {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.1rem;
+    margin-top: 2rem;
+  }
+
+  /* I comandi compaiono solo quando servono: senza JavaScript non ci sono, e
+     l'elenco si legge dall'alto in basso. */
+  .carosello:not([data-carosello='attivo']) .carosello__comandi {
+    display: none;
+  }
+
+  .carosello__freccia {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--color-stone-300);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-stone-700);
+    cursor: pointer;
+    transition: background-color 180ms ease-out, border-color 180ms ease-out;
+  }
+
+  .carosello__freccia:hover,
+  .carosello__freccia:focus-visible {
+    background-color: var(--color-stone-50);
+    border-color: var(--color-stone-500);
+  }
+
+  .carosello__punti {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .carosello__punto {
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background-color: var(--color-stone-300);
+    cursor: pointer;
+    transition: background-color 200ms ease-out, width 200ms ease-out;
+  }
+
+  .carosello__punto--attivo {
+    width: 1.4rem;
+    background-color: var(--color-rosso-locanda);
+  }
+
+  .carosello__punto:focus-visible,
+  .carosello__freccia:focus-visible {
+    outline: 2px solid var(--color-rosso-locanda);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carosello[data-carosello='attivo'] .diapositiva[data-attiva] {
+      animation: none;
+    }
+
+    .diapositiva__foto img {
+      transition: none;
+    }
+
+    .diapositiva__foto:hover img {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  /*
+    Lo script fa tre cose e nient'altro: tiene il conto della diapositiva
+    visibile, la cambia ogni 5 secondi, e si ferma quando non è il caso di
+    scorrere. Tutto il resto è CSS.
+  */
+  const INTERVALLO = 5000;
+
+  function avviaCarosello(radice: HTMLElement) {
+    const diapositive = Array.from(
+      radice.querySelectorAll<HTMLElement>('[data-diapositiva]'),
+    );
+    if (diapositive.length < 2) return;
+
+    const punti = Array.from(radice.querySelectorAll<HTMLButtonElement>('[data-punto]'));
+    const indietro = radice.querySelector<HTMLButtonElement>('[data-indietro]');
+    const avanti = radice.querySelector<HTMLButtonElement>('[data-avanti]');
+
+    /*
+      Chi ha chiesto al sistema meno movimento non deve vedersi cambiare la
+      fotografia sotto gli occhi: il carosello resta fermo sulla prima, e i
+      comandi funzionano lo stesso.
+    */
+    const senzaMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let corrente = 0;
+    let timer: number | undefined;
+    let fermo = false;
+
+    radice.setAttribute('data-carosello', 'attivo');
+
+    function mostra(indice: number) {
+      corrente = (indice + diapositive.length) % diapositive.length;
+
+      diapositive.forEach((diapositiva, i) => {
+        const attiva = i === corrente;
+        diapositiva.toggleAttribute('data-attiva', attiva);
+        // Fuori dalla diapositiva visibile i collegamenti non devono essere
+        // raggiungibili col tasto Tab: sarebbero quattro pagine invisibili.
+        diapositiva
+          .querySelectorAll<HTMLElement>('a')
+          .forEach((a) => (a.tabIndex = attiva ? 0 : -1));
+      });
+
+      punti.forEach((punto, i) => {
+        punto.classList.toggle('carosello__punto--attivo', i === corrente);
+        if (i === corrente) punto.setAttribute('aria-current', 'true');
+        else punto.removeAttribute('aria-current');
+      });
+    }
+
+    function ferma() {
+      if (timer !== undefined) window.clearInterval(timer);
+      timer = undefined;
+    }
+
+    function parti() {
+      if (senzaMovimento || fermo) return;
+      ferma();
+      timer = window.setInterval(() => mostra(corrente + 1), INTERVALLO);
+    }
+
+    avanti?.addEventListener('click', () => {
+      mostra(corrente + 1);
+      parti();
+    });
+    indietro?.addEventListener('click', () => {
+      mostra(corrente - 1);
+      parti();
+    });
+    punti.forEach((punto, i) =>
+      punto.addEventListener('click', () => {
+        mostra(i);
+        parti();
+      }),
+    );
+
+    // Il puntatore sopra, o il fuoco dentro, fermano lo scorrimento: chi sta
+    // leggendo non deve vedersi portare via la frase a metà.
+    radice.addEventListener('mouseenter', () => {
+      fermo = true;
+      ferma();
+    });
+    radice.addEventListener('mouseleave', () => {
+      fermo = false;
+      parti();
+    });
+    radice.addEventListener('focusin', () => {
+      fermo = true;
+      ferma();
+    });
+    radice.addEventListener('focusout', () => {
+      fermo = false;
+      parti();
+    });
+
+    // Con la scheda in secondo piano non si scorre: è solo consumo.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) ferma();
+      else parti();
+    });
+
+    mostra(0);
+    parti();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-carosello]').forEach(avviaCarosello);
+</script>

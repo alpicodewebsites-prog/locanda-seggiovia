@@ -59,7 +59,13 @@ if (config) {
     config.backend?.repo ?? '',
   );
 
-  const collezioni = Array.isArray(config.collections) ? config.collections : [];
+  /*
+  Nell'elenco può esserci un separatore (`divider: true`): non è una
+  collezione, non ha nome né percorso, e va tolto prima dei controlli.
+*/
+const collezioni = (Array.isArray(config.collections) ? config.collections : []).filter(
+  (c) => c && c.divider !== true,
+);
   check('ci sono collezioni', collezioni.length > 0, `${collezioni.length} collezioni`);
 
   for (const c of collezioni) {

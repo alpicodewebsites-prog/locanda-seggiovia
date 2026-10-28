@@ -46,8 +46,20 @@ try {
   process.exit(1);
 }
 
-const collezioni = dati.collections ?? [];
+/*
+  Nell'elenco può esserci anche un separatore (`divider: true`), che non è una
+  collezione e non ha nome. Va tolto prima di controllare il resto, altrimenti
+  il primo `name.endsWith` esplode.
+*/
+const voci = dati.collections ?? [];
+const separatori = voci.filter((v) => v.divider === true);
+const collezioni = voci.filter((v) => v.name);
 controlla('ci sono collezioni', collezioni.length > 0, `${collezioni.length}`);
+controlla(
+  'c\'è un separatore fra italiano e inglese',
+  separatori.length === 1,
+  `${separatori.length} separatori`,
+);
 
 // Nomi unici: due collezioni con lo stesso nome rompono il pannello.
 const nomi = collezioni.map((c) => c.name);
@@ -88,7 +100,9 @@ controlla('tutti i percorsi dichiarati esistono', mancanti.length === 0, mancant
 
 // L'etichetta deve dire che è inglese, altrimenti nel pannello sono due voci
 // identiche e si sceglie a caso.
-const senzaEnglish = inglesi.filter((c) => !c.label.includes('English'));
+const senzaEnglish = inglesi.filter(
+  (c) => !c.label.includes('English') && !c.label.startsWith('EN · '),
+);
 controlla('le collezioni inglesi si riconoscono dall\'etichetta', senzaEnglish.length === 0,
   senzaEnglish.map((c) => c.label).join(', '));
 

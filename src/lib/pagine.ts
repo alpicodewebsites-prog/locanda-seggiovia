@@ -76,6 +76,14 @@ const TESTI_HOME_RISERVA: TestiHome = {
   territorioTesto: '',
 };
 
+export interface Diapositiva {
+  titolo: string;
+  testo: string;
+  /** Percorso dell'immagine, ancora da risolvere. */
+  immagine?: string;
+  collegamento: string;
+}
+
 export interface ContenutoHome {
   testi: TestiHome;
   foto: FotoHome;
@@ -106,6 +114,8 @@ export async function caricaHome(lingua: Lingua = 'it'): Promise<ContenutoHome> 
           territorioEtichetta: d.territorioEtichetta ?? TESTI_HOME_RISERVA.territorioEtichetta,
           territorioTitolo: d.territorioTitolo ?? TESTI_HOME_RISERVA.territorioTitolo,
           territorioTesto: d.territorioTesto ?? TESTI_HOME_RISERVA.territorioTesto,
+          // Le diapositive del carosello: se mancano, la sezione sparisce.
+          carosello: d.carosello ?? [],
         }
       : TESTI_HOME_RISERVA,
     foto: {

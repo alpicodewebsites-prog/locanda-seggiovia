@@ -225,9 +225,13 @@ def main() -> int:
     html_en_home = leggi(percorso_home_en) if percorso_home_en.exists() else ""
     check("home en: dichiara l'inglese", 'lang="en"' in html_en_home)
     check("home en: apertura presente", "data-apertura" in html_en_home)
+    # Dalla home è stato tolto il modulo di prenotazione: il testo che si
+    # controllava prima non c'è più. Le stringhe scelte sono quelle che restano —
+    # l'invito dei sentieri e il titolo del carosello.
     check(
         "home en: i testi sono in inglese",
-        "Explore the trails" in html_en_home and "Check availability" in html_en_home,
+        "Explore the trails" in html_en_home
+        and "What you will find here" in html_en_home,
     )
     # Le stringhe che si traducono per ultime: se una ricompare, qualcosa è
     # rimasto scritto in italiano dentro il codice.
@@ -237,9 +241,9 @@ def main() -> int:
             frase in html_en_home
             for frase in (
                 "Scopri i sentieri",
-                "Chiedi la disponibilità",
-                "Invia la richiesta",
-                "Tutti i sentieri",
+                "Cosa trovi qui",
+                "La cucina delle valli",
+                "Verifica le date",
                 "Come si leggono le difficoltà",
             )
         ),

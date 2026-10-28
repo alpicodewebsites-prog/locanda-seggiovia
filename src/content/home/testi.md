@@ -22,4 +22,28 @@ locandaCollegamento: La locanda e la famiglia
 territorioEtichetta: Territorio
 territorioTitolo: I sentieri cominciano dal centro del paese
 territorioTesto: Sette itinerari fra Piccole Dolomiti, Gruppo del Carega e Pasubio. Difficoltà dal turistico all'escursionistico esposto, tutti documentati con dati tecnici reali.
+# ---------------------------------------------------------------------------
+# IL CAROSELLO
+# Quattro diapositive che scorrono in cima alla home. Ognuna porta a una pagina
+# dedicata: la fotografia è l'invito, la pagina è il posto dove si va.
+# `collegamento` è l'indirizzo italiano: nella versione inglese si traduce da
+# solo, perché il sito sa qual è la pagina gemella.
+# ---------------------------------------------------------------------------
+carosello:
+  - titolo: La locanda
+    testo: Una casa di pietra e legno in piazza, tenuta dalla stessa famiglia da sempre.
+    immagine: /assets/home/02-locanda-esterno.jpg
+    collegamento: /la-locanda
+  - titolo: La cucina delle valli
+    testo: Bacalà alla vicentina, sopressa di casa, trota affumicata qui. Il menù segue le malghe, non le mode.
+    immagine: /assets/ristorante/piatti/02-polenta-e-coniglio.webp
+    collegamento: /ristorante
+  - titolo: Gli gnocchi con la fioreta
+    testo: Prodotto De.Co., due ingredienti e nessuna scorciatoia. La ricetta depositata, passo per passo.
+    immagine: /assets/gnocchi/dettagli/1-gnocchi.jpg
+    collegamento: /gnocchi-con-la-fioreta
+  - titolo: I sentieri
+    testo: Sette itinerari che partono dal centro del paese, con distanze, dislivelli e difficoltà CAI.
+    immagine: /assets/sentieri/06-strada-52-gallerie.jpg
+    collegamento: /sentieri
 ---

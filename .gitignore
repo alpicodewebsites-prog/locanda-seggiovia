@@ -68,3 +68,7 @@ dettagli-foglio.png
 # PowerShell). Non devono entrare nel repository: e' successo due volte.
 .msg*.txt
 .messaggio.txt
+
+# Scatti di verifica (non sono contenuto del sito)
+apertura-*.png
+home-carosello-*.png

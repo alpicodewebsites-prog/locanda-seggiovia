@@ -69,6 +69,27 @@ const home = defineCollection({
     territorioEtichetta: z.string().optional(),
     territorioTitolo: z.string().optional(),
     territorioTesto: z.string().optional(),
+    /**
+     * Le diapositive del carosello in cima alla home.
+     *
+     * Stanno qui e non in un file a parte perché sono testi E fotografie
+     * insieme, e sono quattro: una collezione intera per quattro voci
+     * riempirebbe il pannello di una sezione che si tocca due volte l'anno.
+     * Così la cliente le modifica dalla voce «Home Page → Testi e paragrafi»,
+     * che apre già per altro.
+     */
+    carosello: z
+      .array(
+        z.object({
+          titolo: z.string(),
+          /** Due righe al massimo: sotto la fotografia ci sta poco. */
+          testo: z.string(),
+          immagine,
+          /** Dove porta il clic: la pagina dedicata all'argomento. */
+          collegamento: z.string(),
+        }),
+      )
+      .optional(),
     // --- Fotografie (in foto.md) -----------------------------------------
     hero: immagine,
     panorama: immagine,
