@@ -17,9 +17,12 @@ export default defineConfig({
   // La sitemap deve contenere solo le pagine che ha senso far indicizzare.
   // Le pagine di utilità (/grazie, /404) sono noindex: annunciarle in sitemap
   // sarebbe una contraddizione, e Search Console le segnalerebbe come errore.
+  //
+  // Vale per tutte e due le lingue: anche /en/thank-you/ è noindex.
   integrations: [
     sitemap({
-      filter: (page) => !['/grazie/', '/404/', '/404.html'].some((p) => page.endsWith(p)),
+      filter: (page) =>
+        !['/grazie/', '/en/thank-you/', '/404/', '/404.html'].some((p) => page.endsWith(p)),
     }),
   ],
 

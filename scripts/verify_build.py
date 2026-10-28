@@ -170,8 +170,40 @@ def main() -> int:
     tipi_appiattiti = {t for x in tipi for t in (x if isinstance(x, list) else [x])}
     check("home: schema Restaurant presente", "Restaurant" in tipi_appiattiti)
     check("home: schema LodgingBusiness presente", "LodgingBusiness" in tipi_appiattiti)
-    check("home: exactly one lang dichiarato", 'lang="it"' in html_home)
+    # Il tag può essere `it` o `it-IT`: entrambi sono validi, e il secondo dice
+    # anche la nazione. Si controlla che cominci per «it», non l'uguaglianza.
+    check("home: html dichiara l'italiano", 'lang="it' in html_home)
     check("home: link di salto al contenuto", "Vai al contenuto" in html_home)
+
+    # --- Le lingue ----------------------------------------------------------
+    #
+    # La versione inglese non è una traduzione fatta da JavaScript: è un file
+    # HTML vero, con `lang="en"`, il suo canonical e i collegamenti hreflang
+    # verso l'italiano. Se una di queste cose manca, Google tratta le due
+    # versioni come due pagine che si fanno concorrenza.
+    en_grazie = DIST / "en" / "thank-you" / "index.html"
+    check("grazie: versione inglese generata", en_grazie.exists())
+    html_en = leggi(en_grazie) if en_grazie.exists() else ""
+    html_grazie = leggi(DIST / "grazie" / "index.html")
+
+    check("grazie en: dichiara la lingua inglese", 'lang="en"' in html_en)
+    check("grazie en: il testo è in inglese", "Your message has reached us" in html_en)
+    check("grazie en: nessun residuo di testo italiano", "Il messaggio è arrivato" not in html_en)
+    check(
+        "grazie en: canonical sulla propria lingua",
+        'rel="canonical"' in html_en and "/en/thank-you/" in html_en,
+    )
+    check(
+        "grazie en: rimanda all'italiano con hreflang",
+        'hreflang="it-IT"' in html_en and "/grazie/" in html_en,
+    )
+    check(
+        "grazie it: rimanda all'inglese con hreflang",
+        'hreflang="en"' in html_grazie and "/en/thank-you/" in html_grazie,
+    )
+    # Le pagine di utilità non vanno indicate ai motori come contenuto.
+    check("grazie en: è noindex", "noindex" in html_en)
+    check("grazie it: è noindex", "noindex" in html_grazie)
 
     # --- Dati strutturati specifici delle pagine nuove ----------------------
     camere_html = leggi(DIST / "camere/index.html") if (DIST / "camere/index.html").exists() else ""

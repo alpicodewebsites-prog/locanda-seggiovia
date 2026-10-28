@@ -1,24 +1,39 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
+import { linguaDaUrl, percorsoLocalizzato, type Lingua } from '../i18n';
+import { traduzioni } from '../i18n/ui';
+
+/**
+ * Conferma di invio.
+ *
+ * Esiste in due lingue perché ci si arriva dal modulo di contatto: se il modulo
+ * inglese portasse a una pagina italiana, il primo scambio con un ospite
+ * straniero sarebbe in una lingua che non capisce.
+ */
+export interface Props {
+  /** Forzata dal guscio inglese, che rende questa pagina come componente. */
+  lingua?: Lingua;
+}
+
+const lingua = Astro.props.lingua ?? linguaDaUrl(Astro.url);
+const t = traduzioni(lingua);
 ---
 
 <BaseLayout
-  title="Messaggio inviato"
-  description="Conferma di invio del modulo di contatto della Locanda Seggiovia a Recoaro Terme: il messaggio è arrivato, ti risponderemo al più presto."
+  title={t.grazie.metaTitolo}
+  description={t.grazie.metaDescrizione}
   noindex={true}
+  lingua={lingua}
 >
   <section class="shell flex min-h-[60svh] flex-col justify-center py-24">
-    <p class="eyebrow">Messaggio inviato</p>
-    <h1 class="display-2 mt-4 max-w-[22ch] text-stone-900">Grazie, ci siamo</h1>
-    <p class="lede mt-6">
-      Il messaggio è arrivato. Ti risponderemo il prima possibile, di solito entro la
-      giornata. Se hai fretta, chiamaci.
-    </p>
+    <p class="eyebrow">{t.grazie.etichetta}</p>
+    <h1 class="display-2 mt-4 max-w-[22ch] text-stone-900">{t.grazie.titolo}</h1>
+    <p class="lede mt-6">{t.grazie.testo}</p>
 
     <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
       <a href={site.telefonoLink} class="link-arrow">{site.telefono}</a>
-      <a href="/" class="link-arrow">Torna alla home</a>
+      <a href={percorsoLocalizzato('/', lingua)} class="link-arrow">{t.grazie.torna}</a>
     </div>
   </section>
 </BaseLayout>

@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Grazie from '../grazie.astro';
+
+/**
+ * La conferma di invio in inglese.
+ *
+ * È un guscio di tre righe: rende la pagina italiana passandole `lingua="en"`.
+ * Non si duplica il disegno della pagina, così una correzione al layout vale
+ * per tutte e due le lingue, e non possono divergere.
+ */
+---
+
+<Grazie lingua="en" />

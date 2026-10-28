@@ -10,6 +10,12 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
+import {
+  alternativeLinguistiche,
+  datiLingua,
+  linguaDaUrl,
+  type Lingua,
+} from '../i18n';
 
 export interface Props {
   title: string;
@@ -26,6 +32,12 @@ export interface Props {
    * navigazione parte trasparente e diventa solida allo scroll.
    */
   headerTrasparente?: boolean;
+  /**
+   * La lingua della pagina. Se non si passa, si ricava dall'indirizzo: le
+   * pagine sotto `/en/` sono inglesi. Passarla esplicitamente serve quando una
+   * pagina è resa dentro un'altra, dove l'indirizzo è quello del genitore.
+   */
+  lingua?: Lingua;
 }
 
 const {
@@ -36,7 +48,14 @@ const {
   schema,
   noindex = false,
   headerTrasparente = false,
+  lingua = linguaDaUrl(Astro.url),
 } = Astro.props;
+
+/**
+ * Gli indirizzi della stessa pagina nelle altre lingue, per `hreflang`.
+ * Si ricavano dal percorso, quindi non c'è niente da aggiornare a mano.
+ */
+const alternative = alternativeLinguistiche(Astro.url.pathname);
 
 /**
  * URL canonico.
@@ -103,7 +122,7 @@ const fullSchema = [businessSchema, ...schemas];
 ---
 
 <!doctype html>
-<html lang="it" class="scroll-smooth">
+<html lang={datiLingua(lingua).html} class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -113,13 +132,31 @@ const fullSchema = [businessSchema, ...schemas];
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
 
-    <!-- Il sito è pensato per il mercato italiano: una sola lingua. -->
-    <meta http-equiv="content-language" content="it-IT" />
+    <!--
+      Le altre lingue in cui esiste questa stessa pagina.
+
+      Senza questi collegamenti Google tratta `/camere/` e `/en/rooms/` come due
+      pagine diverse che si fanno concorrenza, e decide lui quale mostrare.
+      Con, capisce che sono la stessa pagina in due lingue e mostra a ciascuno
+      quella nella sua.
+
+      `x-default` dice cosa mostrare a chi non ha una lingua preferita: qui
+      l'italiano, che è la lingua del posto.
+    -->
+    {
+      alternative.map((a) => (
+        <link rel="alternate" hreflang={a.hreflang} href={new URL(a.href, base).href} />
+      ))
+    }
+
+    <meta http-equiv="content-language" content={datiLingua(lingua).html} />
 
     <!-- --- Open Graph / social --- -->
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={site.nome} />
-    <meta property="og:locale" content="it_IT" />
+    <meta property="og:locale" content={lingua === 'en' ? 'en_GB' : 'it_IT'} />
+    {lingua !== 'it' && <meta property="og:locale:alternate" content="it_IT" />}
+    {lingua !== 'en' && <meta property="og:locale:alternate" content="en_GB" />}
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />

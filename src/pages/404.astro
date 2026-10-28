@@ -1,34 +1,73 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { navigazione } from '../data/site';
+import { linguaDaUrl, percorsoLocalizzato, LINGUE } from '../i18n';
+import { traduzioni } from '../i18n/ui';
+
+/**
+ * Pagina non trovata.
+ *
+ * NON è bilingue come le altre, e non per pigrizia: è UNA sola pagina, servita
+ * per qualunque indirizzo sbagliato. Il server non sa in che lingua stava
+ * navigando chi ha sbagliato l'indirizzo, quindi in fase di compilazione
+ * risulta sempre italiana. Mostrarne una sola lingua sarebbe una scommessa.
+ *
+ * Qui si mostra la lingua dell'indirizzo sbagliato (se cominciava con `/en/`),
+ * e sotto l'altra: così chi ha sbagliato trova comunque la sua.
+ */
+const lingua = linguaDaUrl(Astro.url);
+const t = traduzioni(lingua);
+const altra = traduzioni(lingua === 'it' ? 'en' : 'it');
+const altraLingua = lingua === 'it' ? 'en' : 'it';
 ---
 
 <BaseLayout
-  title="Pagina non trovata"
-  description="La pagina cercata non esiste. Torna alla home della Locanda Seggiovia o consulta i sentieri delle Piccole Dolomiti."
+  title={t.nonTrovata.metaTitolo}
+  description={t.nonTrovata.metaDescrizione}
   noindex={true}
+  lingua={lingua}
 >
   <section class="shell flex min-h-[60svh] flex-col justify-center py-24">
-    <p class="eyebrow">Errore 404</p>
-    <h1 class="display-2 mt-4 max-w-[20ch] text-stone-900">
-      Questo sentiero non porta da nessuna parte
-    </h1>
-    <p class="lede mt-6">
-      La pagina che cerchi è stata spostata o non è mai esistita. Da qui puoi tornare
-      indietro oppure andare direttamente dove serve.
-    </p>
+    <p class="eyebrow">{t.nonTrovata.etichetta}</p>
+    <h1 class="display-2 mt-4 max-w-[20ch] text-stone-900">{t.nonTrovata.titolo}</h1>
+    <p class="lede mt-6">{t.nonTrovata.testo}</p>
 
     <ul class="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-[0.95rem]">
-      <li><a href="/" class="link-arrow">Home</a></li>
+      <li><a href={percorsoLocalizzato('/', lingua)} class="link-arrow">{t.nonTrovata.torna}</a></li>
       {
         navigazione.map((voce) => (
           <li>
-            <a href={voce.href} class="link-arrow">
-              {voce.label}
+            <a href={percorsoLocalizzato(voce.href, lingua)} class="link-arrow">
+              {traduzioni(lingua).nav[
+                voce.href === '/la-locanda'
+                  ? 'laLocanda'
+                  : voce.href === '/camere'
+                    ? 'camere'
+                    : voce.href === '/ristorante'
+                      ? 'ristorante'
+                      : voce.href === '/gnocchi-con-la-fioreta'
+                        ? 'gnocchi'
+                        : 'sentieri'
+              ]}
             </a>
           </li>
         ))
       }
     </ul>
+
+    {/*
+      L'altra lingua, per chi ha sbagliato un indirizzo mentre era nell'altra
+      versione del sito.
+    */}
+    <p class="mt-12 border-t border-stone-300 pt-6 text-[0.9rem] text-stone-500">
+      {altra.nonTrovata.etichetta} — {altra.nonTrovata.titolo}.
+      <a
+        href={percorsoLocalizzato('/', altraLingua)}
+        hreflang={altraLingua}
+        class="underline underline-offset-2 hover:text-stone-800"
+      >
+        {LINGUE.find((l) => l.codice === altraLingua)?.nome}
+      </a>
+    </p>
   </section>
 </BaseLayout>
