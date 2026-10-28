@@ -4,9 +4,16 @@
  */
 import { Image } from 'astro:assets';
 import { site, indirizzoBreve, navigazione, mappaLinkUrl } from '../data/site';
+import { percorsoLocalizzato, linguaDaUrl } from '../i18n';
+import { etichetteNavigazione, traduzioni } from '../i18n/ui';
 import imgLogo from '../assets/locanda-logo.png';
 
 const anno = new Date().getFullYear();
+const lingua = linguaDaUrl(Astro.url);
+const etichette = etichetteNavigazione(lingua);
+const t = traduzioni(lingua);
+/** Gli orari nella lingua della pagina. */
+const orariNellaLingua = lingua === 'en' ? site.orariEn : site.orari;
 ---
 
 <footer class="bg-stone-900 text-stone-300">
@@ -48,7 +55,7 @@ const anno = new Date().getFullYear();
 
       {/* --- Contatti --- */}
       <div class="md:col-span-4 lg:col-span-3">
-        <h2 class="eyebrow text-stone-500">Dove siamo</h2>
+        <h2 class="eyebrow text-stone-500">{t.footer.doveSiamo}</h2>
         <address class="mt-4 not-italic">
           <a
             href={mappaLinkUrl}
@@ -83,16 +90,16 @@ const anno = new Date().getFullYear();
 
       {/* --- Navigazione --- */}
       <nav aria-label="Mappa del sito" class="md:col-span-3 lg:col-span-2">
-        <h2 class="eyebrow text-stone-500">Il sito</h2>
+        <h2 class="eyebrow text-stone-500">{t.footer.ilSito}</h2>
         <ul class="mt-4 space-y-2.5 text-[0.95rem]">
           {
             navigazione.map((voce) => (
               <li>
                 <a
-                  href={voce.href}
+                  href={percorsoLocalizzato(voce.href, lingua)}
                   class="text-stone-300 transition-colors duration-300 hover:text-stone-50"
                 >
-                  {voce.label}
+                  {etichette[voce.href] ?? voce.label}
                 </a>
               </li>
             ))
@@ -102,10 +109,10 @@ const anno = new Date().getFullYear();
 
       {/* --- Orari --- */}
       <div class="md:col-span-12 lg:col-span-3">
-        <h2 class="eyebrow text-stone-500">Orari</h2>
+        <h2 class="eyebrow text-stone-500">{t.footer.orari}</h2>
         <dl class="mt-4 space-y-3 text-[0.95rem]">
           {
-            site.orari.map((riga) => (
+            orariNellaLingua.map((riga) => (
               <div>
                 <dt class="text-stone-500">{riga.giorno}</dt>
                 <dd class="text-stone-300">{riga.valore}</dd>
@@ -131,9 +138,9 @@ const anno = new Date().getFullYear();
       </div>
 
       <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
-        <li><a href="/privacy" class="transition-colors hover:text-stone-300">Privacy Policy</a></li>
-        <li><a href="/cookie" class="transition-colors hover:text-stone-300">Cookie Policy</a></li>
-        <li><a href="/contatti" class="transition-colors hover:text-stone-300">Contatti</a></li>
+        <li><a href={percorsoLocalizzato('/privacy', lingua)} class="transition-colors hover:text-stone-300">{t.footer.privacy}</a></li>
+        <li><a href={percorsoLocalizzato('/cookie', lingua)} class="transition-colors hover:text-stone-300">{t.footer.cookie}</a></li>
+        <li><a href={percorsoLocalizzato('/contatti', lingua)} class="transition-colors hover:text-stone-300">{t.nav.contatti}</a></li>
       </ul>
     </div>
 

@@ -83,6 +83,48 @@ export const PERCORSI: Record<string, Record<Lingua, string>> = {
   '/grazie': { it: '/grazie', en: '/en/thank-you' },
 };
 
+/**
+ * I percorsi che hanno DAVVERO una pagina inglese.
+ *
+ * ----------------------------------------------------------------------------
+ * PERCHÉ NON BASTA PREFISSARE
+ *
+ * Tradurre il sito è un lavoro a tappe: per un po' di tempo alcune pagine
+ * esisteranno in inglese e altre no. Se il menu inglese puntasse comunque a
+ * `/en/restaurant/`, il visitatore che ha appena scelto «English» troverebbe un
+ * errore al primo clic — peggio di una pagina in italiano.
+ *
+ * Qui l'elenco delle pagine inglesi si legge DAI FILE, non da una lista scritta
+ * a mano: `import.meta.glob` guarda dentro `src/pages/en/` in fase di
+ * compilazione. Così, appena una pagina tradotta viene aggiunta, i collegamenti
+ * verso di lei si accendono da soli e nessuno deve ricordarsi di aggiornare
+ * nient'altro.
+ * ----------------------------------------------------------------------------
+ */
+const FILE_EN = import.meta.glob('/src/pages/en/*.astro');
+const FILE_EN_SCHEDE = import.meta.glob('/src/pages/en/trails/*.astro');
+
+/** Da `/src/pages/en/rooms.astro` a `/en/rooms/`, che è il valore in PERCORSI. */
+function percorsoIngleseDaFile(percorsoFile: string): string {
+  const nome = percorsoFile.replace('/src/pages/en/', '').replace(/\.astro$/, '');
+  return nome === 'index' ? '/en/' : `/en/${nome}/`;
+}
+
+const DISPONIBILI_EN = new Set<string>(
+  Object.keys(FILE_EN)
+    .map(percorsoIngleseDaFile)
+    .flatMap((percorsoEn) =>
+      Object.entries(PERCORSI)
+        // I valori in PERCORSI sono senza slash finale, quelli ricavati dai file
+        // ce l'hanno: vanno confrontati nella stessa forma.
+        .filter(([, voci]) => conSlashFinale(voci.en) === conSlashFinale(percorsoEn))
+        .map(([logico]) => logico),
+    ),
+);
+
+/** Le schede dei sentieri hanno una pagina inglese solo quando il file c'è. */
+const SCHEDE_EN = Object.keys(FILE_EN_SCHEDE).length > 0;
+
 /** Toglie lo slash finale, tranne sulla radice. */
 function normalizza(percorso: string): string {
   return percorso.length > 1 ? percorso.replace(/\/$/, '') : percorso;
@@ -123,11 +165,20 @@ export function percorsoLocalizzato(percorso: string, lingua: Lingua): string {
   const logico = percorsoLogico(percorso);
   const voce = PERCORSI[logico];
 
-  if (voce) return conSlashFinale(voce[lingua]);
+  if (voce) {
+    /*
+      Se la pagina inglese non esiste ancora, si manda alla versione italiana:
+      meglio una pagina comprensibile in un'altra lingua che un errore. Il
+      collegamento si sistema da solo quando la traduzione arriva.
+    */
+    if (lingua === 'en' && !DISPONIBILI_EN.has(logico)) return conSlashFinale(voce.it);
+    return conSlashFinale(voce[lingua]);
+  }
 
   const scheda = logico.match(/^\/sentieri\/(.+)$/);
   if (scheda) {
-    return lingua === 'en' ? `/en/trails/${scheda[1]}/` : `/sentieri/${scheda[1]}/`;
+    const inInglese = lingua === 'en' && SCHEDE_EN;
+    return inInglese ? `/en/trails/${scheda[1]}/` : `/sentieri/${scheda[1]}/`;
   }
 
   return lingua === 'it' ? conSlashFinale(logico) : conSlashFinale(`/en${logico}`);

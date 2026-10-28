@@ -92,6 +92,16 @@ export const site = {
     { giorno: 'Reception', valore: 'Tutti i giorni (da confermare)' },
   ],
 
+  /*
+    Gli stessi orari in inglese. Sono dati della struttura, non testo di
+    interfaccia: stanno accanto agli originali perché, quando gli orari veri
+    arriveranno, vadano cambiati in un posto solo.
+  */
+  orariEn: [
+    { giorno: 'Restaurant', valore: 'Lunch and dinner — hours to be confirmed' },
+    { giorno: 'Reception', valore: 'Every day (to be confirmed)' },
+  ],
+
   // Dal listino del sito precedente:
   //   «In B&B è compresa la prima colazione»
   //   «A disposizione con richiesta: linea wi-fi negli spazi comuni dell'hotel»

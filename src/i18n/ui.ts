@@ -400,3 +400,26 @@ export const UI: Record<Lingua, TestiInterfaccia> = { it: IT, en: EN };
 export function traduzioni(lingua: Lingua): TestiInterfaccia {
   return UI[lingua];
 }
+
+/**
+ * Le etichette delle voci di navigazione, indicizzate per indirizzo.
+ *
+ * `src/data/site.ts` elenca le voci con l'indirizzo italiano e l'etichetta
+ * italiana. La barra e il piè di pagina devono mostrare l'etichetta nella lingua
+ * della pagina: qui l'elenco diventa una tabella da indirizzo a parola, così i
+ * due componenti non devono conoscere i nomi dei campi.
+ *
+ * Se una voce nuova venisse aggiunta a `site.ts` senza una traduzione qui, si
+ * vedrebbe l'etichetta italiana invece di una voce vuota: sbagliato ma visibile,
+ * e quindi correggibile.
+ */
+export function etichetteNavigazione(lingua: Lingua): Record<string, string> {
+  const n = traduzioni(lingua).nav;
+  return {
+    '/la-locanda': n.laLocanda,
+    '/camere': n.camere,
+    '/ristorante': n.ristorante,
+    '/gnocchi-con-la-fioreta': n.gnocchi,
+    '/sentieri': n.sentieri,
+  };
+}

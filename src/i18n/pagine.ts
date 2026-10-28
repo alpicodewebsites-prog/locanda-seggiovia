@@ -57,6 +57,50 @@ export interface TestiPagine {
     pulsanteCamere: string;
     pulsanteContatti: string;
   };
+  camere: {
+    metaTitolo: string;
+    metaDescrizione: string;
+    etichetta: string;
+    titolo: string;
+    titoloCamere: string;
+    /** Testo alternativo: «La camera singola della Locanda Seggiovia». */
+    altCamera: string;
+    segnapostoAlt: string;
+    segnapostoTitolo: string;
+    notaColazione: string;
+    etichettaPrezzi: string;
+    titoloTariffe: string;
+    ledeTariffe: string;
+    tabella: { camera: string; bnb: string; mezzaPensione: string; pensioneCompleta: string };
+    captionTabella: string;
+    doppiaUsoSingola: string;
+    supplemento: string;
+    /** «+ 15 € / giorno». */
+    valoreSupplemento: string;
+    notaTariffe: string;
+    prenotazioneTitolo: string;
+    prenotazioneDescrizione: string;
+    etichettaRegole: string;
+    titoloRegole: string;
+    testoRegole: string;
+    politiche: {
+      bambini03: string;
+      bambini410: string;
+      animali: string;
+      soggiornoMinimo: string;
+      doppiaUsoSingola: string;
+    };
+    valori: {
+      gratuiti: string;
+      sconto30: string;
+      animali: string;
+      soggiorno: string;
+      supplementoDus: string;
+    };
+    chiusuraTitolo: string;
+    chiusuraTesto: string;
+    pulsanteScrivici: string;
+  };
   home: {
     altFacciata: string;
     etichettaCucina: string;
@@ -130,6 +174,60 @@ const IT: TestiPagine = {
       'Le camere sono semplici e curate, il ristorante è aperto a pranzo e a cena. Scrivici e ti diciamo tutto quello che serve.',
     pulsanteCamere: 'Le camere',
     pulsanteContatti: 'Contatti',
+  },
+  camere: {
+    metaTitolo: 'Camere e tariffe',
+    metaDescrizione:
+      'Camere singole e doppie a Recoaro Terme con TV, cassaforte e set di cortesia. Tariffe per persona da 55 €. Soggiorno minimo 3 giorni.',
+    etichetta: 'Camere e tariffe',
+    titolo: 'Camere semplici ed accoglienti',
+    titoloCamere: 'Due tipi di camera',
+    altCamera: 'La {camera} della Locanda Seggiovia',
+    segnapostoAlt: 'Fotografia in arrivo: {camera}',
+    segnapostoTitolo: 'Foto in arrivo',
+    notaColazione:
+      'La colazione è compresa nella tariffa B&B. La linea Wi-Fi è disponibile su richiesta negli spazi comuni.',
+    etichettaPrezzi: 'Prezzi',
+    titoloTariffe: 'Tariffe',
+    ledeTariffe:
+      'Prezzi per persona, per giorno. Invariati sia in stagione estiva (1 giugno – 15 settembre) sia in stagione invernale (16 settembre – 31 maggio).',
+    tabella: {
+      camera: 'Camera',
+      bnb: 'B&B',
+      mezzaPensione: 'Mezza pensione',
+      pensioneCompleta: 'Pensione completa',
+    },
+    captionTabella: 'Tariffe per camera e trattamento, in euro per persona al giorno',
+    doppiaUsoSingola: 'Doppia uso singola',
+    supplemento: 'supplemento',
+    valoreSupplemento: '+ {valore} € / giorno',
+    notaTariffe:
+      'Le tariffe si intendono per persona e per giorno. Il soggiorno minimo è di {giorni} giorni.',
+    prenotazioneTitolo: 'Verifica le date',
+    prenotazioneDescrizione:
+      'Dicci quando vorresti venire e quante persone siete. Ti rispondiamo noi, di solito entro un giorno.',
+    etichettaRegole: 'Regole',
+    titoloRegole: 'Bambini, animali e regole',
+    testoRegole:
+      'Poche regole, chiare. Se avete esigenze particolari — un lettino, una cena anticipata, un cane di taglia grande — ditecelo al momento della prenotazione.',
+    politiche: {
+      bambini03: 'Bambini 0–3 anni',
+      bambini410: 'Bambini 4–10 anni',
+      animali: 'Animali domestici',
+      soggiornoMinimo: 'Soggiorno minimo',
+      doppiaUsoSingola: 'Doppia uso singola',
+    },
+    valori: {
+      gratuiti: 'Gratuiti',
+      sconto30: 'Sconto 30%',
+      animali: '{giorno} € al giorno + {pulizie} € di pulizie finali',
+      soggiorno: '{giorni} giorni',
+      supplementoDus: 'Supplemento {valore} € al giorno',
+    },
+    chiusuraTitolo: 'Verifica le date',
+    chiusuraTesto:
+      'Scrivici o chiamaci: ti diciamo subito disponibilità e prezzo esatto per il tuo soggiorno.',
+    pulsanteScrivici: 'Scrivici',
   },
   home: {
     altFacciata:
@@ -218,6 +316,60 @@ const EN: TestiPagine = {
       'The rooms are simple and carefully kept, the restaurant is open at lunch and in the evening. Write to us and we will tell you everything you need.',
     pulsanteCamere: 'The rooms',
     pulsanteContatti: 'Contact',
+  },
+  camere: {
+    metaTitolo: 'Rooms and rates',
+    metaDescrizione:
+      'Single and double rooms in Recoaro Terme with TV, safe and toiletries. Rates from €55 per person. Minimum stay 3 days.',
+    etichetta: 'Rooms and rates',
+    titolo: 'Simple, welcoming rooms',
+    titoloCamere: 'Two kinds of room',
+    altCamera: 'The {camera} at Locanda Seggiovia',
+    segnapostoAlt: 'Photograph to come: {camera}',
+    segnapostoTitolo: 'Photo to come',
+    notaColazione:
+      'Breakfast is included in the bed and breakfast rate. Wi-Fi is available on request in the shared areas.',
+    etichettaPrezzi: 'Prices',
+    titoloTariffe: 'Rates',
+    ledeTariffe:
+      'Prices per person, per day. The same in summer (1 June – 15 September) and in winter (16 September – 31 May).',
+    tabella: {
+      camera: 'Room',
+      bnb: 'B&B',
+      mezzaPensione: 'Half board',
+      pensioneCompleta: 'Full board',
+    },
+    captionTabella: 'Rates by room and board, in euros per person per day',
+    doppiaUsoSingola: 'Double for single use',
+    supplemento: 'supplement',
+    valoreSupplemento: '+ €{valore} / day',
+    notaTariffe:
+      'Rates are per person and per day. The minimum stay is {giorni} days.',
+    prenotazioneTitolo: 'Check your dates',
+    prenotazioneDescrizione:
+      'Tell us when you would like to come and how many of you there are. We answer ourselves, usually within a day.',
+    etichettaRegole: 'House rules',
+    titoloRegole: 'Children, pets and house rules',
+    testoRegole:
+      'Few rules, and clear ones. If you have particular needs — a cot, an early dinner, a large dog — tell us when you book.',
+    politiche: {
+      bambini03: 'Children 0–3',
+      bambini410: 'Children 4–10',
+      animali: 'Pets',
+      soggiornoMinimo: 'Minimum stay',
+      doppiaUsoSingola: 'Double for single use',
+    },
+    valori: {
+      gratuiti: 'Free',
+      sconto30: '30% off',
+      animali: '€{giorno} per day + €{pulizie} for final cleaning',
+      soggiorno: '{giorni} days',
+      supplementoDus: '€{valore} per day supplement',
+    },
+    chiusuraTitolo: 'Check your dates',
+    chiusuraTesto:
+      'Write to us or call: we will tell you straight away whether we have room, and the exact price for your stay.',
+    pulsanteScrivici: 'Write to us',
   },
   home: {
     altFacciata:

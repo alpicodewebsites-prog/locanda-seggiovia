@@ -15,6 +15,8 @@
  * Il menu mobile usa <details>/<summary>: funziona anche senza JavaScript.
  */
 import { site, navigazione } from '../data/site';
+import { percorsoLocalizzato, linguaDaUrl } from '../i18n';
+import { etichetteNavigazione } from '../i18n/ui';
 import imgLogo from '../assets/locanda-logo.png';
 
 export interface Props {
@@ -23,11 +25,19 @@ export interface Props {
 }
 
 const { trasparente = false } = Astro.props;
+/** La lingua si ricava dall'indirizzo: `/en/...` e' inglese. */
+const lingua = linguaDaUrl(Astro.url);
+const etichette = etichetteNavigazione(lingua);
 const path = Astro.url.pathname;
 
 /** Una voce è attiva se la rotta corrente inizia con il suo href. */
-const isAttiva = (href: string) =>
-  href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`);
+const pulito = (p: string) => (p.length > 1 ? p.replace(/\/$/, "") : p);
+
+const isAttiva = (href: string) => {
+  const qui = pulito(percorsoLocalizzato(href, lingua));
+  const corrente = pulito(path);
+  return qui === '/' ? corrente === '/' : corrente === qui || corrente.startsWith(`${qui}/`);
+};
 ---
 
 <header
@@ -42,7 +52,7 @@ const isAttiva = (href: string) =>
         di accessibilità) il nome e il pulsante «Contatti» insieme non ci
         starebbero: il nome si rimpicciolisce di poco, e resta tutto visibile. */}
     <a
-      href="/"
+      href={percorsoLocalizzato('/', lingua)}
       class="site-header__wordmark group flex shrink-0 items-center gap-2.5 leading-none"
       aria-label={`${site.nome} — home`}
     >
@@ -76,11 +86,11 @@ const isAttiva = (href: string) =>
           navigazione.map((voce) => (
             <li>
               <a
-                href={voce.href}
+                href={percorsoLocalizzato(voce.href, lingua)}
                 aria-current={isAttiva(voce.href) ? 'page' : undefined}
                 class:list={['nav-link', isAttiva(voce.href) && 'nav-link--attivo']}
               >
-                {voce.label}
+                {etichette[voce.href] ?? voce.label}
               </a>
             </li>
           ))
@@ -93,7 +103,7 @@ const isAttiva = (href: string) =>
         alla stessa pagina. Resta questo pulsante, l'ultimo elemento della
         barra, che è anche l'unico con il fondo ocra. */}
     <div class="flex items-center gap-3">
-      <a href="/contatti" class="btn btn--primary btn--barra">Contatti</a>
+      <a href={percorsoLocalizzato('/contatti', lingua)} class="btn btn--primary btn--barra">Contatti</a>
 
       <details class="menu-mobile relative lg:hidden">
         <summary
@@ -114,14 +124,14 @@ const isAttiva = (href: string) =>
               navigazione.map((voce) => (
                 <li>
                   <a
-                    href={voce.href}
+                    href={percorsoLocalizzato(voce.href, lingua)}
                     aria-current={isAttiva(voce.href) ? 'page' : undefined}
                     class:list={[
                       'block px-3 py-3 text-[0.95rem] transition-colors duration-200 hover:bg-stone-100',
                       isAttiva(voce.href) ? 'text-forest-700' : 'text-stone-700',
                     ]}
                   >
-                    {voce.label}
+                    {etichette[voce.href] ?? voce.label}
                   </a>
                 </li>
               ))
