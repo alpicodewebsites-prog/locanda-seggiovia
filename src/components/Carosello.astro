@@ -92,7 +92,7 @@ if (voci.length === 0) {
                   src={voce.img!}
                   alt={voce.titolo}
                   widths={[640, 960, 1280]}
-                  sizes="(min-width: 64rem) 60rem, 94vw"
+                  sizes="(min-width: 74rem) 74rem, 94vw"
                   format="webp"
                   quality={84}
                   loading={i === 0 ? 'eager' : 'lazy'}
@@ -180,7 +180,7 @@ if (voci.length === 0) {
     perché quando arriveranno fotografie grandi basterà cambiare questa.
   */
   .carosello-sezione {
-    --largo: 60rem;
+    --largo: 74rem;
     --raggio-vetro: 1.75rem;
 
     position: relative;
@@ -309,6 +309,13 @@ if (voci.length === 0) {
     height: auto;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+    /*
+      Un filo piu' scura. Su una fotografia luminosa — cielo azzurro,
+      roccia al sole — il titolo chiaro si perde anche col velo. Il
+      `brightness` abbassa tutta l'immagine, non solo il fondo: cosi' il
+      testo resta leggibile in qualunque punto cada.
+    */
+    filter: brightness(0.82) saturate(1.04);
     transition: transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
@@ -324,12 +331,21 @@ if (voci.length === 0) {
   .diapositiva__velo {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(20, 20, 18, 0.58) 0%,
-      rgba(20, 20, 18, 0.2) 36%,
-      rgba(20, 20, 18, 0) 64%
-    );
+    background:
+      linear-gradient(
+        to top,
+        rgba(16, 16, 14, 0.78) 0%,
+        rgba(16, 16, 14, 0.42) 30%,
+        rgba(16, 16, 14, 0) 62%
+      ),
+      /* Da sinistra, dove appoggia il testo: senza, una roccia chiara sul
+         bordo sinistro cancella il titolo. */
+      linear-gradient(
+        to right,
+        rgba(16, 16, 14, 0.55) 0%,
+        rgba(16, 16, 14, 0.22) 42%,
+        rgba(16, 16, 14, 0) 70%
+      );
     pointer-events: none;
   }
 
@@ -351,7 +367,9 @@ if (voci.length === 0) {
     line-height: 1.06;
     letter-spacing: -0.01em;
     color: #fdf7ee;
-    text-shadow: 0 2px 18px rgba(15, 15, 12, 0.55);
+    text-shadow:
+      0 1px 3px rgba(10, 10, 8, 0.85),
+      0 4px 26px rgba(10, 10, 8, 0.7);
   }
 
   .diapositiva__frase {
@@ -360,7 +378,9 @@ if (voci.length === 0) {
     font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
     line-height: 1.55;
     color: rgba(253, 247, 238, 0.92);
-    text-shadow: 0 1px 12px rgba(15, 15, 12, 0.6);
+    text-shadow:
+      0 1px 3px rgba(10, 10, 8, 0.8),
+      0 3px 18px rgba(10, 10, 8, 0.6);
   }
 
   .diapositiva__invito {
