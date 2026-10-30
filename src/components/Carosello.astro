@@ -1,34 +1,36 @@
 ---
 /**
- * Carosello della home.
+ * La striscia di fotografie della home.
  *
  * ----------------------------------------------------------------------------
- * IL RIQUADRO È DI VETRO
+ * NON È PIÙ UN RIQUADRO
  *
- * Un pannello di vetro smerigliato — «liquid glass» — con dentro le fotografie
- * che scorrono. Perché il vetro si veda, dietro ci vuole qualcosa da sfuocare:
- * sotto il pannello ci sono due aloni larghi, uno rosso del logo e uno verde
- * bosco. Senza, il `backdrop-filter` non avrebbe niente da fare e il riquadro
- * sembrerebbe solo un rettangolo bianco.
+ * Prima c'era un pannello di vetro con dentro una fotografia per volta. Ora le
+ * fotografie scorrono da sole su tutta la larghezza della pagina, e ai due
+ * estremi sfumano nel fondo: non c'è un bordo che le taglia, non c'è una cornice
+ * che le rinchiude. La fotografia arriva da fuori schermo ed esce dall'altra
+ * parte, e questo è tutto il disegno.
  *
- * Il vetro è fatto di quattro cose, tutte necessarie:
- *   1. fondo bianco appena trasparente;
- *   2. `backdrop-filter: blur()` che sfuoca ciò che sta dietro;
- *   3. un filo chiaro sul bordo superiore (la luce che batte sul bordo);
- *   4. un'ombra larga e bassa che lo stacca dalla pagina.
+ * La dissolvenza non è un'ombra: è una maschera (`mask-image`). Sfuma davvero
+ * la fotografia lasciando vedere il fondo della pagina sotto, invece di
+ * appoggiarci sopra un velo chiaro che la sporcherebbe.
  *
  * ----------------------------------------------------------------------------
- * PERCHÉ LA FOTOGRAFIA NON È A TUTTA PAGINA
+ * COME SCORRE SENZA SCATTI
  *
- * Le fotografie vere della locanda sono al massimo 600 px di lato. A 60rem il
- * riquadro è grande ma la fotografia resta entro un ingrandimento accettabile;
- * a tutta pagina si vedrebbe la sfocatura. Quando arriveranno gli originali,
- * basta alzare `--largo`.
+ * La pista contiene le fotografie DUE volte e si sposta di metà della sua
+ * lunghezza. Quando la prima copia è uscita, la seconda è esattamente al suo
+ * posto: il salto è invisibile. Perché il conto torni, la distanza fra le
+ * fotografie è un `margin` su ciascuna e non un `gap` — con il `gap` la metà
+ * cadrebbe mezza distanza più in là e si vedrebbe uno scatto a ogni giro.
+ *
+ * La seconda copia è `aria-hidden` e non contiene collegamenti: è la stessa
+ * fotografia, non una seconda.
+ *
+ * Si ferma al passaggio del puntatore e col fuoco da tastiera. Con
+ * `prefers-reduced-motion` non parte affatto: chi ha chiesto meno movimento vede
+ * una fila ferma, che può far scorrere col dito o con la barra.
  * ----------------------------------------------------------------------------
- *
- * Senza JavaScript mostra le diapositive una sotto l'altra: il contenuto esiste
- * prima del codice. Cambiano ogni 3 secondi, si fermano al passaggio del
- * puntatore, col fuoco da tastiera e con la scheda in secondo piano.
  */
 import { Image } from 'astro:assets';
 
@@ -43,609 +45,216 @@ export interface Props {
     collegamento: string;
   }[];
   lingua: Lingua;
-  /** Titolo per i lettori di schermo: in pagina non si vede. */
+  /** Titolo per i lettori di schermo. */
   etichetta: string;
-  /** «Scopri di più» — il verbo del collegamento. */
-  invito: string;
-  precedente: string;
-  successiva: string;
+  /* Restano dichiarate perché la pagina le passa ancora: la striscia non ha
+     comandi, ma toglierle dall'interfaccia obbligherebbe a cambiare anche il
+     chiamante per niente. */
+  invito?: string;
+  precedente?: string;
+  successiva?: string;
 }
 
-const { diapositive, lingua, etichetta, invito, precedente, successiva } = Astro.props;
+const { diapositive, lingua, etichetta } = Astro.props;
 
 const voci = diapositive
   .map((voce) => ({ ...voce, img: risolviImmagine(voce.immagine) }))
   .filter((voce) => voce.img !== null);
 
 if (voci.length === 0) {
-  throw new Error("Carosello: nessuna diapositiva con un'immagine valida.");
+  throw new Error("Striscia: nessuna fotografia con un'immagine valida.");
 }
 ---
 
-<section class="carosello-sezione" aria-labelledby="titolo-carosello">
-  {/* Gli aloni che il vetro sfuoca. Sono decorazione: nascosti ai lettori. */}
-  <div class="carosello-sezione__aloni" aria-hidden="true">
-    <span class="alone alone--rosso"></span>
-    <span class="alone alone--bosco"></span>
+<section class="striscia-sezione" aria-labelledby="titolo-striscia">
+  <div class="shell">
+    <h2 id="titolo-striscia" class="sr-only">{etichetta}</h2>
   </div>
 
-  <div class="shell">
-    <h2 id="titolo-carosello" class="sr-only">{etichetta}</h2>
-
-    <div class="vetro" data-carosello aria-roledescription="carosello" aria-label={etichetta}>
-      <ul class="vetro__pista">
-        {
-          voci.map((voce, i) => (
-            <li
-              class="diapositiva"
-              data-diapositiva
-              data-attiva={i === 0 ? '' : undefined}
-              aria-roledescription="diapositiva"
-              aria-label={`${i + 1} / ${voci.length}`}
-            >
-              <a
-                href={percorsoLocalizzato(voce.collegamento, lingua)}
-                class="diapositiva__foto"
-                tabindex={i === 0 ? undefined : -1}
-              >
+  {/*
+    `data-carosello` è rimasto per gli script di verifica, che cercano questo
+    gancio per trovare la striscia in pagina.
+  */}
+  <div class="striscia" data-carosello>
+    <ul class="striscia__pista">
+      {/* Prima copia: quella vera, con i collegamenti attivi. */}
+      {
+        voci.map((voce) => (
+          <li class="striscia__voce">
+            <a href={percorsoLocalizzato(voce.collegamento, lingua)} class="striscia__link">
+              <span class="striscia__foto">
                 <Image
                   src={voce.img!}
                   alt={voce.titolo}
-                  widths={[640, 960, 1280]}
-                  sizes="(min-width: 74rem) 74rem, 94vw"
+                  widths={[420, 640, 900]}
+                  sizes="(min-width: 64rem) 26rem, 80vw"
                   format="webp"
-                  quality={84}
-                  loading={i === 0 ? 'eager' : 'lazy'}
+                  quality={82}
+                  loading="lazy"
                   decoding="async"
                 />
-                {/* Velo in basso: senza, un titolo chiaro su una foto chiara
-                    diventa illeggibile. Non copre la fotografia, la appoggia. */}
-                <span class="diapositiva__velo" aria-hidden="true"></span>
-              </a>
-
-              <div class="diapositiva__testo">
-                <h3 class="diapositiva__titolo">{voce.titolo}</h3>
-                <p class="diapositiva__frase">{voce.testo}</p>
-                <a
-                  href={percorsoLocalizzato(voce.collegamento, lingua)}
-                  class="diapositiva__invito"
-                  tabindex={i === 0 ? undefined : -1}
-                >
-                  {invito}
-                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
-                    <path
-                      d="M1 5h11m0 0L8.5 1.5M12 5l-3.5 3.5"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"></path>
-                  </svg>
-                </a>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-
-      {
-        voci.length > 1 && (
-          <div class="vetro__comandi">
-            <button type="button" class="vetro__freccia" data-indietro aria-label={precedente}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path
-                  d="M13 8H3m0 0 4-4M3 8l4 4"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-
-            <ol class="vetro__punti">
-              {voci.map((voce, i) => (
-                <li>
-                  <button
-                    type="button"
-                    class:list={['vetro__punto', i === 0 && 'vetro__punto--attivo']}
-                    data-punto={i}
-                    aria-label={voce.titolo}
-                    aria-current={i === 0 ? 'true' : undefined}
-                  />
-                </li>
-              ))}
-            </ol>
-
-            <button type="button" class="vetro__freccia" data-avanti aria-label={successiva}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path
-                  d="M3 8h10m0 0-4-4m4 4-4 4"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-        )
+              </span>
+              <span class="striscia__etichetta">{voce.titolo}</span>
+            </a>
+          </li>
+        ))
       }
-    </div>
+
+      {/* Seconda copia: identica, solo per far tornare il giro. */}
+      {
+        voci.map((voce) => (
+          <li class="striscia__voce" aria-hidden="true">
+            <span class="striscia__link">
+              <span class="striscia__foto">
+                <Image
+                  src={voce.img!}
+                  alt=""
+                  widths={[420, 640, 900]}
+                  sizes="(min-width: 64rem) 26rem, 80vw"
+                  format="webp"
+                  quality={82}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="striscia__etichetta">{voce.titolo}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>
 
 <style>
-  /*
-    `--largo` è la misura del riquadro. È dichiarata qui e non sparsa nel CSS
-    perché quando arriveranno fotografie grandi basterà cambiare questa.
-  */
-  .carosello-sezione {
-    --largo: 74rem;
-    --raggio-vetro: 1.75rem;
-
-    position: relative;
-    isolation: isolate;
-    padding-block: var(--spacing-section);
+  .striscia-sezione {
+    /* Meno aria sopra e sotto: è una fascia, non una sezione di testo. */
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
     overflow: hidden;
   }
 
-  /* ----------------------------------------------------------------------
-     Gli aloni: due macchie larghe e morbide, una rossa e una verde, che il
-     vetro sfuoca. Sono l'unica ragione per cui il pannello sembra di vetro.
-     ---------------------------------------------------------------------- */
-  .carosello-sezione__aloni {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
+  /*
+    La maschera che sfuma gli estremi. È ciò che rende la striscia «senza
+    bordi»: la fotografia non finisce, si dissolve nel fondo della pagina.
+  */
+  .striscia {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 9%,
+      #000 91%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%);
   }
 
-  .alone {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.72;
-  }
-
-  .alone--rosso {
-    width: 56rem;
-    height: 32rem;
-    top: -6%;
-    left: -2%;
-    background: radial-gradient(circle, rgba(181, 28, 6, 0.5), rgba(181, 28, 6, 0) 70%);
-  }
-
-  .alone--bosco {
-    width: 48rem;
-    height: 30rem;
-    right: -4%;
-    bottom: -8%;
-    background: radial-gradient(circle, rgba(45, 61, 49, 0.55), rgba(45, 61, 49, 0) 70%);
-  }
-
-  /* ----------------------------------------------------------------------
-     Il pannello di vetro
-     ---------------------------------------------------------------------- */
-  .vetro {
-    max-width: var(--largo);
-    margin-inline: auto;
-    padding: 1.15rem;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: var(--raggio-vetro);
-    background-color: rgba(255, 255, 255, 0.2);
-    /* Queste tre righe sono il vetro: sfuocare, saturare, e illuminare. */
-    backdrop-filter: blur(28px) saturate(170%);
-    -webkit-backdrop-filter: blur(28px) saturate(170%);
-    box-shadow:
-      0 30px 70px -32px rgba(28, 27, 25, 0.55),
-      /* filo di luce sul bordo alto */ inset 0 1px 0 rgba(255, 255, 255, 0.75),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.22);
-  }
-
-  /* Se il browser non sa sfuocare, il vetro diventa una superficie opaca:
-     meglio solida che trasparente e illeggibile. */
-  @supports not (backdrop-filter: blur(1px)) {
-    .vetro {
-      background-color: rgba(233, 231, 226, 0.96);
-    }
-
-    .carosello-sezione__aloni {
-      display: none;
-    }
-  }
-
-  .vetro__pista {
-    display: grid;
-    gap: 2.5rem;
+  .striscia__pista {
+    display: flex;
+    align-items: flex-start;
+    width: max-content;
     margin: 0;
     padding: 0;
     list-style: none;
+    animation: scorri 52s linear infinite;
+    will-change: transform;
   }
 
-  /* Senza JavaScript si vedono tutte: è la lettura normale di un elenco. */
-  .vetro[data-carosello='attivo'] .vetro__pista {
-    display: block;
-    position: relative;
-  }
-
-  .vetro[data-carosello='attivo'] .diapositiva {
-    display: none;
-  }
-
-  .vetro[data-carosello='attivo'] .diapositiva[data-attiva] {
-    display: block;
-    animation: diapositiva-entra 520ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
-  }
-
-  @keyframes diapositiva-entra {
+  /*
+    Metà esatta della pista: la seconda copia prende il posto della prima senza
+    che si veda il salto. Funziona perché la distanza fra le voci è un margine
+    su ciascuna: con un `gap` sulla pista la metà cadrebbe altrove.
+  */
+  @keyframes scorri {
     from {
-      opacity: 0;
-      transform: scale(0.992);
+      transform: translateX(0);
     }
     to {
-      opacity: 1;
-      transform: none;
+      transform: translateX(-50%);
     }
   }
 
-  /* ----------------------------------------------------------------------
-     La fotografia dentro il vetro
-     ---------------------------------------------------------------------- */
-  .diapositiva {
-    position: relative;
+  .striscia__voce {
+    flex: none;
+    margin-right: 1.5rem;
   }
 
-  .diapositiva__foto {
-    position: relative;
+  .striscia__link {
+    display: block;
+    width: clamp(16rem, 29vw, 30rem);
+    text-decoration: none;
+  }
+
+  .striscia__foto {
     display: block;
     overflow: hidden;
-    border-radius: calc(var(--raggio-vetro) - 0.55rem);
+    border-radius: var(--raggio);
     background-color: var(--color-stone-300);
   }
 
-  .diapositiva__foto img {
+  .striscia__foto img {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
-    /*
-      Un filo piu' scura. Su una fotografia luminosa — cielo azzurro,
-      roccia al sole — il titolo chiaro si perde anche col velo. Il
-      `brightness` abbassa tutta l'immagine, non solo il fondo: cosi' il
-      testo resta leggibile in qualunque punto cada.
-    */
-    filter: brightness(0.82) saturate(1.04);
     transition: transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  .diapositiva__foto:hover img,
-  .diapositiva__foto:focus-visible img {
+  .striscia__link:hover img,
+  .striscia__link:focus-visible img {
     transform: scale(1.03);
   }
 
-  /*
-    Velo dal basso. Serve a due cose: staccare il pannello di testo e nascondere
-    che una fotografia piccola, ingrandita, è più morbida ai bordi.
-  */
-  .diapositiva__velo {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(
-        to top,
-        rgba(16, 16, 14, 0.78) 0%,
-        rgba(16, 16, 14, 0.42) 30%,
-        rgba(16, 16, 14, 0) 62%
-      ),
-      /* Da sinistra, dove appoggia il testo: senza, una roccia chiara sul
-         bordo sinistro cancella il titolo. */
-      linear-gradient(
-        to right,
-        rgba(16, 16, 14, 0.55) 0%,
-        rgba(16, 16, 14, 0.22) 42%,
-        rgba(16, 16, 14, 0) 70%
-      );
-    pointer-events: none;
-  }
-
-  /* ----------------------------------------------------------------------
-     Il testo: sopra la fotografia, in basso, dentro il vetro
-     ---------------------------------------------------------------------- */
-  .diapositiva__testo {
-    position: absolute;
-    left: clamp(1.1rem, 3vw, 2.4rem);
-    right: clamp(1.1rem, 3vw, 2.4rem);
-    bottom: clamp(1.1rem, 3vw, 2.2rem);
-    max-width: 34rem;
-    color: #fdf7ee;
-  }
-
-  .diapositiva__titolo {
-    font-family: var(--font-display);
-    font-size: clamp(1.65rem, 1.15rem + 2vw, 2.9rem);
-    line-height: 1.06;
-    letter-spacing: -0.01em;
-    color: #fdf7ee;
-    text-shadow:
-      0 1px 3px rgba(10, 10, 8, 0.85),
-      0 4px 26px rgba(10, 10, 8, 0.7);
-  }
-
-  .diapositiva__frase {
-    margin-top: 0.6rem;
-    max-width: 38ch;
-    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
-    line-height: 1.55;
-    color: rgba(253, 247, 238, 0.92);
-    text-shadow:
-      0 1px 3px rgba(10, 10, 8, 0.8),
-      0 3px 18px rgba(10, 10, 8, 0.6);
-  }
-
-  .diapositiva__invito {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    margin-top: 1.15rem;
-    padding: 0.6rem 1.05rem;
-    border: 1px solid rgba(255, 255, 255, 0.42);
-    border-radius: 999px;
-    /* Vetro anche qui, più piccolo: è il bottone sopra la fotografia. */
-    background-color: rgba(255, 255, 255, 0.14);
-    backdrop-filter: blur(10px) saturate(150%);
-    -webkit-backdrop-filter: blur(10px) saturate(150%);
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    color: #fdf7ee;
-    text-decoration: none;
-    transition:
-      background-color 200ms ease-out,
-      color 200ms ease-out,
-      border-color 200ms ease-out;
-  }
-
-  .diapositiva__invito:hover,
-  .diapositiva__invito:focus-visible {
-    background-color: #fdf7ee;
-    border-color: #fdf7ee;
-    color: #7d1706;
-  }
-
-  .diapositiva__invito svg {
-    transition: transform 200ms ease-out;
-  }
-
-  .diapositiva__invito:hover svg {
-    transform: translateX(3px);
-  }
-
-  /* ----------------------------------------------------------------------
-     I comandi
-     ---------------------------------------------------------------------- */
-  .vetro__comandi {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding-block: 1rem 0.35rem;
-  }
-
-  .vetro:not([data-carosello='attivo']) .vetro__comandi {
-    display: none;
-  }
-
-  .vetro__freccia {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.6rem;
-    height: 2.6rem;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.22);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: var(--color-stone-800);
-    cursor: pointer;
-    transition:
-      background-color 180ms ease-out,
-      transform 180ms ease-out;
-  }
-
-  .vetro__freccia:hover,
-  .vetro__freccia:focus-visible {
-    background-color: rgba(255, 255, 255, 0.62);
-    transform: translateY(-1px);
-  }
-
-  .vetro__punti {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .vetro__punto {
+  .striscia__etichetta {
     display: block;
-    width: 0.45rem;
-    height: 0.45rem;
-    padding: 0;
-    border: 0;
-    border-radius: 999px;
-    background-color: rgba(28, 27, 25, 0.28);
-    cursor: pointer;
-    transition:
-      background-color 220ms ease-out,
-      width 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    margin-top: 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-stone-600);
+    transition: color 200ms ease-out;
   }
 
-  .vetro__punto--attivo {
-    width: 1.6rem;
-    background-color: var(--color-rosso-locanda);
+  .striscia__link:hover .striscia__etichetta,
+  .striscia__link:focus-visible .striscia__etichetta {
+    color: var(--color-rosso-locanda);
   }
 
-  .vetro__punto:focus-visible,
-  .vetro__freccia:focus-visible,
-  .diapositiva__invito:focus-visible,
-  .diapositiva__foto:focus-visible {
-    outline: 2px solid #fdf7ee;
-    outline-offset: 3px;
+  .striscia__link:focus-visible {
+    outline: 2px solid var(--color-rosso-locanda);
+    outline-offset: 6px;
+    border-radius: var(--raggio);
   }
 
-  /* Sotto i 30rem il testo sopra la foto diventa troppo stretto: il riquadro
-     si allunga e il testo scende sotto la fotografia, dove c'è spazio. */
-  @media (max-width: 30rem) {
-    .vetro {
-      padding: 0.65rem;
-    }
-
-    .diapositiva__testo {
-      position: static;
-      max-width: none;
-      padding: 1.1rem 0.55rem 0.35rem;
-      color: var(--color-stone-800);
-    }
-
-    .diapositiva__titolo {
-      font-size: 1.45rem;
-      color: var(--color-stone-900);
-      text-shadow: none;
-    }
-
-    .diapositiva__frase {
-      color: var(--color-stone-600);
-      text-shadow: none;
-    }
-
-    .diapositiva__invito {
-      background-color: transparent;
-      border-color: var(--color-stone-300);
-      color: var(--color-stone-800);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-    }
-
-    .diapositiva__velo {
-      display: none;
-    }
+  /* Chi guarda si ferma: la striscia si ferma con lui. */
+  .striscia:hover .striscia__pista,
+  .striscia:focus-within .striscia__pista {
+    animation-play-state: paused;
   }
 
+  /*
+    Con meno movimento richiesto la striscia non scorre. Diventa una fila che si
+    può far scorrere col dito o con la barra: il contenuto resta raggiungibile.
+  */
   @media (prefers-reduced-motion: reduce) {
-    .vetro[data-carosello='attivo'] .diapositiva[data-attiva] {
+    .striscia {
+      overflow-x: auto;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+
+    .striscia__pista {
       animation: none;
     }
 
-    .diapositiva__foto img,
-    .vetro__punto,
-    .vetro__freccia,
-    .diapositiva__invito {
+    .striscia__foto img {
       transition: none;
     }
 
-    .diapositiva__foto:hover img {
+    .striscia__link:hover img {
       transform: none;
     }
   }
 </style>
-
-<script>
-  /*
-    Tre secondi per diapositiva. Lo script fa solo il conto: disegno, vetro e
-    passaggi sono CSS.
-  */
-  const INTERVALLO = 3000;
-
-  function avviaCarosello(radice: HTMLElement) {
-    const diapositive = Array.from(radice.querySelectorAll<HTMLElement>('[data-diapositiva]'));
-    if (diapositive.length < 2) return;
-
-    const punti = Array.from(radice.querySelectorAll<HTMLButtonElement>('[data-punto]'));
-    const indietro = radice.querySelector<HTMLButtonElement>('[data-indietro]');
-    const avanti = radice.querySelector<HTMLButtonElement>('[data-avanti]');
-
-    const senzaMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    let corrente = 0;
-    let timer: number | undefined;
-    let fermo = false;
-
-    radice.setAttribute('data-carosello', 'attivo');
-
-    function mostra(indice: number) {
-      corrente = (indice + diapositive.length) % diapositive.length;
-
-      diapositive.forEach((diapositiva, i) => {
-        const attiva = i === corrente;
-        diapositiva.toggleAttribute('data-attiva', attiva);
-        // Fuori dalla diapositiva visibile i collegamenti non devono essere
-        // raggiungibili col tasto Tab: sarebbero pagine invisibili.
-        diapositiva
-          .querySelectorAll<HTMLElement>('a')
-          .forEach((a) => (a.tabIndex = attiva ? 0 : -1));
-      });
-
-      punti.forEach((punto, i) => {
-        punto.classList.toggle('vetro__punto--attivo', i === corrente);
-        if (i === corrente) punto.setAttribute('aria-current', 'true');
-        else punto.removeAttribute('aria-current');
-      });
-    }
-
-    function ferma() {
-      if (timer !== undefined) window.clearInterval(timer);
-      timer = undefined;
-    }
-
-    function parti() {
-      if (senzaMovimento || fermo) return;
-      ferma();
-      timer = window.setInterval(() => mostra(corrente + 1), INTERVALLO);
-    }
-
-    avanti?.addEventListener('click', () => {
-      mostra(corrente + 1);
-      parti();
-    });
-    indietro?.addEventListener('click', () => {
-      mostra(corrente - 1);
-      parti();
-    });
-    punti.forEach((punto, i) =>
-      punto.addEventListener('click', () => {
-        mostra(i);
-        parti();
-      }),
-    );
-
-    radice.addEventListener('mouseenter', () => {
-      fermo = true;
-      ferma();
-    });
-    radice.addEventListener('mouseleave', () => {
-      fermo = false;
-      parti();
-    });
-    radice.addEventListener('focusin', () => {
-      fermo = true;
-      ferma();
-    });
-    radice.addEventListener('focusout', () => {
-      fermo = false;
-      parti();
-    });
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) ferma();
-      else parti();
-    });
-
-    mostra(0);
-    parti();
-  }
-
-  document.querySelectorAll<HTMLElement>('[data-carosello]').forEach(avviaCarosello);
-</script>

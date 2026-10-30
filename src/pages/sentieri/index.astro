@@ -10,7 +10,6 @@ import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Segnavia from '../../components/Segnavia.astro';
 import { site } from '../../data/site';
 import { caricaSentieri } from '../../lib/pagine';
 import { idBase, schedeLingua } from '../../lib/contenuti';
@@ -57,7 +56,7 @@ const schema = {
   schema={schema}
   lingua={lingua}
 >
-  <section class="border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
+  <section class="fantasia fantasia-3 border-b border-stone-200 pt-16 pb-12 md:pt-24 md:pb-16">
     <div class="shell grid gap-8 md:grid-cols-12 md:items-end">
       <div class="md:col-span-7">
         <p class="eyebrow">{t.etichetta}</p>
@@ -80,14 +79,17 @@ const schema = {
     <div class="shell">
       <h2 id="titolo-elenco" class="sr-only">{t.etichettaElenco}</h2>
 
-      <ul class="grid gap-x-10 md:grid-cols-2">
+      {/*
+        Sette sentieri: una riga da tre e una da quattro.
+
+        Non è una griglia da due: le prime tre schede occupano quattro
+        colonne di dodici (tre per riga), le altre tre colonne (quattro per
+        riga). Un elenco solo, senza duplicare il codice, e le due righe
+        hanno il peso che meritano.
+      */}
+      <ul class="elenco-sentieri">
         {
           sentieri.map((sentiero) => {
-            // Il numero del segnavia senza il prefisso «CAI »: sul cartello si
-            // stampa la cifra, come sui cartelli veri. Se il contenuto non lo
-            // riporta, il cartello resta senza numero.
-            const numero = sentiero.data.segnavia?.replace(/^CAI\s*/i, '').trim();
-
             const dati = [
               sentiero.data.distanza && { etichetta: u.sentieri.distanza, valore: sentiero.data.distanza },
               sentiero.data.dislivello && {
@@ -104,8 +106,6 @@ const schema = {
                   href={percorsoLocalizzato(`/sentieri/${idBase(sentiero.id)}`, lingua)}
                   class="scheda-sentiero__link"
                 >
-                  <Segnavia numero={numero} nome={sentiero.data.nome} />
-
                   <h3 class="scheda-sentiero__nome">{sentiero.data.nome}</h3>
                   <p class="scheda-sentiero__testo">{sentiero.data.sommario}</p>
 
