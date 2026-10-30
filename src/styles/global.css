@@ -840,24 +840,36 @@
      ombra, niente fondo sospeso. Ognuna è una voce di tabellone con un
      filo rosso CAI sul fianco — il paletto su cui è avvitato il cartello. */
   /* --------------------------------------------------------------------------
-   L'elenco dei sentieri: una colonna sola.
+   L'elenco dei sentieri: due file verticali.
 
-   Sette sentieri uno sotto l'altro, a tutta larghezza. Le schede hanno già il
-   filetto di separazione in basso: in colonna diventa l'elenco stesso, e si
-   legge come un indice invece che come una griglia di riquadri.
+   Non è una griglia che riempie riga per riga: è testo su due colonne, come un
+   indice. I sette sentieri scendono lungo la prima fila e proseguono nella
+   seconda — quattro sopra, tre sotto — invece di alternarsi a destra e a
+   sinistra. Si legge in verticale, che è come si legge un elenco.
 
-   Il testo però non deve correre per tutto lo schermo: sopra le 62 battute una
-   riga stanca. Per questo le descrizioni hanno un limite di larghezza, mentre
-   il filetto continua da bordo a bordo.
+   `break-inside: avoid` tiene ogni scheda intera: senza, una si spezzerebbe a
+   metà fra il fondo di una colonna e la cima dell'altra.
    -------------------------------------------------------------------------- */
 .elenco-sentieri {
   margin: 0;
   padding: 0;
   list-style: none;
+  column-count: 2;
+  column-gap: 3.5rem;
+}
+
+.elenco-sentieri > li {
+  break-inside: avoid;
 }
 
 .elenco-sentieri .scheda-sentiero__testo {
-  max-width: 62ch;
+  max-width: 46ch;
+}
+
+@media (max-width: 47.99rem) {
+  .elenco-sentieri {
+    column-count: 1;
+  }
 }
 
 .scheda-sentiero {
@@ -1057,52 +1069,3 @@
     transition-duration: 0.001ms !important;
   }
 }
-
-/* ==========================================================================
-   LE FANTASIE DEI TITOLI
-   --------------------------------------------------------------------------
-   Un motivo dietro al titolo di ogni sezione, diverso per sezione. Sono
-   `background-image` con un SVG dentro il dato: nessun file da caricare, nessun
-   elemento in più nell'impaginazione, e il motivo non può finire sopra il
-   testo.
-
-   I colori vengono dal logo: il rosso della locanda, l'ocra, il verde bosco.
-   Sono tenuti molto trasparenti apposta: devono fare atmosfera, non competere
-   con la lettura.
-   ========================================================================== */
-
-.fantasia {
-  background-repeat: repeat;
-  background-position: top left;
-}
-
-.fantasia-1 {
-  /* Archi concentrici, come le arcate del portico. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cpath d='M0 72a36 36 0 0 1 72 0' fill='none' stroke='%23b51c06' stroke-opacity='.13' stroke-width='2'/%3E%3Cpath d='M0 72a18 18 0 0 1 36 0' fill='none' stroke='%23c9a96b' stroke-opacity='.2' stroke-width='2'/%3E%3C/svg%3E");
-  background-size: 72px 72px;
-}
-
-.fantasia-2 {
-  /* Onde, come l'acqua delle terme. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='44'%3E%3Cpath d='M0 22q22-16 44 0t44 0' fill='none' stroke='%23b51c06' stroke-opacity='.12' stroke-width='2'/%3E%3Cpath d='M0 38q22-16 44 0t44 0' fill='none' stroke='%232d3d31' stroke-opacity='.12' stroke-width='2'/%3E%3C/svg%3E");
-  background-size: 88px 44px;
-}
-
-.fantasia-3 {
-  /* Cime: due montagne e una stella. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='56'%3E%3Cpath d='M0 56 28 10 56 56' fill='none' stroke='%23b51c06' stroke-opacity='.12' stroke-width='2'/%3E%3Cpath d='M44 56 62 28 80 56' fill='none' stroke='%23c9a96b' stroke-opacity='.22' stroke-width='2'/%3E%3Ccircle cx='16' cy='14' r='2' fill='%23b51c06' fill-opacity='.22'/%3E%3C/svg%3E");
-  background-size: 84px 56px;
-}
-
-.fantasia-4 {
-  /* Rombi, come le piastrelle del tavolo di cucina. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Crect x='16' y='16' width='24' height='24' transform='rotate(45 28 28)' fill='none' stroke='%23b51c06' stroke-opacity='.11' stroke-width='2'/%3E%3Ccircle cx='28' cy='28' r='2.5' fill='%23c9a96b' fill-opacity='.28'/%3E%3C/svg%3E");
-  background-size: 56px 56px;
-}
-
-.fantasia-5 {
-  /* Coriandoli: cerchi di tre colori. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Ccircle cx='12' cy='14' r='3' fill='%23b51c06' fill-opacity='.16'/%3E%3Ccircle cx='44' cy='28' r='2.2' fill='%23c9a96b' fill-opacity='.3'/%3E%3Ccircle cx='26' cy='48' r='2.6' fill='%232d3d31' fill-opacity='.14'/%3E%3C/svg%3E");
-  background-size: 64px 64px;
-}
-
