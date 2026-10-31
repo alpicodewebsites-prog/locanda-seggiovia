@@ -86,8 +86,8 @@ if (voci.length === 0) {
                 <Image
                   src={voce.img!}
                   alt={voce.titolo}
-                  widths={[420, 640, 900]}
-                  sizes="(min-width: 64rem) 26rem, 80vw"
+                  widths={[480, 720, 1080]}
+                  sizes="(min-width: 64rem) 42rem, 90vw"
                   format="webp"
                   quality={82}
                   loading="lazy"
@@ -109,8 +109,8 @@ if (voci.length === 0) {
                 <Image
                   src={voce.img!}
                   alt=""
-                  widths={[420, 640, 900]}
-                  sizes="(min-width: 64rem) 26rem, 80vw"
+                  widths={[480, 720, 1080]}
+                  sizes="(min-width: 64rem) 42rem, 90vw"
                   format="webp"
                   quality={82}
                   loading="lazy"
@@ -176,12 +176,12 @@ if (voci.length === 0) {
 
   .striscia__voce {
     flex: none;
-    margin-right: 1.5rem;
+    margin-right: 2rem;
   }
 
   .striscia__link {
     display: block;
-    width: clamp(16rem, 29vw, 30rem);
+    width: clamp(18rem, 40vw, 42rem);
     text-decoration: none;
   }
 
@@ -209,7 +209,7 @@ if (voci.length === 0) {
   .striscia__etichetta {
     display: block;
     margin-top: 0.8rem;
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
